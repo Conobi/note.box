@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Build output
+.nuxt/
+.output/
+dist/
+
+# IDE
+.idea/
+.vscode/
+
+# Environment
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# MCP / Playwright
+.mcp.json
+.playwright-mcp/
+
+# Local config
+.nuxtrc
+.ripgreprc
+
+# Shell / dotfiles (not part of project)
+.bash_profile
+.bashrc
+.zshrc
+.zprofile
+.profile
+.gitconfig
+
+# Bare git artifacts (leaked into worktree)
+HEAD
+objects/
+refs/
+hooks/
+config
+
+# Screenshots
+*.png
+
+# Git submodules
+.gitmodules
