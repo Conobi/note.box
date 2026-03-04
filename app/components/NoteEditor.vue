@@ -6,7 +6,12 @@ const props = defineProps<{
   noteId: string
 }>()
 
+const router = useRouter()
 const { note, save, flush } = useNote(props.noteId)
+
+watch(note, (n) => {
+  if (!n) router.replace('/')
+}, { immediate: true })
 
 function onUpdate(value: JSONContent) {
   save(value)
@@ -65,20 +70,18 @@ const suggestionItems: EditorSuggestionMenuItem[][] = [
 </script>
 
 <template>
-  <div v-if="note" class="flex flex-col h-full">
+  <div v-if="note" class="zen-editor pt-12 sm:pt-16">
     <UEditor
       v-slot="{ editor }"
       :model-value="note.content"
       content-type="json"
       placeholder="Write, type '/' for commands..."
-      :ui="{ base: 'p-4 sm:px-8 py-4 flex-1' }"
-      class="flex flex-col h-full"
+      :ui="{ base: 'py-4 min-h-[70vh]' }"
       @update:model-value="onUpdate"
     >
-      <UEditorToolbar :editor="editor" :items="toolbarItems" class="px-4 sm:px-8" />
+      <UEditorToolbar :editor="editor" :items="toolbarItems" layout="bubble" />
       <UEditorSuggestionMenu :editor="editor" :items="suggestionItems" />
       <UEditorDragHandle :editor="editor" />
     </UEditor>
   </div>
-  <EmptyState v-else />
 </template>
