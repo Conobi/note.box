@@ -21,6 +21,8 @@ Thumbs.db
 # MCP / Playwright
 .mcp.json
 .playwright-mcp/
+test-results/
+playwright-report/
 
 # Local config
 .nuxtrc
