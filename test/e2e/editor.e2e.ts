@@ -45,6 +45,51 @@ test.describe('Editor', () => {
     await expect(editor.locator('p').first()).toContainText('Content A extra')
   })
 
+  test('placeholder appears only on the focused empty paragraph', async ({ page, goto }) => {
+    // Seed a note with multiple empty paragraphs to reproduce the duplicated placeholder bug
+    const id = 'ed-ph'
+    await page.evaluate(({ id }) => {
+      const now = new Date().toISOString()
+      const note = {
+        id,
+        title: 'Placeholder Test',
+        content: {
+          type: 'doc',
+          content: [
+            { type: 'heading', attrs: { level: 1 }, content: [{ type: 'text', text: 'Placeholder Test' }] },
+            { type: 'paragraph' },
+            { type: 'paragraph' },
+            { type: 'paragraph' },
+          ],
+        },
+        createdAt: now,
+        updatedAt: now,
+      }
+      localStorage.setItem('note.box:notes', JSON.stringify([note]))
+    }, { id })
+
+    await goto(`/notes/${id}`, { waitUntil: 'hydration' })
+
+    const tiptap = page.locator('.tiptap')
+
+    // Click on the first empty paragraph to focus it
+    const emptyParas = tiptap.locator('p.is-empty')
+    await expect(emptyParas).toHaveCount(3)
+    await emptyParas.first().click()
+
+    // Wait for TipTap decorations to update after selection change
+    await page.waitForTimeout(100)
+
+    // Only the focused empty paragraph should have a non-empty data-placeholder
+    const placeholderValues = await tiptap.evaluate((el) => {
+      const paras = el.querySelectorAll('p.is-empty')
+      return Array.from(paras).map(p => p.getAttribute('data-placeholder') || '')
+    })
+    const withPlaceholder = placeholderValues.filter((v: string) => v !== '')
+    expect(withPlaceholder).toHaveLength(1)
+    expect(withPlaceholder[0]).toBe('Write, type \'/\' for commands...')
+  })
+
   test('content survives full page reload', async ({ page, goto }) => {
     await seedNote(page, goto, { id: 'ed-reload', title: 'Reload Test', body: 'Before reload' })
 
