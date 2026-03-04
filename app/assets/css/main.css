@@ -3,9 +3,25 @@
 
 /* Zen editor typography */
 .zen-editor .tiptap {
-  font-family: Georgia, "Times New Roman", serif;
   font-size: 1.2rem;
   line-height: 1.8;
+}
+
+/* Font variants */
+.font-serif .zen-editor .tiptap { font-family: Georgia, "Times New Roman", serif; }
+.font-sans .zen-editor .tiptap  { font-family: ui-sans-serif, system-ui, sans-serif; }
+.font-mono .zen-editor .tiptap  { font-family: ui-monospace, SFMono-Regular, "Cascadia Code", monospace; }
+
+/* Sepia color scheme */
+html.sepia {
+  --ui-bg: #f5f0e8;
+  --ui-bg-muted: #efe8dc;
+  --ui-bg-elevated: #e8dfd2;
+  --ui-text-highlighted: #433422;
+  --ui-text-default: #5c4a35;
+  --ui-text-muted: #8a7560;
+  --ui-text-dimmed: #a89580;
+  --ui-border: #e0d5c4;
 }
 
 .zen-editor .tiptap h1 {

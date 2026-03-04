@@ -1,14 +1,28 @@
 <script setup lang="ts">
 const route = useRoute()
 const drawerOpen = ref(false)
+const settingsOpen = ref(false)
+const colorMode = useColorMode()
+const { font, colorScheme } = useAppSettings()
 
 watch(() => route.path, () => {
   drawerOpen.value = false
 })
+
+watch(colorScheme, (scheme) => {
+  if (scheme === 'sepia') {
+    colorMode.preference = 'light'
+    document.documentElement.classList.add('sepia')
+  }
+  else {
+    document.documentElement.classList.remove('sepia')
+    colorMode.preference = scheme
+  }
+}, { immediate: true })
 </script>
 
 <template>
-  <div class="min-h-screen bg-default">
+  <div :class="['min-h-screen bg-default', `font-${font}`]">
     <!-- Drawer for notes list -->
     <UDrawer v-model:open="drawerOpen" direction="left">
       <template #content>
@@ -40,7 +54,14 @@ watch(() => route.path, () => {
         />
         <NoteCreateButton />
         <USeparator orientation="vertical" class="h-5 mx-1" />
-        <ColorModeToggle />
+        <UButton
+          icon="i-lucide-settings"
+          size="sm"
+          color="neutral"
+          variant="ghost"
+          @click="settingsOpen = true"
+        />
+        <SettingsModal v-model:open="settingsOpen" />
       </div>
     </div>
   </div>
