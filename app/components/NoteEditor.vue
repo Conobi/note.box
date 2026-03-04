@@ -75,7 +75,13 @@ const suggestionItems: EditorSuggestionMenuItem[][] = [
       v-slot="{ editor }"
       :model-value="note.content"
       content-type="json"
-      placeholder="Write, type '/' for commands..."
+      :placeholder="{
+        placeholder: ({ node }: { node: any }) => {
+          if (node.type.name === 'heading' && node.attrs.level === 1) return 'Untitled'
+          return 'Write, type \'/\' for commands...'
+        },
+        showOnlyCurrent: false,
+      }"
       :ui="{ base: 'py-4 min-h-[70vh]' }"
       @update:model-value="onUpdate"
     >
