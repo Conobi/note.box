@@ -13,6 +13,11 @@
 .font-mono .zen-editor .tiptap  { font-family: ui-monospace, SFMono-Regular, "Cascadia Code", monospace; }
 
 
+.zen-editor .tiptap h1.is-empty::before {
+  color: var(--ui-text-dimmed);
+  font-style: normal;
+}
+
 .zen-editor .tiptap h1 {
   font-size: 2.4rem;
   line-height: 1.2;

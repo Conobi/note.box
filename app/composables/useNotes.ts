@@ -16,7 +16,7 @@ export function useNotes() {
       title: 'Untitled',
       content: {
         type: 'doc',
-        content: [{ type: 'paragraph' }],
+        content: [{ type: 'heading', attrs: { level: 1 } }, { type: 'paragraph' }],
       },
       createdAt: now,
       updatedAt: now,
