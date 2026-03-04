@@ -1,5 +1,10 @@
-export function useLocalStorage<T>(key: string, defaultValue: T) {
+const cache = new Map<string, Ref>()
+
+export function useLocalStorage<T>(key: string, defaultValue: T): Ref<T> {
+  if (cache.has(key)) return cache.get(key) as Ref<T>
+
   const data = ref<T>(read()) as Ref<T>
+  cache.set(key, data)
 
   function read(): T {
     if (import.meta.server) return defaultValue
@@ -36,4 +41,8 @@ export function useLocalStorage<T>(key: string, defaultValue: T) {
   }
 
   return data
+}
+
+export function _resetLocalStorage() {
+  cache.clear()
 }

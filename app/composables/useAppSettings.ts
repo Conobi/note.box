@@ -3,12 +3,8 @@ import type { AppSettings, ColorScheme, WritingFont } from '~/types/settings'
 const STORAGE_KEY = 'note.box:settings'
 const DEFAULT_SETTINGS: AppSettings = { font: 'serif', colorScheme: 'light' }
 
-let settings: Ref<AppSettings> | null = null
-
 export function useAppSettings() {
-  if (!settings) {
-    settings = useLocalStorage<AppSettings>(STORAGE_KEY, DEFAULT_SETTINGS)
-  }
+  const settings = useLocalStorage<AppSettings>(STORAGE_KEY, DEFAULT_SETTINGS)
 
   const font = computed<WritingFont>({
     get: () => settings.value.font,
@@ -21,8 +17,4 @@ export function useAppSettings() {
   })
 
   return { font, colorScheme }
-}
-
-export function _resetAppSettings() {
-  settings = null
 }
