@@ -1,10 +1,15 @@
 import type { JSONContent } from '@tiptap/vue-3'
 
-export function extractText(content: JSONContent, maxLength = 120): string {
+export function extractText(content: JSONContent, maxLength = 120, { skipFirstHeading = false } = {}): string {
   const parts: string[] = []
+  let skippedFirst = false
 
   function walk(node: JSONContent): void {
     if (parts.join(' ').length >= maxLength) return
+    if (skipFirstHeading && !skippedFirst && node.type === 'heading') {
+      skippedFirst = true
+      return
+    }
     if (node.text) {
       parts.push(node.text)
     }

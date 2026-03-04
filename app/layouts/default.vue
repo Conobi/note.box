@@ -29,6 +29,7 @@ function createNote() {
             size="sm"
             color="neutral"
             variant="ghost"
+            aria-label="New note"
             @click="createNote"
           />
           <UButton
@@ -36,6 +37,7 @@ function createNote() {
             size="sm"
             color="neutral"
             variant="ghost"
+            aria-label="Settings"
             @click="settingsOpen = true"
           />
         </div>
