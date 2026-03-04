@@ -6,8 +6,8 @@ describe('EmptyState', () => {
   it('renders heading and description', async () => {
     const component = await mountSuspended(EmptyState)
 
-    expect(component.find('h2').text()).toBe('No note selected')
-    expect(component.text()).toContain('Select a note from the sidebar')
+    expect(component.find('h2').text()).toBe('Start writing')
+    expect(component.text()).toContain('Create a new note and let your thoughts flow')
   })
 
   it('renders the icon', async () => {
@@ -15,6 +15,6 @@ describe('EmptyState', () => {
     const icon = component.findComponent({ name: 'UIcon' })
 
     expect(icon.exists()).toBe(true)
-    expect(icon.props('name')).toBe('i-lucide-notebook-pen')
+    expect(icon.props('name')).toBe('i-lucide-pen-line')
   })
 })

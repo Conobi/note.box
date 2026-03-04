@@ -1,2 +1,36 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+/* Zen editor typography */
+.zen-editor .tiptap {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.2rem;
+  line-height: 1.8;
+}
+
+.zen-editor .tiptap h1 {
+  font-size: 2.4rem;
+  line-height: 1.2;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.zen-editor .tiptap h2 {
+  font-size: 1.8rem;
+  line-height: 1.3;
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+
+.zen-editor .tiptap h3 {
+  font-size: 1.4rem;
+  line-height: 1.4;
+  margin-top: 1.3em;
+  margin-bottom: 0.3em;
+}
+
+/* Floating bottom bar */
+.floating-bottom-bar {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
