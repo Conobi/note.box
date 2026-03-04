@@ -1,0 +1,42 @@
+{
+  "name": "note.box",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxi build",
+    "dev": "nuxi dev",
+    "generate": "nuxi generate",
+    "preview": "nuxi preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "nuxi typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@tiptap/pm": "^3.20.0",
+    "@tiptap/vue-3": "^3.20.0",
+    "nuxt": "^4.3.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.4.1",
+    "@nuxt/test-utils": "^3.17.2",
+    "@nuxt/ui": "^4.5.1",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "^9.22.0",
+    "happy-dom": "^17.4.4",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "unrs-resolver",
+      "vue-demi"
+    ]
+  }
+}

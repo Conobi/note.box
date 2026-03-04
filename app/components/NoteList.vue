@@ -1,0 +1,64 @@
+<script setup lang="ts">
+const router = useRouter()
+const route = useRoute()
+
+const { notes, create, remove, search } = useNotes()
+
+const searchQuery = ref('')
+
+const filteredNotes = computed(() => search(searchQuery.value))
+
+const activeNoteId = computed(() => route.params.id as string | undefined)
+
+function createNote() {
+  const note = create()
+  router.push(`/notes/${note.id}`)
+}
+
+function deleteNote(id: string) {
+  remove(id)
+  if (activeNoteId.value === id) {
+    const remaining = notes.value
+    if (remaining.length > 0) {
+      router.push(`/notes/${remaining[0]!.id}`)
+    }
+    else {
+      router.push('/')
+    }
+  }
+}
+</script>
+
+<template>
+  <div class="flex flex-col h-full">
+    <div class="p-3 flex items-center gap-2">
+      <UInput
+        v-model="searchQuery"
+        icon="i-lucide-search"
+        placeholder="Search notes..."
+        size="sm"
+        class="flex-1"
+      />
+      <UButton
+        icon="i-lucide-plus"
+        size="sm"
+        color="primary"
+        @click="createNote"
+      />
+    </div>
+    <div class="flex-1 overflow-y-auto px-2 pb-2">
+      <div v-if="filteredNotes.length === 0" class="p-4 text-center text-sm text-muted">
+        {{ searchQuery ? 'No matching notes' : 'No notes yet' }}
+      </div>
+      <div v-else class="space-y-0.5">
+        <div v-for="note in filteredNotes" :key="note.id" class="group">
+          <NoteListItem
+            :note="note"
+            :active="note.id === activeNoteId"
+            @delete="deleteNote"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
