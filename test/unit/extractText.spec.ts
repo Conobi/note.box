@@ -51,4 +51,42 @@ describe('extractText', () => {
     const content = { type: 'doc' as const, content: [] }
     expect(extractText(content)).toBe('')
   })
+
+  it('skips first heading when skipFirstHeading is true', () => {
+    const content = {
+      type: 'doc' as const,
+      content: [
+        {
+          type: 'heading' as const,
+          content: [{ type: 'text' as const, text: 'Title' }],
+        },
+        {
+          type: 'paragraph' as const,
+          content: [{ type: 'text' as const, text: 'Body text' }],
+        },
+      ],
+    }
+    expect(extractText(content, 120, { skipFirstHeading: true })).toBe('Body text')
+  })
+
+  it('only skips the first heading, not subsequent ones', () => {
+    const content = {
+      type: 'doc' as const,
+      content: [
+        {
+          type: 'heading' as const,
+          content: [{ type: 'text' as const, text: 'Title' }],
+        },
+        {
+          type: 'heading' as const,
+          content: [{ type: 'text' as const, text: 'Subtitle' }],
+        },
+        {
+          type: 'paragraph' as const,
+          content: [{ type: 'text' as const, text: 'Body' }],
+        },
+      ],
+    }
+    expect(extractText(content, 120, { skipFirstHeading: true })).toBe('Subtitle Body')
+  })
 })

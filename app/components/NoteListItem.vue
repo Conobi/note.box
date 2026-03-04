@@ -10,7 +10,7 @@ defineEmits<{
   delete: [id: string]
 }>()
 
-const preview = computed(() => extractText(props.note.content, 80))
+const preview = computed(() => extractText(props.note.content, 80, { skipFirstHeading: true }))
 
 const formattedDate = computed(() => {
   const date = new Date(props.note.updatedAt)
@@ -40,6 +40,7 @@ const formattedDate = computed(() => {
           size="xs"
           color="neutral"
           variant="ghost"
+          aria-label="Delete note"
           class="opacity-0 group-hover/item:opacity-100"
           @click.prevent="$emit('delete', note.id)"
         />
