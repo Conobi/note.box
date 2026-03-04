@@ -1,4 +1,12 @@
-export type WritingFont = 'sans' | 'serif' | 'mono'
+export type WritingFont =
+  | 'inter'
+  | 'google-sans-flex'
+  | 'vollkorn'
+  | 'source-serif-4'
+  | 'cascadia-code'
+  | 'inconsolata'
+  | 'lexend'
+
 export type ColorScheme = 'light' | 'dark'
 
 export interface AppSettings {

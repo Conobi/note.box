@@ -1,7 +1,7 @@
 import type { AppSettings, ColorScheme, WritingFont } from '~/types/settings'
 
 const STORAGE_KEY = 'note.box:settings'
-const DEFAULT_SETTINGS: AppSettings = { font: 'serif', colorScheme: 'light' }
+const DEFAULT_SETTINGS: AppSettings = { font: 'inter', colorScheme: 'light' }
 
 export function useAppSettings() {
   const settings = useLocalStorage<AppSettings>(STORAGE_KEY, DEFAULT_SETTINGS)

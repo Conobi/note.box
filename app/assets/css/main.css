@@ -1,40 +1,312 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-/* Zen editor typography */
+/* ── Global typography baseline ──────────────────────────────── */
 .zen-editor .tiptap {
-  font-size: 1.2rem;
-  line-height: 1.8;
+  font-kerning: auto;
+  font-optical-sizing: auto;
+  font-variant-ligatures: common-ligatures contextual;
+  text-wrap: pretty;
+  hanging-punctuation: first allow-end; /* Safari progressive enhancement */
 }
 
-/* Font variants */
-.font-serif .zen-editor .tiptap { font-family: Georgia, "Times New Roman", serif; }
-.font-sans .zen-editor .tiptap  { font-family: ui-sans-serif, system-ui, sans-serif; }
-.font-mono .zen-editor .tiptap  { font-family: ui-monospace, SFMono-Regular, "Cascadia Code", monospace; }
-
+.zen-editor .tiptap h1,
+.zen-editor .tiptap h2,
+.zen-editor .tiptap h3 {
+  text-wrap: balance;
+}
 
 .zen-editor .tiptap h1.is-empty::before {
   color: var(--ui-text-dimmed);
   font-style: normal;
 }
 
-.zen-editor .tiptap h1 {
-  font-size: 2.4rem;
+
+/* ═══════════════════════════════════════════════════════════════
+   INTER — clean geometric sans, disambiguation for UI clarity
+   Axes: wght 100–900, opsz 14–32
+   ═══════════════════════════════════════════════════════════════ */
+
+.font-inter .zen-editor .tiptap {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  font-feature-settings: 'cv05' 1, 'cv08' 1; /* tailed l, serifed I */
+}
+
+.font-inter .zen-editor .tiptap h1 {
+  font-size: 2.25rem;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-feature-settings: 'cv05' 0, 'cv08' 0; /* clean display forms at large sizes */
+}
+
+.font-inter .zen-editor .tiptap h2 {
+  font-size: 1.65rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  font-weight: 650;
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+  font-feature-settings: 'cv05' 0, 'cv08' 0;
+}
+
+.font-inter .zen-editor .tiptap h3 {
+  font-size: 1.3rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  margin-top: 1.3em;
+  margin-bottom: 0.3em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   GOOGLE SANS FLEX — warm, rounded sans with grade + roundness
+   Axes: wght 1–1000, wdth 25–151, opsz 6–144, slnt, GRAD, ROND
+   ═══════════════════════════════════════════════════════════════ */
+
+.font-google-sans-flex .zen-editor .tiptap {
+  font-family: 'Google Sans Flex', ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+  font-variation-settings: 'ROND' 20; /* subtle roundness for warmth */
+}
+
+.font-google-sans-flex .zen-editor .tiptap h1 {
+  font-size: 2.3rem;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-variation-settings: 'ROND' 0; /* sharper at display sizes */
+}
+
+.font-google-sans-flex .zen-editor .tiptap h2 {
+  font-size: 1.7rem;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  font-weight: 650;
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+  font-variation-settings: 'ROND' 0;
+}
+
+.font-google-sans-flex .zen-editor .tiptap h3 {
+  font-size: 1.3rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  margin-top: 1.3em;
+  margin-bottom: 0.3em;
+  font-variation-settings: 'ROND' 10;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   VOLLKORN — dark sturdy serif, rich ligatures, oldstyle figures
+   Axes: wght 400–900
+   ═══════════════════════════════════════════════════════════════ */
+
+.font-vollkorn .zen-editor .tiptap {
+  font-family: 'Vollkorn', Georgia, 'Times New Roman', serif;
+  font-size: 1.2rem;
+  line-height: 1.75;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+}
+
+.font-vollkorn .zen-editor .tiptap h1 {
+  font-size: 2.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin-top: 1.4em;
+  margin-bottom: 0.45em;
+  font-variant-numeric: lining-nums; /* lining figures for headings */
+}
+
+.font-vollkorn .zen-editor .tiptap h2 {
+  font-size: 1.8rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  margin-top: 1.35em;
+  margin-bottom: 0.35em;
+  font-variant-numeric: lining-nums;
+}
+
+.font-vollkorn .zen-editor .tiptap h3 {
+  font-size: 1.4rem;
+  line-height: 1.35;
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.3em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SOURCE SERIF 4 — elegant serif, 5 optical sizes built in
+   Axes: wght 200–900, opsz 8–60, ital 0–1
+   ═══════════════════════════════════════════════════════════════ */
+
+.font-source-serif-4 .zen-editor .tiptap {
+  font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  font-size: 1.18rem;
+  line-height: 1.75;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+}
+
+.font-source-serif-4 .zen-editor .tiptap h1 {
+  font-size: 2.5rem;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin-top: 1.4em;
+  margin-bottom: 0.45em;
+  font-variant-numeric: lining-nums; /* lining figures for headings */
+  /* opsz auto-adapts: display forms at this size (high contrast, fine details) */
+}
+
+.font-source-serif-4 .zen-editor .tiptap h2 {
+  font-size: 1.85rem;
   line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  margin-top: 1.35em;
+  margin-bottom: 0.35em;
+  font-variant-numeric: lining-nums;
+}
+
+.font-source-serif-4 .zen-editor .tiptap h3 {
+  font-size: 1.4rem;
+  line-height: 1.35;
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.3em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   CASCADIA CODE — monospace with programming ligatures
+   Axes: wght 200–700, ital 0–1
+   ═══════════════════════════════════════════════════════════════ */
+
+.font-cascadia-code .zen-editor .tiptap {
+  font-family: 'Cascadia Code', ui-monospace, SFMono-Regular, monospace;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+  font-feature-settings: 'ss19' 1; /* slashed zero */
+}
+
+.font-cascadia-code .zen-editor .tiptap h1 {
+  font-size: 2rem;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  font-weight: 700;
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }
 
-.zen-editor .tiptap h2 {
-  font-size: 1.8rem;
-  line-height: 1.3;
+.font-cascadia-code .zen-editor .tiptap h2 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  font-weight: 600;
   margin-top: 1.4em;
   margin-bottom: 0.4em;
 }
 
-.zen-editor .tiptap h3 {
-  font-size: 1.4rem;
-  line-height: 1.4;
+.font-cascadia-code .zen-editor .tiptap h3 {
+  font-size: 1.2rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  margin-top: 1.3em;
+  margin-bottom: 0.3em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   INCONSOLATA — flexible monospace, width axis for density
+   Axes: wght 200–900, wdth 50–200
+   ═══════════════════════════════════════════════════════════════ */
+
+.font-inconsolata .zen-editor .tiptap {
+  font-family: 'Inconsolata', ui-monospace, SFMono-Regular, monospace;
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
+
+.font-inconsolata .zen-editor .tiptap h1 {
+  font-size: 2.05rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-variation-settings: 'wdth' 90; /* slightly condensed for impact */
+}
+
+.font-inconsolata .zen-editor .tiptap h2 {
+  font-size: 1.55rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+  font-variation-settings: 'wdth' 95;
+}
+
+.font-inconsolata .zen-editor .tiptap h3 {
+  font-size: 1.25rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  margin-top: 1.3em;
+  margin-bottom: 0.3em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LEXEND — research-backed readability, reduced visual crowding
+   Axes: wght 100–900
+   ═══════════════════════════════════════════════════════════════ */
+
+.font-lexend .zen-editor .tiptap {
+  font-family: 'Lexend', ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.7;
+}
+
+.font-lexend .zen-editor .tiptap h1 {
+  font-size: 2.2rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.font-lexend .zen-editor .tiptap h2 {
+  font-size: 1.6rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+
+.font-lexend .zen-editor .tiptap h3 {
+  font-size: 1.3rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  font-weight: 600;
   margin-top: 1.3em;
   margin-bottom: 0.3em;
 }

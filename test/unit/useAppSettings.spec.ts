@@ -11,17 +11,17 @@ describe('useAppSettings', () => {
 
   it('returns default settings', () => {
     const { font, colorScheme } = useAppSettings()
-    expect(font.value).toBe('serif')
+    expect(font.value).toBe('inter')
     expect(colorScheme.value).toBe('light')
   })
 
   it('persists font change to localStorage', async () => {
     const { font } = useAppSettings()
-    font.value = 'mono'
+    font.value = 'inconsolata'
     await nextTick()
 
     const stored = JSON.parse(localStorage.getItem('note.box:settings')!)
-    expect(stored.font).toBe('mono')
+    expect(stored.font).toBe('inconsolata')
   })
 
   it('persists colorScheme change to localStorage', async () => {
@@ -34,9 +34,9 @@ describe('useAppSettings', () => {
   })
 
   it('reads existing settings from storage', () => {
-    localStorage.setItem('note.box:settings', JSON.stringify({ font: 'sans', colorScheme: 'sepia' }))
+    localStorage.setItem('note.box:settings', JSON.stringify({ font: 'vollkorn', colorScheme: 'sepia' }))
     const { font, colorScheme } = useAppSettings()
-    expect(font.value).toBe('sans')
+    expect(font.value).toBe('vollkorn')
     expect(colorScheme.value).toBe('sepia')
   })
 
@@ -44,9 +44,9 @@ describe('useAppSettings', () => {
     const a = useAppSettings()
     const b = useAppSettings()
 
-    a.font.value = 'mono'
+    a.font.value = 'cascadia-code'
     await nextTick()
 
-    expect(b.font.value).toBe('mono')
+    expect(b.font.value).toBe('cascadia-code')
   })
 })
