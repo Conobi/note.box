@@ -17,7 +17,6 @@ const fontOptions: { label: string, value: WritingFont }[] = [
 const themeOptions: { label: string, value: ColorScheme, icon: string }[] = [
   { label: 'Light', value: 'light', icon: 'i-lucide-sun' },
   { label: 'Dark', value: 'dark', icon: 'i-lucide-moon' },
-  { label: 'Sepia', value: 'sepia', icon: 'i-lucide-coffee' },
 ]
 
 async function handleExport() {

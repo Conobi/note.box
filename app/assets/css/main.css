@@ -12,17 +12,6 @@
 .font-sans .zen-editor .tiptap  { font-family: ui-sans-serif, system-ui, sans-serif; }
 .font-mono .zen-editor .tiptap  { font-family: ui-monospace, SFMono-Regular, "Cascadia Code", monospace; }
 
-/* Sepia color scheme */
-html.sepia {
-  --ui-bg: #f5f0e8;
-  --ui-bg-muted: #efe8dc;
-  --ui-bg-elevated: #e8dfd2;
-  --ui-text-highlighted: #433422;
-  --ui-text-default: #5c4a35;
-  --ui-text-muted: #8a7560;
-  --ui-text-dimmed: #a89580;
-  --ui-border: #e0d5c4;
-}
 
 .zen-editor .tiptap h1 {
   font-size: 2.4rem;
@@ -43,10 +32,4 @@ html.sepia {
   line-height: 1.4;
   margin-top: 1.3em;
   margin-bottom: 0.3em;
-}
-
-/* Floating bottom bar */
-.floating-bottom-bar {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }

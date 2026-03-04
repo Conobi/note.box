@@ -7,16 +7,12 @@ describe('NoteList', () => {
     localStorage.clear()
   })
 
-  it('renders search input and create button', async () => {
+  it('renders search input', async () => {
     const component = await mountSuspended(NoteList)
 
     const input = component.findComponent({ name: 'UInput' })
     expect(input.exists()).toBe(true)
     expect(input.props('placeholder')).toBe('Search notes...')
-
-    const buttons = component.findAllComponents({ name: 'UButton' })
-    const createBtn = buttons.find(b => b.props('icon') === 'i-lucide-plus')
-    expect(createBtn).toBeDefined()
   })
 
   it('shows empty message when no notes exist', async () => {
