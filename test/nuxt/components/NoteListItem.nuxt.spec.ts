@@ -59,7 +59,7 @@ describe('NoteListItem', () => {
     })
 
     const link = component.find('a')
-    expect(link.classes()).toContain('bg-elevated')
+    expect(link.classes()).toContain('group-hover/sidebar:bg-elevated')
   })
 
   it('has a delete button', async () => {
