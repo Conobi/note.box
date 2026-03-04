@@ -1,9 +1,11 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it } from 'vitest'
 import NoteList from '~/components/NoteList.vue'
+import { _resetLocalStorage } from '~/composables/useLocalStorage'
 
 describe('NoteList', () => {
   beforeEach(() => {
+    _resetLocalStorage()
     localStorage.clear()
   })
 

@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
-import { useLocalStorage } from '~/composables/useLocalStorage'
+import { useLocalStorage, _resetLocalStorage } from '~/composables/useLocalStorage'
 
 describe('useLocalStorage', () => {
   beforeEach(() => {
+    _resetLocalStorage()
     localStorage.clear()
   })
 
@@ -64,5 +65,11 @@ describe('useLocalStorage', () => {
       newValue: JSON.stringify('something'),
     }))
     expect(data.value).toBe('initial')
+  })
+
+  it('returns the same ref for the same key', () => {
+    const a = useLocalStorage('shared-key', 'default')
+    const b = useLocalStorage('shared-key', 'default')
+    expect(a).toBe(b)
   })
 })

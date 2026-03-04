@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useNotes } from '~/composables/useNotes'
+import { _resetLocalStorage } from '~/composables/useLocalStorage'
 
 describe('useNotes', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    _resetLocalStorage()
     localStorage.clear()
   })
 
@@ -16,15 +18,28 @@ describe('useNotes', () => {
     expect(notes.value).toEqual([])
   })
 
-  it('creates a new note', () => {
+  it('creates a new note with H1 and paragraph', () => {
     const { notes, create } = useNotes()
     const note = create()
     expect(note.id).toBeTruthy()
     expect(note.title).toBe('Untitled')
     expect(note.content.type).toBe('doc')
+    expect(note.content.content).toEqual([
+      { type: 'heading', attrs: { level: 1 } },
+      { type: 'paragraph' },
+    ])
     expect(note.createdAt).toBeTruthy()
     expect(note.updatedAt).toBeTruthy()
     expect(notes.value).toHaveLength(1)
+  })
+
+  it('shares state across multiple useNotes() calls', () => {
+    const { create } = useNotes()
+    const { notes: notesFromOtherCall } = useNotes()
+
+    create()
+
+    expect(notesFromOtherCall.value).toHaveLength(1)
   })
 
   it('gets a note by id', () => {

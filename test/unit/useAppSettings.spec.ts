@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
-import { _resetAppSettings, useAppSettings } from '~/composables/useAppSettings'
+import { useAppSettings } from '~/composables/useAppSettings'
+import { _resetLocalStorage } from '~/composables/useLocalStorage'
 
 describe('useAppSettings', () => {
   beforeEach(() => {
-    _resetAppSettings()
+    _resetLocalStorage()
     localStorage.clear()
   })
 
