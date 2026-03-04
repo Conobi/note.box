@@ -76,9 +76,10 @@ const suggestionItems: EditorSuggestionMenuItem[][] = [
       :model-value="note.content"
       content-type="json"
       :placeholder="{
-        placeholder: ({ node }: { node: any }) => {
+        placeholder: ({ node, hasAnchor }: { node: any, hasAnchor: boolean }) => {
           if (node.type.name === 'heading' && node.attrs.level === 1) return 'Untitled'
-          return 'Write, type \'/\' for commands...'
+          if (hasAnchor) return 'Write, type \'/\' for commands...'
+          return ''
         },
         showOnlyCurrent: false,
       }"
