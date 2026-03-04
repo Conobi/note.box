@@ -1,11 +1,18 @@
 <script setup lang="ts">
+const router = useRouter()
 const colorMode = useColorMode()
 const { font, colorScheme } = useAppSettings()
+const { create } = useNotes()
 const settingsOpen = ref(false)
 
 watch(colorScheme, (scheme) => {
   colorMode.preference = scheme
 }, { immediate: true })
+
+function createNote() {
+  const note = create()
+  router.push(`/notes/${note.id}`)
+}
 </script>
 
 <template>
@@ -17,7 +24,13 @@ watch(colorScheme, (scheme) => {
           note.box
         </h1>
         <div class="flex items-center gap-0.5 opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300">
-          <NoteCreateButton />
+          <UButton
+            icon="i-lucide-plus"
+            size="sm"
+            color="neutral"
+            variant="ghost"
+            @click="createNote"
+          />
           <UButton
             icon="i-lucide-settings"
             size="sm"
