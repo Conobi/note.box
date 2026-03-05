@@ -1,4 +1,8 @@
 <script setup lang="ts">
+const props = withDefaults(defineProps<{
+  alwaysExpanded?: boolean
+}>(), { alwaysExpanded: false })
+
 const router = useRouter()
 const route = useRoute()
 
@@ -9,6 +13,8 @@ const searchQuery = ref('')
 const filteredNotes = computed(() => search(searchQuery.value))
 
 const activeNoteId = computed(() => route.params.id as string | undefined)
+
+provide('sidebarExpanded', props.alwaysExpanded)
 
 function deleteNote(id: string) {
   remove(id)
@@ -26,7 +32,7 @@ function deleteNote(id: string) {
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="grid grid-rows-[0fr] group-hover/sidebar:grid-rows-[1fr] transition-[grid-template-rows] duration-300">
+    <div :class="['grid transition-[grid-template-rows] duration-300', alwaysExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr] group-hover/sidebar:grid-rows-[1fr]']">
       <div class="overflow-hidden">
         <div class="px-3 pb-2">
           <UInput
@@ -39,7 +45,7 @@ function deleteNote(id: string) {
       </div>
     </div>
     <div class="flex-1 overflow-y-auto px-2 pb-2">
-      <div v-if="filteredNotes.length === 0" class="p-4 text-center text-sm text-dimmed group-hover/sidebar:text-muted transition-colors duration-300">
+      <div v-if="filteredNotes.length === 0" :class="['p-4 text-center text-sm transition-colors duration-300', alwaysExpanded ? 'text-muted' : 'text-dimmed group-hover/sidebar:text-muted']">
         {{ searchQuery ? 'No matching notes' : 'No notes yet' }}
       </div>
       <div v-else class="space-y-0.5">

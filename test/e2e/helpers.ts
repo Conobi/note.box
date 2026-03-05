@@ -1,6 +1,7 @@
 import type { Locator, Page } from '@playwright/test'
 
-type Goto = (url: string, options?: any) => Promise<void>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Goto = (url: string, options?: any) => Promise<any>
 
 /** Navigate to the app, then clear localStorage and reload for a clean state. */
 export async function resetApp(page: Page, goto: Goto) {
@@ -86,4 +87,16 @@ export function getSidebarSettingsButton(page: Page): Locator {
 
 export function getNoteDeleteButton(page: Page, noteHref: string): Locator {
   return page.locator(`aside a[href="${noteHref}"]`).locator('..').getByRole('button', { name: 'Delete note' })
+}
+
+export function getMenuButton(page: Page): Locator {
+  return page.getByRole('button', { name: 'Open menu' })
+}
+
+export function getTopBarAddButton(page: Page): Locator {
+  return page.locator('header').getByRole('button', { name: 'New note' })
+}
+
+export function getTopBarSettingsButton(page: Page): Locator {
+  return page.locator('header').getByRole('button', { name: 'Settings' })
 }

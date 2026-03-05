@@ -1,13 +1,19 @@
 <script setup lang="ts">
 const router = useRouter()
+const route = useRoute()
 const colorMode = useColorMode()
 const { font, colorScheme } = useAppSettings()
 const { create } = useNotes()
 const settingsOpen = ref(false)
+const sidebarOpen = ref(false)
 
 watch(colorScheme, (scheme) => {
   colorMode.preference = scheme
 }, { immediate: true })
+
+watch(() => route.fullPath, () => {
+  sidebarOpen.value = false
+})
 
 function createNote() {
   const note = create()
@@ -16,9 +22,49 @@ function createNote() {
 </script>
 
 <template>
-  <div :class="['min-h-screen bg-default flex', `font-${font}`]">
-    <!-- Persistent sidebar — dims when not hovered -->
-    <aside class="group/sidebar w-55 shrink-0 flex flex-col bg-default border-r border-transparent hover:border-default transition-[border-color] duration-300">
+  <div :class="['min-h-screen bg-default flex flex-col lg:flex-row', `font-${font}`]">
+    <!-- Mobile top bar -->
+    <header class="lg:hidden flex items-center justify-between px-3 py-2 border-b border-default">
+      <UButton
+        icon="i-lucide-menu"
+        size="sm"
+        color="neutral"
+        variant="ghost"
+        aria-label="Open menu"
+        @click="sidebarOpen = true"
+      />
+      <h1 class="font-bold text-base text-highlighted">
+        note.box
+      </h1>
+      <div class="flex items-center gap-0.5">
+        <UButton
+          icon="i-lucide-plus"
+          size="sm"
+          color="neutral"
+          variant="ghost"
+          aria-label="New note"
+          @click="createNote"
+        />
+        <UButton
+          icon="i-lucide-settings"
+          size="sm"
+          color="neutral"
+          variant="ghost"
+          aria-label="Settings"
+          @click="settingsOpen = true"
+        />
+      </div>
+    </header>
+
+    <!-- Mobile slideover -->
+    <USlideover v-model:open="sidebarOpen" side="left" title="Notes">
+      <template #body>
+        <NoteList always-expanded />
+      </template>
+    </USlideover>
+
+    <!-- Desktop persistent sidebar -->
+    <aside class="hidden lg:flex group/sidebar w-55 shrink-0 flex-col bg-default border-r border-transparent hover:border-default transition-[border-color] duration-300">
       <div class="p-3 flex items-center justify-between">
         <h1 class="font-bold text-base text-dimmed group-hover/sidebar:text-highlighted transition-colors duration-300">
           note.box
@@ -41,13 +87,14 @@ function createNote() {
             @click="settingsOpen = true"
           />
         </div>
-        <SettingsModal v-model:open="settingsOpen" />
       </div>
       <NoteList />
     </aside>
 
+    <SettingsModal v-model:open="settingsOpen" />
+
     <!-- Main content -->
-    <main class="flex-1 min-w-0 max-w-2xl mx-auto px-4 pb-10">
+    <main class="flex-1 min-w-0 max-w-3xl mx-auto px-4 pb-10">
       <slot />
     </main>
   </div>
