@@ -3,6 +3,7 @@ import type { Note } from '~/types/note'
 
 function sanitizeFilename(name: string): string {
   return name
+    // eslint-disable-next-line no-control-regex
     .replace(/[<>:"/\\|?*\x00-\x1F]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')

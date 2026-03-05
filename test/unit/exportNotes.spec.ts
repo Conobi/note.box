@@ -21,7 +21,7 @@ function makeNote(overrides: Partial<Note> = {}): Note {
 describe('exportNotesAsZip', () => {
   it('creates a zip with .md files', async () => {
     let downloadedUrl = ''
-    const createObjectURL = vi.fn((blob: Blob) => {
+    const createObjectURL = vi.fn((_blob: Blob) => {
       downloadedUrl = 'blob:test'
       return downloadedUrl
     })
