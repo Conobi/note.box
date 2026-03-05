@@ -43,6 +43,9 @@ refs/
 hooks/
 config
 
+# Cloudflare
+.wrangler/
+
 # Screenshots
 *.png
 
