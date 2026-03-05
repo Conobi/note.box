@@ -1,13 +1,15 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { defineComponent, h } from 'vue'
-import { TooltipProvider } from 'reka-ui'
+import { ConfigProvider, TooltipProvider } from 'reka-ui'
 import NoteList from '~/components/NoteList.vue'
 import { _resetLocalStorage } from '~/composables/useLocalStorage'
 
-const NoteListWithProvider = defineComponent({
+const NoteListWithApp = defineComponent({
   setup() {
-    return () => h(TooltipProvider, {}, () => h(NoteList))
+    return () => h(ConfigProvider, {}, () =>
+      h(TooltipProvider, {}, () => h(NoteList)),
+    )
   },
 })
 
@@ -18,7 +20,7 @@ describe('NoteList', () => {
   })
 
   it('renders search input', async () => {
-    const component = await mountSuspended(NoteListWithProvider)
+    const component = await mountSuspended(NoteListWithApp)
 
     const input = component.findComponent({ name: 'UInput' })
     expect(input.exists()).toBe(true)
@@ -26,7 +28,7 @@ describe('NoteList', () => {
   })
 
   it('shows empty message when no notes exist', async () => {
-    const component = await mountSuspended(NoteListWithProvider)
+    const component = await mountSuspended(NoteListWithApp)
 
     expect(component.text()).toContain('No notes yet')
   })
@@ -41,21 +43,21 @@ describe('NoteList', () => {
       updatedAt: '2026-01-01T00:00:00.000Z',
     }]))
 
-    const component = await mountSuspended(NoteListWithProvider)
+    const component = await mountSuspended(NoteListWithApp)
 
     expect(component.text()).toContain('First Note')
     expect(component.text()).not.toContain('No notes yet')
   })
 
   it('renders keyboard shortcut hints in search input', async () => {
-    const component = await mountSuspended(NoteListWithProvider)
+    const component = await mountSuspended(NoteListWithApp)
 
     const kbds = component.findAllComponents({ name: 'UKbd' })
     expect(kbds.length).toBe(2) // meta + K
   })
 
   it('exposes focusSearch method', async () => {
-    const component = await mountSuspended(NoteListWithProvider)
+    const component = await mountSuspended(NoteListWithApp)
 
     const noteList = component.findComponent({ name: 'NoteList' })
     // defineExpose makes focusSearch available on the component's exposed properties
