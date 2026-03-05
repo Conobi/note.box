@@ -38,17 +38,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
-        if: steps.changesets.outputs.hasChangesets == 'false'
+        if: steps.changesets.outputs.hasChangesets == 'false' && startsWith(github.event.head_commit.message, 'Version Packages')
         run: |
           VERSION=$(jq -r '.version' package.json)
           if git tag -l "v${VERSION}" | grep -q .; then
             echo "Tag v${VERSION} already exists, skipping release"
             exit 0
           fi
-          CHANGELOG=$(sed -n "/^## ${VERSION}/,/^## /p" CHANGELOG.md | sed '1d;$d' || echo "Release v${VERSION}")
+          if [ -f CHANGELOG.md ]; then
+            CHANGELOG=$(sed -n "/^## ${VERSION}/,/^## /p" CHANGELOG.md | sed '1d;$d')
+          fi
           gh release create "v${VERSION}" \
             --title "v${VERSION}" \
-            --notes "${CHANGELOG}" \
+            --notes "${CHANGELOG:-Release v${VERSION}}" \
             --target main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
