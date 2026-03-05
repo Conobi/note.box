@@ -10,6 +10,8 @@ defineEmits<{
   delete: [id: string]
 }>()
 
+const expanded = inject('sidebarExpanded', false)
+
 const preview = computed(() => extractText(props.note.content, 80, { skipFirstHeading: true }))
 
 const formattedDate = computed(() => {
@@ -22,14 +24,16 @@ const formattedDate = computed(() => {
   <NuxtLink
     :to="`/notes/${note.id}`"
     class="block p-3 rounded-lg transition-colors"
-    :class="active ? 'group-hover/sidebar:bg-elevated' : 'group-hover/sidebar:hover:bg-elevated/50'"
+    :class="active
+      ? (expanded ? 'bg-elevated' : 'group-hover/sidebar:bg-elevated')
+      : (expanded ? 'hover:bg-elevated/50' : 'group-hover/sidebar:hover:bg-elevated/50')"
   >
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0 flex-1">
-        <p class="font-medium text-sm text-dimmed group-hover/sidebar:text-highlighted transition-colors duration-300 truncate">
+        <p :class="['font-medium text-sm transition-colors duration-300 truncate', expanded ? 'text-highlighted' : 'text-dimmed group-hover/sidebar:text-highlighted']">
           {{ note.title }}
         </p>
-        <p class="text-xs text-dimmed group-hover/sidebar:text-muted transition-colors duration-300 mt-1 line-clamp-2">
+        <p :class="['text-xs transition-colors duration-300 mt-1 line-clamp-2', expanded ? 'text-muted' : 'text-dimmed group-hover/sidebar:text-muted']">
           {{ preview }}
         </p>
       </div>
