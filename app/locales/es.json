@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "note.box",
+    "newNote": "Nueva nota",
+    "settings": "Ajustes",
+    "openMenu": "Abrir menú"
+  },
+  "editor": {
+    "untitled": "Sin título",
+    "placeholder": "Empieza a escribir, teclea '/' para opciones...",
+    "headings": "Encabezados",
+    "heading1": "Encabezado 1",
+    "heading2": "Encabezado 2",
+    "heading3": "Encabezado 3",
+    "bold": "Negrita",
+    "italic": "Cursiva",
+    "underline": "Subrayado",
+    "strikethrough": "Tachado",
+    "code": "Código",
+    "text": "Texto",
+    "paragraph": "Párrafo",
+    "lists": "Listas",
+    "bulletList": "Lista con viñetas",
+    "numberedList": "Lista numerada",
+    "insert": "Insertar",
+    "blockquote": "Cita",
+    "codeBlock": "Bloque de código",
+    "divider": "Separador"
+  },
+  "noteList": {
+    "searchPlaceholder": "Buscar notas...",
+    "noMatching": "Sin notas coincidentes",
+    "noNotes": "Aún no hay notas",
+    "notes": "Notas"
+  },
+  "noteListItem": {
+    "deleteNote": "Eliminar nota"
+  },
+  "emptyState": {
+    "heading": "Empieza a escribir",
+    "description": "Crea una nueva nota y deja fluir tus pensamientos.",
+    "newNote": "Nueva nota"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "font": "Fuente",
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "data": "Datos",
+    "exportAll": "Exportar todas las notas",
+    "exportDescription": "Descarga todas tus notas como un archivo .zip de archivos Markdown.",
+    "language": "Idioma",
+    "fontPreview": "El veloz murciélago hindú comía feliz cardillo y kiwi"
+  },
+  "date": {
+    "yesterday": "Ayer"
+  }
+}

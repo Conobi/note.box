@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import type { SupportedLocale } from '~/types/settings'
+
+const { t } = useI18n()
+const { setLocale, locale: i18nLocale } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const colorMode = useColorMode()
-const { font, colorScheme } = useAppSettings()
+const { font, colorScheme, locale: appLocale } = useAppSettings()
 const { create } = useNotes()
 const settingsOpen = ref(false)
 const sidebarOpen = ref(false)
+
+const RTL_LOCALES = new Set(['ar'])
+const isRtl = computed(() => RTL_LOCALES.has(appLocale.value))
 
 watch(colorScheme, (scheme) => {
   colorMode.preference = scheme
@@ -14,6 +21,21 @@ watch(colorScheme, (scheme) => {
 watch(() => route.fullPath, () => {
   sidebarOpen.value = false
 })
+
+// Sync app locale to i18n
+watch(appLocale, (loc) => {
+  if (i18nLocale.value !== loc) {
+    setLocale(loc)
+  }
+}, { immediate: true })
+
+// On first load, if no stored locale, adopt browser-detected locale
+if (!appLocale.value || appLocale.value === 'en') {
+  const detected = i18nLocale.value as SupportedLocale
+  if (detected && detected !== appLocale.value) {
+    appLocale.value = detected
+  }
+}
 
 function createNote() {
   const note = create()
@@ -30,7 +52,7 @@ function createNote() {
         size="sm"
         color="neutral"
         variant="ghost"
-        aria-label="Open menu"
+        :aria-label="t('app.openMenu')"
         @click="sidebarOpen = true"
       />
       <h1 class="font-bold text-base text-highlighted">
@@ -42,7 +64,7 @@ function createNote() {
           size="sm"
           color="neutral"
           variant="ghost"
-          aria-label="New note"
+          :aria-label="t('app.newNote')"
           @click="createNote"
         />
         <UButton
@@ -50,14 +72,14 @@ function createNote() {
           size="sm"
           color="neutral"
           variant="ghost"
-          aria-label="Settings"
+          :aria-label="t('app.settings')"
           @click="settingsOpen = true"
         />
       </div>
     </header>
 
     <!-- Mobile slideover -->
-    <USlideover v-model:open="sidebarOpen" side="left" title="Notes">
+    <USlideover v-model:open="sidebarOpen" :side="isRtl ? 'right' : 'left'" :title="t('noteList.notes')">
       <template #body>
         <NoteList always-expanded />
       </template>
@@ -75,7 +97,7 @@ function createNote() {
             size="sm"
             color="neutral"
             variant="ghost"
-            aria-label="New note"
+            :aria-label="t('app.newNote')"
             @click="createNote"
           />
           <UButton
@@ -83,7 +105,7 @@ function createNote() {
             size="sm"
             color="neutral"
             variant="ghost"
-            aria-label="Settings"
+            :aria-label="t('app.settings')"
             @click="settingsOpen = true"
           />
         </div>

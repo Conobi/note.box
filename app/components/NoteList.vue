@@ -3,6 +3,7 @@ const props = withDefaults(defineProps<{
   alwaysExpanded?: boolean
 }>(), { alwaysExpanded: false })
 
+const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
@@ -39,7 +40,7 @@ function deleteNote(id: string) {
           <UInput
             v-model="searchQuery"
             icon="i-lucide-search"
-            placeholder="Search notes..."
+            :placeholder="t('noteList.searchPlaceholder')"
             size="sm"
           />
         </div>
@@ -47,7 +48,7 @@ function deleteNote(id: string) {
     </div>
     <div class="flex-1 overflow-y-auto px-2 pb-2">
       <div v-if="filteredNotes.length === 0" :class="['p-4 text-center text-sm transition-colors duration-300', alwaysExpanded ? 'text-muted' : 'text-dimmed group-hover/sidebar:text-muted']">
-        {{ searchQuery ? 'No matching notes' : 'No notes yet' }}
+        {{ searchQuery ? t('noteList.noMatching') : t('noteList.noNotes') }}
       </div>
       <div v-else class="space-y-0.5">
         <div v-for="note in filteredNotes" :key="note.id" class="group/item">

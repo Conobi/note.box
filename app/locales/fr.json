@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "note.box",
+    "newNote": "Nouvelle note",
+    "settings": "Paramètres",
+    "openMenu": "Ouvrir le menu"
+  },
+  "editor": {
+    "untitled": "Sans titre",
+    "placeholder": "Commencez à écrire, tapez '/' pour les options...",
+    "headings": "Titres",
+    "heading1": "Titre 1",
+    "heading2": "Titre 2",
+    "heading3": "Titre 3",
+    "bold": "Gras",
+    "italic": "Italique",
+    "underline": "Souligné",
+    "strikethrough": "Barré",
+    "code": "Code",
+    "text": "Texte",
+    "paragraph": "Paragraphe",
+    "lists": "Listes",
+    "bulletList": "Liste à puces",
+    "numberedList": "Liste numérotée",
+    "insert": "Insérer",
+    "blockquote": "Citation",
+    "codeBlock": "Bloc de code",
+    "divider": "Séparateur"
+  },
+  "noteList": {
+    "searchPlaceholder": "Rechercher des notes...",
+    "noMatching": "Aucune note trouvée",
+    "noNotes": "Pas encore de notes",
+    "notes": "Notes"
+  },
+  "noteListItem": {
+    "deleteNote": "Supprimer la note"
+  },
+  "emptyState": {
+    "heading": "Commencez à écrire",
+    "description": "Créez une nouvelle note et laissez vos pensées s'exprimer.",
+    "newNote": "Nouvelle note"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "font": "Police",
+    "theme": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "data": "Données",
+    "exportAll": "Exporter toutes les notes",
+    "exportDescription": "Téléchargez toutes vos notes sous forme d'archive .zip de fichiers Markdown.",
+    "language": "Langue",
+    "fontPreview": "Portez ce vieux whisky au juge blond qui fume"
+  },
+  "date": {
+    "yesterday": "Hier"
+  }
+}

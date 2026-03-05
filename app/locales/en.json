@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "note.box",
+    "newNote": "New note",
+    "settings": "Settings",
+    "openMenu": "Open menu"
+  },
+  "editor": {
+    "untitled": "Untitled",
+    "placeholder": "Start writing, type '/' for options...",
+    "headings": "Headings",
+    "heading1": "Heading 1",
+    "heading2": "Heading 2",
+    "heading3": "Heading 3",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strikethrough": "Strikethrough",
+    "code": "Code",
+    "text": "Text",
+    "paragraph": "Paragraph",
+    "lists": "Lists",
+    "bulletList": "Bullet List",
+    "numberedList": "Numbered List",
+    "insert": "Insert",
+    "blockquote": "Blockquote",
+    "codeBlock": "Code Block",
+    "divider": "Divider"
+  },
+  "noteList": {
+    "searchPlaceholder": "Search notes...",
+    "noMatching": "No matching notes",
+    "noNotes": "No notes yet",
+    "notes": "Notes"
+  },
+  "noteListItem": {
+    "deleteNote": "Delete note"
+  },
+  "emptyState": {
+    "heading": "Start writing",
+    "description": "Create a new note and let your thoughts flow.",
+    "newNote": "New note"
+  },
+  "settings": {
+    "title": "Settings",
+    "font": "Font",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "data": "Data",
+    "exportAll": "Export all notes",
+    "exportDescription": "Download all your notes as a .zip archive of Markdown files.",
+    "language": "Language",
+    "fontPreview": "The quick brown fox jumps over the lazy dog"
+  },
+  "date": {
+    "yesterday": "Yesterday"
+  }
+}

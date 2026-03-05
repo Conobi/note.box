@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "note.box",
+    "newNote": "새 노트",
+    "settings": "설정",
+    "openMenu": "메뉴 열기"
+  },
+  "editor": {
+    "untitled": "제목 없음",
+    "placeholder": "글쓰기를 시작하세요, '/'를 입력하면 옵션을 볼 수 있습니다...",
+    "headings": "제목",
+    "heading1": "제목 1",
+    "heading2": "제목 2",
+    "heading3": "제목 3",
+    "bold": "굵게",
+    "italic": "기울임",
+    "underline": "밑줄",
+    "strikethrough": "취소선",
+    "code": "코드",
+    "text": "텍스트",
+    "paragraph": "문단",
+    "lists": "목록",
+    "bulletList": "글머리 기호 목록",
+    "numberedList": "번호 매기기 목록",
+    "insert": "삽입",
+    "blockquote": "인용문",
+    "codeBlock": "코드 블록",
+    "divider": "구분선"
+  },
+  "noteList": {
+    "searchPlaceholder": "노트 검색...",
+    "noMatching": "일치하는 노트가 없습니다",
+    "noNotes": "아직 노트가 없습니다",
+    "notes": "노트"
+  },
+  "noteListItem": {
+    "deleteNote": "노트 삭제"
+  },
+  "emptyState": {
+    "heading": "글쓰기를 시작하세요",
+    "description": "새 노트를 만들고 생각을 자유롭게 적어보세요.",
+    "newNote": "새 노트"
+  },
+  "settings": {
+    "title": "설정",
+    "font": "글꼴",
+    "theme": "테마",
+    "light": "라이트",
+    "dark": "다크",
+    "data": "데이터",
+    "exportAll": "모든 노트 내보내기",
+    "exportDescription": "모든 노트를 Markdown 파일의 .zip 아카이브로 다운로드합니다.",
+    "language": "언어",
+    "fontPreview": "다람쥐 헌 쳇바퀴에 타고파"
+  },
+  "date": {
+    "yesterday": "어제"
+  }
+}

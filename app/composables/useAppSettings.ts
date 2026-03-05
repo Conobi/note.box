@@ -1,4 +1,4 @@
-import type { AppSettings, ColorScheme, WritingFont } from '~/types/settings'
+import type { AppSettings, ColorScheme, SupportedLocale, WritingFont } from '~/types/settings'
 
 const STORAGE_KEY = 'note.box:settings'
 const DEFAULT_SETTINGS: AppSettings = { font: 'inter', colorScheme: 'light' }
@@ -16,5 +16,10 @@ export function useAppSettings() {
     set: (value) => { settings.value = { ...settings.value, colorScheme: value } },
   })
 
-  return { font, colorScheme }
+  const locale = computed<SupportedLocale>({
+    get: () => settings.value.locale ?? 'en',
+    set: (value) => { settings.value = { ...settings.value, locale: value } },
+  })
+
+  return { font, colorScheme, locale }
 }

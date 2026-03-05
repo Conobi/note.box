@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "note.box",
+    "newNote": "ملاحظة جديدة",
+    "settings": "الإعدادات",
+    "openMenu": "فتح القائمة"
+  },
+  "editor": {
+    "untitled": "بدون عنوان",
+    "placeholder": "ابدأ بالكتابة، اضغط '/' للخيارات...",
+    "headings": "العناوين",
+    "heading1": "عنوان 1",
+    "heading2": "عنوان 2",
+    "heading3": "عنوان 3",
+    "bold": "غامق",
+    "italic": "مائل",
+    "underline": "تسطير",
+    "strikethrough": "يتوسطه خط",
+    "code": "رمز",
+    "text": "نص",
+    "paragraph": "فقرة",
+    "lists": "قوائم",
+    "bulletList": "قائمة نقطية",
+    "numberedList": "قائمة مرقمة",
+    "insert": "إدراج",
+    "blockquote": "اقتباس",
+    "codeBlock": "كتلة رمز",
+    "divider": "فاصل"
+  },
+  "noteList": {
+    "searchPlaceholder": "البحث في الملاحظات...",
+    "noMatching": "لا توجد ملاحظات مطابقة",
+    "noNotes": "لا توجد ملاحظات بعد",
+    "notes": "ملاحظات"
+  },
+  "noteListItem": {
+    "deleteNote": "حذف الملاحظة"
+  },
+  "emptyState": {
+    "heading": "ابدأ بالكتابة",
+    "description": "أنشئ ملاحظة جديدة ودع أفكارك تتدفق.",
+    "newNote": "ملاحظة جديدة"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "font": "الخط",
+    "theme": "المظهر",
+    "light": "فاتح",
+    "dark": "داكن",
+    "data": "البيانات",
+    "exportAll": "تصدير جميع الملاحظات",
+    "exportDescription": "قم بتنزيل جميع ملاحظاتك كأرشيف .zip من ملفات Markdown.",
+    "language": "اللغة",
+    "fontPreview": "نص حكيم له سر قاطع وذو شأن عظيم مكتوب على ثوب أخضر ومغلف بجلد أزرق"
+  },
+  "date": {
+    "yesterday": "أمس"
+  }
+}
