@@ -6,5 +6,5 @@ const target = notes.value.length > 0
   ? notes.value[0]!
   : create()
 
-router.replace(`/notes/${target.id}`)
+router.replace(`/notes/${target.slug}`)
 </script>

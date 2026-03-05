@@ -12,6 +12,31 @@ defineEmits<{
 
 const expanded = inject('sidebarExpanded', false)
 
+const titleRef = ref<HTMLElement | null>(null)
+const isTruncated = ref(false)
+
+function checkTruncation() {
+  const el = titleRef.value
+  if (!el) return
+  isTruncated.value = el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight
+}
+
+let resizeObserver: ResizeObserver | null = null
+
+watch(() => props.note.title, () => nextTick(checkTruncation))
+
+onMounted(() => {
+  nextTick(checkTruncation)
+  resizeObserver = new ResizeObserver(checkTruncation)
+  if (titleRef.value) {
+    resizeObserver.observe(titleRef.value)
+  }
+})
+
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect()
+})
+
 const preview = computed(() => extractText(props.note.content, 80, { skipFirstHeading: true }))
 
 const formattedDate = computed(() => {
@@ -22,7 +47,7 @@ const formattedDate = computed(() => {
 
 <template>
   <NuxtLink
-    :to="`/notes/${note.id}`"
+    :to="`/notes/${note.slug}`"
     class="block p-3 rounded-lg transition-colors"
     :class="active
       ? (expanded ? 'bg-elevated' : 'group-hover/sidebar:bg-elevated')
@@ -30,9 +55,14 @@ const formattedDate = computed(() => {
   >
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0 flex-1">
-        <p :class="['font-medium text-sm transition-colors duration-300 truncate', expanded ? 'text-highlighted' : 'text-dimmed group-hover/sidebar:text-highlighted']">
-          {{ note.title }}
-        </p>
+        <UTooltip :text="note.title" :disabled="!isTruncated" :delay-duration="400">
+          <p
+            ref="titleRef"
+            :class="['font-medium text-sm transition-colors duration-300', expanded ? 'line-clamp-2 text-highlighted' : 'truncate text-dimmed group-hover/sidebar:text-highlighted']"
+          >
+            {{ note.title }}
+          </p>
+        </UTooltip>
         <p :class="['text-xs transition-colors duration-300 mt-1 line-clamp-2', expanded ? 'text-muted' : 'text-dimmed group-hover/sidebar:text-muted']">
           {{ preview }}
         </p>

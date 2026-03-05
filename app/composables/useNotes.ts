@@ -9,10 +9,32 @@ export function useNotes() {
     [...notes.value].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()),
   )
 
+  function generateUniqueSlug(title: string, excludeId?: string): string {
+    const baseSlug = title === 'Untitled'
+      ? `untitled-${new Date().toISOString().slice(0, 10)}`
+      : slugify(title)
+
+    const otherNotes = excludeId
+      ? notes.value.filter(n => n.id !== excludeId)
+      : notes.value
+
+    const existingSlugs = new Set(otherNotes.map(n => n.slug))
+
+    if (!existingSlugs.has(baseSlug)) return baseSlug
+
+    let counter = 2
+    while (existingSlugs.has(`${baseSlug}-${counter}`)) {
+      counter++
+    }
+    return `${baseSlug}-${counter}`
+  }
+
   function create(): Note {
     const now = new Date().toISOString()
+    const slug = generateUniqueSlug('Untitled')
     const note: Note = {
       id: generateId(),
+      slug,
       title: 'Untitled',
       content: {
         type: 'doc',
@@ -29,6 +51,10 @@ export function useNotes() {
     return notes.value.find(n => n.id === id)
   }
 
+  function getBySlug(slug: string): Note | undefined {
+    return notes.value.find(n => n.slug === slug)
+  }
+
   function remove(id: string): void {
     const index = notes.value.findIndex(n => n.id === id)
     if (index !== -1) {
@@ -36,10 +62,21 @@ export function useNotes() {
     }
   }
 
-  function update(id: string, updates: Partial<Pick<Note, 'title' | 'content'>>): void {
+  function update(id: string, updates: Partial<Pick<Note, 'title' | 'content'>>): string | undefined {
     const note = get(id)
     if (note) {
-      Object.assign(note, updates, { updatedAt: new Date().toISOString() })
+      const titleChanged = updates.title !== undefined && updates.title !== note.title
+      let newSlug: string | undefined
+
+      if (titleChanged) {
+        newSlug = generateUniqueSlug(updates.title!, id)
+        Object.assign(note, updates, { slug: newSlug, updatedAt: new Date().toISOString() })
+      }
+      else {
+        Object.assign(note, updates, { updatedAt: new Date().toISOString() })
+      }
+
+      return newSlug
     }
   }
 
@@ -55,6 +92,7 @@ export function useNotes() {
     notes: sortedNotes,
     create,
     get,
+    getBySlug,
     remove,
     update,
     search,

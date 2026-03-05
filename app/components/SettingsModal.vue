@@ -25,20 +25,6 @@ const fontOptions: FontOption[] = [
   { label: 'Lexend', value: 'lexend', family: "'Lexend', sans-serif", category: 'Dyslexia-friendly' },
 ]
 
-const groupedFonts = computed(() => {
-  const groups: { category: string, fonts: FontOption[] }[] = []
-  for (const opt of fontOptions) {
-    const existing = groups.find(g => g.category === opt.category)
-    if (existing) {
-      existing.fonts.push(opt)
-    }
-    else {
-      groups.push({ category: opt.category, fonts: [opt] })
-    }
-  }
-  return groups
-})
-
 const themeOptions: { label: string, value: ColorScheme, icon: string }[] = [
   { label: 'Light', value: 'light', icon: 'i-lucide-sun' },
   { label: 'Dark', value: 'dark', icon: 'i-lucide-moon' },
@@ -56,79 +42,155 @@ async function handleExport() {
 </script>
 
 <template>
-  <UModal v-model:open="open" title="Settings" :ui="{ footer: 'justify-end' }">
+  <UModal
+    v-model:open="open"
+    title="Settings"
+    :ui="{
+      content: 'max-w-full sm:max-w-lg',
+      footer: 'justify-end',
+    }"
+  >
     <template #body>
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-6">
+        <!-- Font section -->
         <div>
-          <p class="text-sm font-medium text-muted mb-3">
-            Font
-          </p>
-          <div class="flex flex-col gap-3">
-            <div v-for="group in groupedFonts" :key="group.category">
-              <p class="text-xs text-dimmed mb-1.5">
-                {{ group.category }}
-              </p>
-              <div class="flex flex-col gap-0.5">
-                <button
-                  v-for="opt in group.fonts"
-                  :key="opt.value"
-                  :aria-label="opt.label"
-                  class="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-left transition-colors duration-150"
-                  :class="font === opt.value
-                    ? 'bg-primary/10 text-primary'
-                    : 'hover:bg-elevated text-default'"
-                  @click="font = opt.value"
-                >
-                  <span
-                    class="text-base truncate"
-                    :style="{ fontFamily: opt.family }"
-                  >
-                    {{ opt.label }}
-                  </span>
-                  <UIcon
-                    v-if="font === opt.value"
-                    name="i-lucide-check"
-                    class="ml-auto shrink-0 size-4"
-                  />
-                </button>
-              </div>
-            </div>
+          <div class="flex items-center gap-2 mb-4">
+            <UIcon name="i-lucide-type" class="size-4 text-muted" />
+            <p class="text-sm font-medium text-muted">
+              Font
+            </p>
           </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button
+              v-for="opt in fontOptions"
+              :key="opt.value"
+              :aria-label="opt.label"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors duration-150 border"
+              :class="font === opt.value
+                ? 'bg-primary/10 border-primary/30 text-primary'
+                : 'border-default hover:bg-elevated text-default'"
+              :style="{ fontFamily: opt.family }"
+              @click="font = opt.value"
+            >
+              {{ opt.label }}
+              <UIcon
+                v-if="font === opt.value"
+                name="i-lucide-check"
+                class="shrink-0 size-3.5"
+              />
+            </button>
+          </div>
+          <p
+            class="mt-3 text-sm text-muted px-1"
+            :style="{ fontFamily: fontOptions.find(o => o.value === font)?.family }"
+          >
+            The quick brown fox jumps over the lazy dog
+          </p>
         </div>
 
         <USeparator />
 
+        <!-- Theme section -->
         <div>
-          <p class="text-sm font-medium text-muted mb-2">
-            Theme
-          </p>
-          <div class="flex gap-2">
-            <UButton
+          <div class="flex items-center gap-2 mb-4">
+            <UIcon name="i-lucide-palette" class="size-4 text-muted" />
+            <p class="text-sm font-medium text-muted">
+              Theme
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <button
               v-for="opt in themeOptions"
               :key="opt.value"
-              :icon="opt.icon"
-              :label="opt.label"
-              size="sm"
-              :color="colorScheme === opt.value ? 'primary' : 'neutral'"
-              :variant="colorScheme === opt.value ? 'subtle' : 'ghost'"
+              :aria-label="opt.label"
+              class="flex flex-col items-center gap-2.5 px-4 py-4 rounded-xl border transition-all duration-150"
+              :class="colorScheme === opt.value
+                ? 'border-primary/40 bg-primary/5 ring-1 ring-primary/20'
+                : 'border-default hover:border-muted hover:bg-elevated'"
               @click="colorScheme = opt.value"
-            />
+            >
+              <!-- Mini preview -->
+              <div
+                class="w-full h-14 rounded-lg border overflow-hidden flex flex-col"
+                :class="opt.value === 'light'
+                  ? 'bg-white border-gray-200'
+                  : 'bg-gray-900 border-gray-700'"
+              >
+                <div
+                  class="h-3 border-b flex items-center px-1.5 gap-0.5"
+                  :class="opt.value === 'light'
+                    ? 'bg-gray-50 border-gray-200'
+                    : 'bg-gray-800 border-gray-700'"
+                >
+                  <span
+                    class="size-1 rounded-full"
+                    :class="opt.value === 'light' ? 'bg-gray-300' : 'bg-gray-600'"
+                  />
+                  <span
+                    class="size-1 rounded-full"
+                    :class="opt.value === 'light' ? 'bg-gray-300' : 'bg-gray-600'"
+                  />
+                  <span
+                    class="size-1 rounded-full"
+                    :class="opt.value === 'light' ? 'bg-gray-300' : 'bg-gray-600'"
+                  />
+                </div>
+                <div class="flex-1 flex items-center justify-center gap-1 px-2">
+                  <div class="flex flex-col gap-1 flex-1">
+                    <span
+                      class="block h-1 rounded-full w-3/4"
+                      :class="opt.value === 'light' ? 'bg-gray-300' : 'bg-gray-600'"
+                    />
+                    <span
+                      class="block h-1 rounded-full w-1/2"
+                      :class="opt.value === 'light' ? 'bg-gray-200' : 'bg-gray-700'"
+                    />
+                  </div>
+                </div>
+              </div>
+              <!-- Label row -->
+              <div class="flex items-center gap-1.5">
+                <UIcon
+                  :name="opt.icon"
+                  class="size-4"
+                  :class="colorScheme === opt.value ? 'text-primary' : 'text-muted'"
+                />
+                <span
+                  class="text-sm font-medium"
+                  :class="colorScheme === opt.value ? 'text-primary' : 'text-default'"
+                >
+                  {{ opt.label }}
+                </span>
+              </div>
+            </button>
           </div>
         </div>
 
         <USeparator />
 
-        <UButton
-          icon="i-lucide-download"
-          label="Export all notes"
-          variant="soft"
-          color="neutral"
-          size="sm"
-          block
-          :loading="exporting"
-          :disabled="!notes.length"
-          @click="handleExport"
-        />
+        <!-- Data section -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <UIcon name="i-lucide-hard-drive" class="size-4 text-muted" />
+            <p class="text-sm font-medium text-muted">
+              Data
+            </p>
+          </div>
+          <UButton
+            icon="i-lucide-download"
+            label="Export all notes"
+            variant="soft"
+            color="neutral"
+            size="sm"
+            block
+            :loading="exporting"
+            :disabled="!notes.length"
+            @click="handleExport"
+          />
+          <p class="text-xs text-dimmed mt-2 px-1">
+            Download all your notes as a .zip archive of Markdown files.
+          </p>
+        </div>
       </div>
     </template>
   </UModal>

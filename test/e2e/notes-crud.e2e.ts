@@ -34,7 +34,7 @@ test.describe('Notes CRUD', () => {
     await waitForSave(page)
 
     // Reload and verify content persisted
-    await goto(`/notes/test-note-1`, { waitUntil: 'hydration' })
+    await goto(`/notes/test-note`, { waitUntil: 'hydration' })
     await expect(editor.locator('p').first()).toContainText('and more text')
   })
 
@@ -44,17 +44,17 @@ test.describe('Notes CRUD', () => {
       { id: 'note-b', title: 'Second Note' },
     ])
 
-    const deleteBtn = getNoteDeleteButton(page, '/notes/note-a')
+    const deleteBtn = getNoteDeleteButton(page, '/notes/first-note')
     await deleteBtn.click({ force: true })
 
     // Should navigate to the remaining note
-    await expect(page).toHaveURL(/\/notes\/note-b/)
+    await expect(page).toHaveURL(/\/notes\/second-note/)
   })
 
   test('delete the only note redirects to new note', async ({ page, goto }) => {
     await seedNote(page, goto)
 
-    const deleteBtn = getNoteDeleteButton(page, '/notes/test-note-1')
+    const deleteBtn = getNoteDeleteButton(page, '/notes/test-note')
     await deleteBtn.click({ force: true })
 
     // A new note should be created automatically (index page creates one)

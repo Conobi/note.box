@@ -1,11 +1,14 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
+import { defineComponent, h } from 'vue'
+import { TooltipProvider } from 'reka-ui'
 import NoteListItem from '~/components/NoteListItem.vue'
 import type { Note } from '~/types/note'
 
 function makeNote(overrides: Partial<Note> = {}): Note {
   return {
     id: 'test-id',
+    slug: 'test-note',
     title: 'Test Note',
     content: {
       type: 'doc',
@@ -17,27 +20,34 @@ function makeNote(overrides: Partial<Note> = {}): Note {
   }
 }
 
+function wrapWithTooltipProvider(note: Note, active: boolean) {
+  return defineComponent({
+    setup() {
+      return () => h(TooltipProvider, {}, () =>
+        h(NoteListItem, { note, active, onDelete: () => {} }),
+      )
+    },
+  })
+}
+
 describe('NoteListItem', () => {
   it('renders note title', async () => {
-    const component = await mountSuspended(NoteListItem, {
-      props: { note: makeNote(), active: false },
-    })
+    const note = makeNote()
+    const component = await mountSuspended(wrapWithTooltipProvider(note, false))
 
     expect(component.text()).toContain('Test Note')
   })
 
   it('renders text preview from content', async () => {
-    const component = await mountSuspended(NoteListItem, {
-      props: { note: makeNote(), active: false },
-    })
+    const note = makeNote()
+    const component = await mountSuspended(wrapWithTooltipProvider(note, false))
 
     expect(component.text()).toContain('Some body text')
   })
 
   it('renders a date string', async () => {
-    const component = await mountSuspended(NoteListItem, {
-      props: { note: makeNote(), active: false },
-    })
+    const note = makeNote()
+    const component = await mountSuspended(wrapWithTooltipProvider(note, false))
 
     // The component formats updatedAt (2026-02-20) — just verify some date text is present
     const dateSpan = component.find('span')
@@ -45,27 +55,25 @@ describe('NoteListItem', () => {
   })
 
   it('links to the note page', async () => {
-    const component = await mountSuspended(NoteListItem, {
-      props: { note: makeNote({ id: 'abc-123' }), active: false },
-    })
+    const note = makeNote({ id: 'abc-123', slug: 'my-test-note' })
+    const component = await mountSuspended(wrapWithTooltipProvider(note, false))
 
-    const link = component.findComponent({ name: 'NuxtLink' })
-    expect(link.props('to')).toBe('/notes/abc-123')
+    const noteListItem = component.findComponent({ name: 'NoteListItem' })
+    const link = noteListItem.findComponent({ name: 'NuxtLink' })
+    expect(link.props('to')).toBe('/notes/my-test-note')
   })
 
   it('applies active styling class', async () => {
-    const component = await mountSuspended(NoteListItem, {
-      props: { note: makeNote(), active: true },
-    })
+    const note = makeNote()
+    const component = await mountSuspended(wrapWithTooltipProvider(note, true))
 
     const link = component.find('a')
     expect(link.classes()).toContain('group-hover/sidebar:bg-elevated')
   })
 
   it('has a delete button', async () => {
-    const component = await mountSuspended(NoteListItem, {
-      props: { note: makeNote({ id: 'del-me' }), active: false },
-    })
+    const note = makeNote({ id: 'del-me' })
+    const component = await mountSuspended(wrapWithTooltipProvider(note, false))
 
     const deleteBtn = component.findComponent({ name: 'UButton' })
     expect(deleteBtn.exists()).toBe(true)
@@ -73,13 +81,14 @@ describe('NoteListItem', () => {
   })
 
   it('emits delete event on button click', async () => {
-    const component = await mountSuspended(NoteListItem, {
-      props: { note: makeNote({ id: 'del-me' }), active: false },
-    })
+    const note = makeNote({ id: 'del-me' })
+    const component = await mountSuspended(wrapWithTooltipProvider(note, false))
 
     // Click the rendered button element directly (UButton renders a <button>)
     const button = component.find('button')
     await button.trigger('click')
-    expect(component.emitted('delete')).toEqual([['del-me']])
+
+    const noteListItem = component.findComponent({ name: 'NoteListItem' })
+    expect(noteListItem.emitted('delete')).toEqual([['del-me']])
   })
 })

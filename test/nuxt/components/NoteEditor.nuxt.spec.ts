@@ -13,7 +13,7 @@ describe('NoteEditor', () => {
 
   it('redirects when note does not exist', async () => {
     const component = await mountSuspended(NoteEditor, {
-      props: { noteId: 'nonexistent' },
+      props: { noteSlug: 'nonexistent' },
     })
 
     expect(component.find('.zen-editor').exists()).toBe(false)
@@ -22,7 +22,8 @@ describe('NoteEditor', () => {
   it('renders the editor when note exists', async () => {
     const notes = [
       {
-        id: 'test-note',
+        id: 'test-note-id',
+        slug: 'test-note',
         title: 'Test',
         content: { type: 'doc', content: [{ type: 'paragraph' }] },
         createdAt: '2025-01-01T00:00:00.000Z',
@@ -32,7 +33,7 @@ describe('NoteEditor', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notes))
 
     const component = await mountSuspended(NoteEditor, {
-      props: { noteId: 'test-note' },
+      props: { noteSlug: 'test-note' },
       global: {
         stubs: {
           UEditorToolbar: true,

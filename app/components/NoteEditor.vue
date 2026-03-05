@@ -3,11 +3,20 @@ import type { EditorToolbarItem, EditorSuggestionMenuItem } from '@nuxt/ui'
 import type { JSONContent } from '@tiptap/vue-3'
 
 const props = defineProps<{
-  noteId: string
+  noteSlug: string
 }>()
 
 const router = useRouter()
-const { note, save, flush } = useNote(props.noteId)
+const { getBySlug } = useNotes()
+
+const noteFromSlug = computed(() => getBySlug(props.noteSlug))
+const noteId = computed(() => noteFromSlug.value?.id)
+
+const { note, save, flush, onSlugUpdate } = useNote(noteId.value ?? '')
+
+onSlugUpdate((newSlug) => {
+  router.replace(`/notes/${newSlug}`)
+})
 
 watch(note, (n) => {
   if (!n) router.replace('/')

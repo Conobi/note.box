@@ -54,7 +54,7 @@ test.describe('Settings', () => {
     await expect(page.locator('.font-source-serif-4')).toBeVisible()
 
     // Reload
-    await goto('/notes/test-note-1', { waitUntil: 'hydration' })
+    await goto('/notes/test-note', { waitUntil: 'hydration' })
     await expect(page.locator('.font-source-serif-4')).toBeVisible()
   })
 

@@ -18,16 +18,16 @@ test.describe('Navigation', () => {
 
     // Click on the second note in sidebar
     await page.locator('aside').hover()
-    await page.locator(`aside a[href="/notes/nav-2"]`).click()
-    await expect(page).toHaveURL(/\/notes\/nav-2/)
+    await page.locator(`aside a[href="/notes/note-beta"]`).click()
+    await expect(page).toHaveURL(/\/notes\/note-beta/)
 
     // Click back on the first
-    await page.locator(`aside a[href="/notes/nav-1"]`).click()
-    await expect(page).toHaveURL(/\/notes\/nav-1/)
+    await page.locator(`aside a[href="/notes/note-alpha"]`).click()
+    await expect(page).toHaveURL(/\/notes\/note-alpha/)
   })
 
-  test('invalid note ID redirects to root', async ({ page, goto }) => {
-    await goto('/notes/nonexistent-id-123', { waitUntil: 'hydration' })
+  test('invalid note slug redirects to root', async ({ page, goto }) => {
+    await goto('/notes/nonexistent-slug-123', { waitUntil: 'hydration' })
 
     // Should redirect away from the invalid note
     await expect(page).toHaveURL(/\/notes\//)
