@@ -8,7 +8,7 @@ describe('index page', () => {
   })
 
   it('creates a new note and redirects when no notes exist', async () => {
-    const result = await $fetch('/', { redirect: 'manual' }).catch(() => null)
+    await $fetch('/', { redirect: 'manual' }).catch(() => null)
 
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
     expect(stored.length).toBeGreaterThanOrEqual(0)
@@ -22,7 +22,7 @@ describe('index page', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notes))
 
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!)
-    const sorted = stored.sort((a: any, b: any) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    const sorted = stored.sort((a: { updatedAt: string }, b: { updatedAt: string }) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
     expect(sorted[0].id).toBe('note-2')
   })
 })

@@ -59,6 +59,7 @@ describe('NoteList', () => {
 
     const noteList = component.findComponent({ name: 'NoteList' })
     // defineExpose makes focusSearch available on the component's exposed properties
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect(typeof (noteList.vm.$ as any).exposed?.focusSearch).toBe('function')
   })
 })
