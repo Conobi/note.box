@@ -27,6 +27,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: pnpm nuxi prepare
+
       - run: pnpm lint
 
       - run: pnpm typecheck
