@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import NoteEditor from '~/components/NoteEditor.vue'
 import { _resetLocalStorage } from '~/composables/useLocalStorage'
 
@@ -7,8 +7,14 @@ const STORAGE_KEY = 'note.box:notes'
 
 describe('NoteEditor', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
     _resetLocalStorage()
     localStorage.clear()
+  })
+
+  afterEach(() => {
+    vi.runOnlyPendingTimers()
+    vi.useRealTimers()
   })
 
   it('redirects when note does not exist', async () => {
