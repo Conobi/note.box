@@ -24,7 +24,7 @@ describe('useNotes', () => {
     const note = create()
     expect(note.id).toBeTruthy()
     expect(note.slug).toBe('untitled-2026-03-05')
-    expect(note.title).toBe('Untitled')
+    expect(note.title).toBe('')
     expect(note.content.type).toBe('doc')
     expect(note.content.content).toEqual([
       { type: 'heading', attrs: { level: 1 } },

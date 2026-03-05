@@ -10,7 +10,7 @@ export function useNotes() {
   )
 
   function generateUniqueSlug(title: string, excludeId?: string): string {
-    const baseSlug = title === 'Untitled'
+    const baseSlug = !title
       ? `untitled-${new Date().toISOString().slice(0, 10)}`
       : slugify(title)
 
@@ -31,11 +31,11 @@ export function useNotes() {
 
   function create(): Note {
     const now = new Date().toISOString()
-    const slug = generateUniqueSlug('Untitled')
+    const slug = generateUniqueSlug('')
     const note: Note = {
       id: generateId(),
       slug,
-      title: 'Untitled',
+      title: '',
       content: {
         type: 'doc',
         content: [{ type: 'heading', attrs: { level: 1 } }, { type: 'paragraph' }],

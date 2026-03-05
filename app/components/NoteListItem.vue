@@ -10,6 +10,9 @@ defineEmits<{
   delete: [id: string]
 }>()
 
+const { t } = useI18n()
+const { locale } = useAppSettings()
+
 const expanded = inject('sidebarExpanded', false)
 
 const titleRef = ref<HTMLElement | null>(null)
@@ -37,9 +40,10 @@ onBeforeUnmount(() => {
   resizeObserver?.disconnect()
 })
 
+const displayTitle = computed(() => props.note.title || t('editor.untitled'))
 const preview = computed(() => extractText(props.note.content, 80, { skipFirstHeading: true }))
 
-const formattedDate = computed(() => formatSmartDate(props.note.updatedAt))
+const formattedDate = computed(() => formatSmartDate(props.note.updatedAt, new Date(), { yesterdayLabel: t('date.yesterday'), locale: locale.value }))
 </script>
 
 <template>
@@ -52,12 +56,12 @@ const formattedDate = computed(() => formatSmartDate(props.note.updatedAt))
   >
     <div class="flex items-start justify-between gap-2">
       <div class="min-w-0 flex-1">
-        <UTooltip :text="note.title" :disabled="!isTruncated" :delay-duration="400">
+        <UTooltip :text="displayTitle" :disabled="!isTruncated" :delay-duration="400">
           <p
             ref="titleRef"
             :class="['font-medium text-sm transition-colors duration-300', expanded ? 'line-clamp-2 text-highlighted' : 'truncate text-dimmed group-hover/sidebar:text-highlighted']"
           >
-            {{ note.title }}
+            {{ displayTitle }}
           </p>
         </UTooltip>
         <p :class="['text-xs transition-colors duration-300 mt-1 line-clamp-2', expanded ? 'text-muted' : 'text-dimmed group-hover/sidebar:text-muted']">
@@ -71,7 +75,7 @@ const formattedDate = computed(() => formatSmartDate(props.note.updatedAt))
           size="xs"
           color="neutral"
           variant="ghost"
-          aria-label="Delete note"
+          :aria-label="t('noteListItem.deleteNote')"
           class="opacity-0 group-hover/item:opacity-100"
           @click.prevent="$emit('delete', note.id)"
         />

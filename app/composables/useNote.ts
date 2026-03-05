@@ -65,5 +65,5 @@ function extractTitle(content: JSONContent): string {
       }
     }
   }
-  return 'Untitled'
+  return ''
 }
