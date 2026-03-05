@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import type { WritingFont, ColorScheme } from '~/types/settings'
+import type { WritingFont, ColorScheme, SupportedLocale } from '~/types/settings'
 import type { Note } from '~/types/note'
 
 const open = defineModel<boolean>('open', { default: false })
 
-const { font, colorScheme } = useAppSettings()
+const { t } = useI18n()
+const { setLocale } = useI18n()
+const { font, colorScheme, locale: appLocale } = useAppSettings()
 const { notes } = useNotes()
 const exporting = ref(false)
 
@@ -25,10 +27,32 @@ const fontOptions: FontOption[] = [
   { label: 'Lexend', value: 'lexend', family: "'Lexend', sans-serif", category: 'Dyslexia-friendly' },
 ]
 
-const themeOptions: { label: string, value: ColorScheme, icon: string }[] = [
-  { label: 'Light', value: 'light', icon: 'i-lucide-sun' },
-  { label: 'Dark', value: 'dark', icon: 'i-lucide-moon' },
+const themeOptions = computed<{ label: string, value: ColorScheme, icon: string }[]>(() => [
+  { label: t('settings.light'), value: 'light', icon: 'i-lucide-sun' },
+  { label: t('settings.dark'), value: 'dark', icon: 'i-lucide-moon' },
+])
+
+interface LocaleOption {
+  code: SupportedLocale
+  name: string
+}
+
+const localeOptions: LocaleOption[] = [
+  { code: 'en', name: 'English' },
+  { code: 'es', name: 'Español' },
+  { code: 'fr', name: 'Français' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'pt', name: 'Português' },
+  { code: 'zh', name: '中文' },
+  { code: 'ja', name: '日本語' },
+  { code: 'ko', name: '한국어' },
+  { code: 'ar', name: 'العربية' },
 ]
+
+function switchLocale(code: SupportedLocale) {
+  appLocale.value = code
+  setLocale(code)
+}
 
 async function handleExport() {
   exporting.value = true
@@ -44,7 +68,7 @@ async function handleExport() {
 <template>
   <UModal
     v-model:open="open"
-    title="Settings"
+    :title="t('settings.title')"
     :ui="{
       content: 'max-w-full sm:max-w-lg',
       footer: 'justify-end',
@@ -57,7 +81,7 @@ async function handleExport() {
           <div class="flex items-center gap-2 mb-4">
             <UIcon name="i-lucide-type" class="size-4 text-muted" />
             <p class="text-sm font-medium text-muted">
-              Font
+              {{ t('settings.font') }}
             </p>
           </div>
           <div class="flex flex-wrap gap-1.5">
@@ -84,7 +108,7 @@ async function handleExport() {
             class="mt-3 text-sm text-muted px-1"
             :style="{ fontFamily: fontOptions.find(o => o.value === font)?.family }"
           >
-            The quick brown fox jumps over the lazy dog
+            {{ t('settings.fontPreview') }}
           </p>
         </div>
 
@@ -95,7 +119,7 @@ async function handleExport() {
           <div class="flex items-center gap-2 mb-4">
             <UIcon name="i-lucide-palette" class="size-4 text-muted" />
             <p class="text-sm font-medium text-muted">
-              Theme
+              {{ t('settings.theme') }}
             </p>
           </div>
           <div class="grid grid-cols-2 gap-3">
@@ -168,17 +192,48 @@ async function handleExport() {
 
         <USeparator />
 
+        <!-- Language section -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <UIcon name="i-lucide-globe" class="size-4 text-muted" />
+            <p class="text-sm font-medium text-muted">
+              {{ t('settings.language') }}
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button
+              v-for="opt in localeOptions"
+              :key="opt.code"
+              :aria-label="opt.name"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors duration-150 border"
+              :class="appLocale === opt.code
+                ? 'bg-primary/10 border-primary/30 text-primary'
+                : 'border-default hover:bg-elevated text-default'"
+              @click="switchLocale(opt.code)"
+            >
+              {{ opt.name }}
+              <UIcon
+                v-if="appLocale === opt.code"
+                name="i-lucide-check"
+                class="shrink-0 size-3.5"
+              />
+            </button>
+          </div>
+        </div>
+
+        <USeparator />
+
         <!-- Data section -->
         <div>
           <div class="flex items-center gap-2 mb-4">
             <UIcon name="i-lucide-hard-drive" class="size-4 text-muted" />
             <p class="text-sm font-medium text-muted">
-              Data
+              {{ t('settings.data') }}
             </p>
           </div>
           <UButton
             icon="i-lucide-download"
-            label="Export all notes"
+            :label="t('settings.exportAll')"
             variant="soft"
             color="neutral"
             size="sm"
@@ -188,7 +243,7 @@ async function handleExport() {
             @click="handleExport"
           />
           <p class="text-xs text-dimmed mt-2 px-1">
-            Download all your notes as a .zip archive of Markdown files.
+            {{ t('settings.exportDescription') }}
           </p>
         </div>
       </div>

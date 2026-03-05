@@ -49,4 +49,30 @@ describe('useAppSettings', () => {
 
     expect(b.font.value).toBe('cascadia-code')
   })
+
+  it('defaults locale to en when not set', () => {
+    const { locale } = useAppSettings()
+    expect(locale.value).toBe('en')
+  })
+
+  it('persists locale change to localStorage', async () => {
+    const { locale } = useAppSettings()
+    locale.value = 'fr'
+    await nextTick()
+
+    const stored = JSON.parse(localStorage.getItem('note.box:settings')!)
+    expect(stored.locale).toBe('fr')
+  })
+
+  it('reads existing locale from storage', () => {
+    localStorage.setItem('note.box:settings', JSON.stringify({ font: 'inter', colorScheme: 'light', locale: 'ja' }))
+    const { locale } = useAppSettings()
+    expect(locale.value).toBe('ja')
+  })
+
+  it('falls back to en for old settings without locale', () => {
+    localStorage.setItem('note.box:settings', JSON.stringify({ font: 'inter', colorScheme: 'light' }))
+    const { locale } = useAppSettings()
+    expect(locale.value).toBe('en')
+  })
 })

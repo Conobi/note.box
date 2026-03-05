@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "note.box",
+    "newNote": "Neue Notiz",
+    "settings": "Einstellungen",
+    "openMenu": "Menü öffnen"
+  },
+  "editor": {
+    "untitled": "Ohne Titel",
+    "placeholder": "Schreib los, '/' für Optionen eingeben...",
+    "headings": "Überschriften",
+    "heading1": "Überschrift 1",
+    "heading2": "Überschrift 2",
+    "heading3": "Überschrift 3",
+    "bold": "Fett",
+    "italic": "Kursiv",
+    "underline": "Unterstrichen",
+    "strikethrough": "Durchgestrichen",
+    "code": "Code",
+    "text": "Text",
+    "paragraph": "Absatz",
+    "lists": "Listen",
+    "bulletList": "Aufzählungsliste",
+    "numberedList": "Nummerierte Liste",
+    "insert": "Einfügen",
+    "blockquote": "Zitat",
+    "codeBlock": "Codeblock",
+    "divider": "Trennlinie"
+  },
+  "noteList": {
+    "searchPlaceholder": "Notizen suchen...",
+    "noMatching": "Keine passenden Notizen",
+    "noNotes": "Noch keine Notizen",
+    "notes": "Notizen"
+  },
+  "noteListItem": {
+    "deleteNote": "Notiz löschen"
+  },
+  "emptyState": {
+    "heading": "Fang an zu schreiben",
+    "description": "Erstelle eine neue Notiz und lass deine Gedanken fließen.",
+    "newNote": "Neue Notiz"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "font": "Schriftart",
+    "theme": "Design",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "data": "Daten",
+    "exportAll": "Alle Notizen exportieren",
+    "exportDescription": "Lade alle deine Notizen als .zip-Archiv mit Markdown-Dateien herunter.",
+    "language": "Sprache",
+    "fontPreview": "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg"
+  },
+  "date": {
+    "yesterday": "Gestern"
+  }
+}

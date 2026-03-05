@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "note.box",
+    "newNote": "新規ノート",
+    "settings": "設定",
+    "openMenu": "メニューを開く"
+  },
+  "editor": {
+    "untitled": "無題",
+    "placeholder": "書き始めましょう。'/' でオプションを表示...",
+    "headings": "見出し",
+    "heading1": "見出し 1",
+    "heading2": "見出し 2",
+    "heading3": "見出し 3",
+    "bold": "太字",
+    "italic": "斜体",
+    "underline": "下線",
+    "strikethrough": "取り消し線",
+    "code": "コード",
+    "text": "テキスト",
+    "paragraph": "段落",
+    "lists": "リスト",
+    "bulletList": "箇条書きリスト",
+    "numberedList": "番号付きリスト",
+    "insert": "挿入",
+    "blockquote": "引用",
+    "codeBlock": "コードブロック",
+    "divider": "区切り線"
+  },
+  "noteList": {
+    "searchPlaceholder": "ノートを検索...",
+    "noMatching": "一致するノートがありません",
+    "noNotes": "ノートがまだありません",
+    "notes": "ノート"
+  },
+  "noteListItem": {
+    "deleteNote": "ノートを削除"
+  },
+  "emptyState": {
+    "heading": "書き始めましょう",
+    "description": "新しいノートを作成して、思いのままに書きましょう。",
+    "newNote": "新規ノート"
+  },
+  "settings": {
+    "title": "設定",
+    "font": "フォント",
+    "theme": "テーマ",
+    "light": "ライト",
+    "dark": "ダーク",
+    "data": "データ",
+    "exportAll": "すべてのノートをエクスポート",
+    "exportDescription": "すべてのノートを Markdown ファイルの .zip アーカイブとしてダウンロードします。",
+    "language": "言語",
+    "fontPreview": "いろはにほへとちりぬるをわかよたれそつねならむ"
+  },
+  "date": {
+    "yesterday": "昨日"
+  }
+}

@@ -60,4 +60,15 @@ describe('formatSmartDate', () => {
     // Should show month + day format, containing "28"
     expect(result).toMatch(/28/)
   })
+
+  it('uses custom yesterday label', () => {
+    const yesterday = new Date(2026, 2, 4, 18, 0, 0).toISOString()
+    expect(formatSmartDate(yesterday, now, { yesterdayLabel: 'Hier' })).toBe('Hier')
+  })
+
+  it('uses locale for date formatting', () => {
+    const earlier = new Date(2026, 0, 15, 10, 0, 0).toISOString()
+    const result = formatSmartDate(earlier, now, { locale: 'fr' })
+    expect(result).toMatch(/15/)
+  })
 })

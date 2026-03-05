@@ -1,0 +1,59 @@
+{
+  "app": {
+    "title": "note.box",
+    "newNote": "Nova nota",
+    "settings": "Configurações",
+    "openMenu": "Abrir menu"
+  },
+  "editor": {
+    "untitled": "Sem título",
+    "placeholder": "Comece a escrever, digite '/' para opções...",
+    "headings": "Títulos",
+    "heading1": "Título 1",
+    "heading2": "Título 2",
+    "heading3": "Título 3",
+    "bold": "Negrito",
+    "italic": "Itálico",
+    "underline": "Sublinhado",
+    "strikethrough": "Riscado",
+    "code": "Código",
+    "text": "Texto",
+    "paragraph": "Parágrafo",
+    "lists": "Listas",
+    "bulletList": "Lista com marcadores",
+    "numberedList": "Lista numerada",
+    "insert": "Inserir",
+    "blockquote": "Citação",
+    "codeBlock": "Bloco de código",
+    "divider": "Divisor"
+  },
+  "noteList": {
+    "searchPlaceholder": "Pesquisar notas...",
+    "noMatching": "Nenhuma nota encontrada",
+    "noNotes": "Nenhuma nota ainda",
+    "notes": "Notas"
+  },
+  "noteListItem": {
+    "deleteNote": "Excluir nota"
+  },
+  "emptyState": {
+    "heading": "Comece a escrever",
+    "description": "Crie uma nova nota e deixe seus pensamentos fluírem.",
+    "newNote": "Nova nota"
+  },
+  "settings": {
+    "title": "Configurações",
+    "font": "Fonte",
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "data": "Dados",
+    "exportAll": "Exportar todas as notas",
+    "exportDescription": "Baixe todas as suas notas como um arquivo .zip de arquivos Markdown.",
+    "language": "Idioma",
+    "fontPreview": "À noite, vovô Kowalsky vê o ímã cair no pé do pinguim queixoso"
+  },
+  "date": {
+    "yesterday": "Ontem"
+  }
+}

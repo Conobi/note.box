@@ -22,5 +22,6 @@ describe('SettingsModal', () => {
     expect(body).toContain('Settings')
     expect(body).toContain('Font')
     expect(body).toContain('Theme')
+    expect(body).toContain('Language')
   })
 })

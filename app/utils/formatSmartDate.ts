@@ -1,4 +1,10 @@
-export function formatSmartDate(isoString: string, now: Date = new Date()): string {
+interface FormatSmartDateOptions {
+  yesterdayLabel?: string
+  locale?: string
+}
+
+export function formatSmartDate(isoString: string, now: Date = new Date(), options: FormatSmartDateOptions = {}): string {
+  const { yesterdayLabel = 'Yesterday', locale } = options
   const date = new Date(isoString)
 
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
@@ -8,20 +14,20 @@ export function formatSmartDate(isoString: string, now: Date = new Date()): stri
   startOfWeek.setDate(startOfWeek.getDate() - startOfToday.getDay())
 
   if (date >= startOfToday) {
-    return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+    return date.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' })
   }
 
   if (date >= startOfYesterday) {
-    return 'Yesterday'
+    return yesterdayLabel
   }
 
   if (date >= startOfWeek) {
-    return date.toLocaleDateString(undefined, { weekday: 'long' })
+    return date.toLocaleDateString(locale, { weekday: 'long' })
   }
 
   if (date.getFullYear() === now.getFullYear()) {
-    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+    return date.toLocaleDateString(locale, { month: 'short', day: 'numeric' })
   }
 
-  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+  return date.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })
 }

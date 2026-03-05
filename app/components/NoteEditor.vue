@@ -6,6 +6,7 @@ const props = defineProps<{
   noteSlug: string
 }>()
 
+const { t } = useI18n()
 const router = useRouter()
 const { getBySlug } = useNotes()
 
@@ -34,48 +35,48 @@ if (import.meta.client) {
   })
 }
 
-const toolbarItems: EditorToolbarItem[][] = [
+const toolbarItems = computed<EditorToolbarItem[][]>(() => [
   [
     {
       icon: 'i-lucide-heading',
-      tooltip: { text: 'Headings' },
+      tooltip: { text: t('editor.headings') },
       content: { align: 'start' as const },
       items: [
-        { kind: 'heading', level: 1, icon: 'i-lucide-heading-1', label: 'Heading 1' },
-        { kind: 'heading', level: 2, icon: 'i-lucide-heading-2', label: 'Heading 2' },
-        { kind: 'heading', level: 3, icon: 'i-lucide-heading-3', label: 'Heading 3' },
+        { kind: 'heading', level: 1, icon: 'i-lucide-heading-1', label: t('editor.heading1') },
+        { kind: 'heading', level: 2, icon: 'i-lucide-heading-2', label: t('editor.heading2') },
+        { kind: 'heading', level: 3, icon: 'i-lucide-heading-3', label: t('editor.heading3') },
       ],
     },
   ],
   [
-    { kind: 'mark', mark: 'bold', icon: 'i-lucide-bold', tooltip: { text: 'Bold' } },
-    { kind: 'mark', mark: 'italic', icon: 'i-lucide-italic', tooltip: { text: 'Italic' } },
-    { kind: 'mark', mark: 'underline', icon: 'i-lucide-underline', tooltip: { text: 'Underline' } },
-    { kind: 'mark', mark: 'strike', icon: 'i-lucide-strikethrough', tooltip: { text: 'Strikethrough' } },
-    { kind: 'mark', mark: 'code', icon: 'i-lucide-code', tooltip: { text: 'Code' } },
+    { kind: 'mark', mark: 'bold', icon: 'i-lucide-bold', tooltip: { text: t('editor.bold') } },
+    { kind: 'mark', mark: 'italic', icon: 'i-lucide-italic', tooltip: { text: t('editor.italic') } },
+    { kind: 'mark', mark: 'underline', icon: 'i-lucide-underline', tooltip: { text: t('editor.underline') } },
+    { kind: 'mark', mark: 'strike', icon: 'i-lucide-strikethrough', tooltip: { text: t('editor.strikethrough') } },
+    { kind: 'mark', mark: 'code', icon: 'i-lucide-code', tooltip: { text: t('editor.code') } },
   ],
-]
+])
 
-const suggestionItems: EditorSuggestionMenuItem[][] = [
+const suggestionItems = computed<EditorSuggestionMenuItem[][]>(() => [
   [
-    { type: 'label', label: 'Text' },
-    { kind: 'paragraph', label: 'Paragraph', icon: 'i-lucide-type' },
-    { kind: 'heading', level: 1, label: 'Heading 1', icon: 'i-lucide-heading-1' },
-    { kind: 'heading', level: 2, label: 'Heading 2', icon: 'i-lucide-heading-2' },
-    { kind: 'heading', level: 3, label: 'Heading 3', icon: 'i-lucide-heading-3' },
+    { type: 'label', label: t('editor.text') },
+    { kind: 'paragraph', label: t('editor.paragraph'), icon: 'i-lucide-type' },
+    { kind: 'heading', level: 1, label: t('editor.heading1'), icon: 'i-lucide-heading-1' },
+    { kind: 'heading', level: 2, label: t('editor.heading2'), icon: 'i-lucide-heading-2' },
+    { kind: 'heading', level: 3, label: t('editor.heading3'), icon: 'i-lucide-heading-3' },
   ],
   [
-    { type: 'label', label: 'Lists' },
-    { kind: 'bulletList', label: 'Bullet List', icon: 'i-lucide-list' },
-    { kind: 'orderedList', label: 'Numbered List', icon: 'i-lucide-list-ordered' },
+    { type: 'label', label: t('editor.lists') },
+    { kind: 'bulletList', label: t('editor.bulletList'), icon: 'i-lucide-list' },
+    { kind: 'orderedList', label: t('editor.numberedList'), icon: 'i-lucide-list-ordered' },
   ],
   [
-    { type: 'label', label: 'Insert' },
-    { kind: 'blockquote', label: 'Blockquote', icon: 'i-lucide-text-quote' },
-    { kind: 'codeBlock', label: 'Code Block', icon: 'i-lucide-square-code' },
-    { kind: 'horizontalRule', label: 'Divider', icon: 'i-lucide-separator-horizontal' },
+    { type: 'label', label: t('editor.insert') },
+    { kind: 'blockquote', label: t('editor.blockquote'), icon: 'i-lucide-text-quote' },
+    { kind: 'codeBlock', label: t('editor.codeBlock'), icon: 'i-lucide-square-code' },
+    { kind: 'horizontalRule', label: t('editor.divider'), icon: 'i-lucide-separator-horizontal' },
   ],
-]
+])
 </script>
 
 <template>
@@ -86,8 +87,8 @@ const suggestionItems: EditorSuggestionMenuItem[][] = [
       content-type="json"
       :placeholder="{
         placeholder: ({ node, hasAnchor }: { node: any, hasAnchor: boolean }) => {
-          if (node.type.name === 'heading' && node.attrs.level === 1) return 'Untitled'
-          if (hasAnchor) return 'Write, type \'/\' for commands...'
+          if (node.type.name === 'heading' && node.attrs.level === 1) return t('editor.untitled')
+          if (hasAnchor) return t('editor.placeholder')
           return ''
         },
         showOnlyCurrent: false,
