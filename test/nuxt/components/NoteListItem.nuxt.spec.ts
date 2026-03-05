@@ -91,4 +91,13 @@ describe('NoteListItem', () => {
     const noteListItem = component.findComponent({ name: 'NoteListItem' })
     expect(noteListItem.emitted('delete')).toEqual([['del-me']])
   })
+
+  it('wraps delete button in a tooltip', async () => {
+    const note = makeNote()
+    const component = await mountSuspended(wrapWithTooltipProvider(note, false))
+
+    const tooltips = component.findAllComponents({ name: 'UTooltip' })
+    const deleteTooltip = tooltips.find(t => t.props('text') === 'Delete note')
+    expect(deleteTooltip).toBeTruthy()
+  })
 })

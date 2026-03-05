@@ -12,7 +12,7 @@ useHead({
 </script>
 
 <template>
-  <UApp>
+  <UApp :tooltip="{ delayDuration: 150 }">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

@@ -70,15 +70,17 @@ const formattedDate = computed(() => formatSmartDate(props.note.updatedAt, new D
       </div>
       <div class="flex items-center gap-1 shrink-0">
         <span class="text-xs text-dimmed">{{ formattedDate }}</span>
-        <UButton
-          icon="i-lucide-trash-2"
-          size="xs"
-          color="neutral"
-          variant="ghost"
-          :aria-label="t('noteListItem.deleteNote')"
-          class="opacity-0 group-hover/item:opacity-100"
-          @click.prevent="$emit('delete', note.id)"
-        />
+        <UTooltip :text="t('noteListItem.deleteNote')">
+          <UButton
+            icon="i-lucide-trash-2"
+            size="xs"
+            color="neutral"
+            variant="ghost"
+            :aria-label="t('noteListItem.deleteNote')"
+            class="opacity-0 group-hover/item:opacity-100"
+            @click.prevent="$emit('delete', note.id)"
+          />
+        </UTooltip>
       </div>
     </div>
   </NuxtLink>
