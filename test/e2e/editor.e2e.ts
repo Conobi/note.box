@@ -37,21 +37,23 @@ test.describe('Editor', () => {
     await waitForSave(page)
 
     // Navigate to Note B
-    await page.locator('aside a[href="/notes/ed-b"]').click()
+    await page.locator('aside a[href="/notes/note-b"]').click()
     await expect(editor.locator('h1')).toContainText('Note B')
 
     // Navigate back to Note A
-    await page.locator('aside a[href="/notes/ed-a"]').click()
+    await page.locator('aside a[href="/notes/note-a"]').click()
     await expect(editor.locator('p').first()).toContainText('Content A extra')
   })
 
   test('placeholder appears only on the focused empty paragraph', async ({ page, goto }) => {
     // Seed a note with multiple empty paragraphs to reproduce the duplicated placeholder bug
     const id = 'ed-ph'
-    await page.evaluate(({ id }) => {
+    const slug = 'placeholder-test'
+    await page.evaluate(({ id, slug }) => {
       const now = new Date().toISOString()
       const note = {
         id,
+        slug,
         title: 'Placeholder Test',
         content: {
           type: 'doc',
@@ -66,9 +68,9 @@ test.describe('Editor', () => {
         updatedAt: now,
       }
       localStorage.setItem('note.box:notes', JSON.stringify([note]))
-    }, { id })
+    }, { id, slug })
 
-    await goto(`/notes/${id}`, { waitUntil: 'hydration' })
+    await goto(`/notes/${slug}`, { waitUntil: 'hydration' })
 
     const tiptap = page.locator('.tiptap')
 
@@ -100,7 +102,7 @@ test.describe('Editor', () => {
     await waitForSave(page)
 
     // Full reload
-    await goto('/notes/ed-reload', { waitUntil: 'hydration' })
+    await goto('/notes/reload-test', { waitUntil: 'hydration' })
     await expect(page.locator('.tiptap p').first()).toContainText('Before reload after edit')
   })
 })

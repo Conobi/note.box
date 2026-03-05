@@ -3,6 +3,17 @@ import type { Locator, Page } from '@playwright/test'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Goto = (url: string, options?: any) => Promise<any>
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80)
+    || 'untitled'
+}
+
 /** Navigate to the app, then clear localStorage and reload for a clean state. */
 export async function resetApp(page: Page, goto: Goto) {
   await goto('/', { waitUntil: 'hydration' })
@@ -19,12 +30,14 @@ export async function seedNote(
   const id = overrides.id ?? 'test-note-1'
   const title = overrides.title ?? 'Test Note'
   const body = overrides.body ?? 'Hello world'
+  const slug = slugify(title)
   const now = new Date().toISOString()
 
-  await page.evaluate(({ id, title, body, now }) => {
+  await page.evaluate(({ id, slug, title, body, now }) => {
     localStorage.clear()
     const note = {
       id,
+      slug,
       title,
       content: {
         type: 'doc',
@@ -37,9 +50,9 @@ export async function seedNote(
       updatedAt: now,
     }
     localStorage.setItem('note.box:notes', JSON.stringify([note]))
-  }, { id, title, body, now })
+  }, { id, slug, title, body, now })
 
-  await goto(`/notes/${id}`, { waitUntil: 'hydration' })
+  await goto(`/notes/${slug}`, { waitUntil: 'hydration' })
 }
 
 /** Seed multiple notes into localStorage. */
@@ -48,12 +61,15 @@ export async function seedNotes(
   goto: Goto,
   notes: { id: string, title: string, body?: string }[],
 ) {
+  const notesWithSlugs = notes.map(n => ({ ...n, slug: slugify(n.title) }))
+
   await page.evaluate((notes) => {
     localStorage.clear()
     const stored = notes.map((n, i) => {
       const date = new Date(Date.now() - i * 60_000).toISOString()
       return {
         id: n.id,
+        slug: n.slug,
         title: n.title,
         content: {
           type: 'doc',
@@ -67,9 +83,9 @@ export async function seedNotes(
       }
     })
     localStorage.setItem('note.box:notes', JSON.stringify(stored))
-  }, notes)
+  }, notesWithSlugs)
 
-  await goto(`/notes/${notes[0]!.id}`, { waitUntil: 'hydration' })
+  await goto(`/notes/${notesWithSlugs[0]!.slug}`, { waitUntil: 'hydration' })
 }
 
 /** Wait for debounced auto-save to complete (300ms debounce + buffer). */

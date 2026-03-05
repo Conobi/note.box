@@ -17,7 +17,7 @@ watch(() => route.fullPath, () => {
 
 function createNote() {
   const note = create()
-  router.push(`/notes/${note.id}`)
+  router.push(`/notes/${note.slug}`)
 }
 </script>
 

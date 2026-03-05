@@ -6,6 +6,7 @@ import { exportNotesAsZip } from '~/utils/exportNotes'
 function makeNote(overrides: Partial<Note> = {}): Note {
   return {
     id: 'abc123',
+    slug: 'test-note',
     title: 'Test Note',
     content: {
       type: 'doc',

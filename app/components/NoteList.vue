@@ -12,16 +12,17 @@ const searchQuery = ref('')
 
 const filteredNotes = computed(() => search(searchQuery.value))
 
-const activeNoteId = computed(() => route.params.id as string | undefined)
+const activeSlug = computed(() => route.params.slug as string | undefined)
 
 provide('sidebarExpanded', props.alwaysExpanded)
 
 function deleteNote(id: string) {
+  const noteToDelete = notes.value.find(n => n.id === id)
   remove(id)
-  if (activeNoteId.value === id) {
+  if (noteToDelete && activeSlug.value === noteToDelete.slug) {
     const remaining = notes.value
     if (remaining.length > 0) {
-      router.push(`/notes/${remaining[0]!.id}`)
+      router.push(`/notes/${remaining[0]!.slug}`)
     }
     else {
       router.push('/')
@@ -52,7 +53,7 @@ function deleteNote(id: string) {
         <div v-for="note in filteredNotes" :key="note.id" class="group/item">
           <NoteListItem
             :note="note"
-            :active="note.id === activeNoteId"
+            :active="note.slug === activeSlug"
             @delete="deleteNote"
           />
         </div>

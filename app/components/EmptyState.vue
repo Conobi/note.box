@@ -4,7 +4,7 @@ const { create } = useNotes()
 
 function createNote() {
   const note = create()
-  router.push(`/notes/${note.id}`)
+  router.push(`/notes/${note.slug}`)
 }
 </script>
 

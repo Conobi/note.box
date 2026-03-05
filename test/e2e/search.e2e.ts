@@ -17,9 +17,9 @@ test.describe('Search', () => {
     await searchInput.fill('grocery')
 
     // Only the matching note should be visible
-    await expect(page.locator('aside a[href="/notes/s-1"]')).toBeVisible()
-    await expect(page.locator('aside a[href="/notes/s-2"]')).not.toBeVisible()
-    await expect(page.locator('aside a[href="/notes/s-3"]')).not.toBeVisible()
+    await expect(page.locator('aside a[href="/notes/grocery-list"]')).toBeVisible()
+    await expect(page.locator('aside a[href="/notes/meeting-notes"]')).not.toBeVisible()
+    await expect(page.locator('aside a[href="/notes/travel-plans"]')).not.toBeVisible()
   })
 
   test('clearing search shows all notes', async ({ page }) => {
@@ -27,12 +27,12 @@ test.describe('Search', () => {
     const searchInput = page.locator('aside input[placeholder="Search notes..."]')
 
     await searchInput.fill('grocery')
-    await expect(page.locator('aside a[href="/notes/s-2"]')).not.toBeVisible()
+    await expect(page.locator('aside a[href="/notes/meeting-notes"]')).not.toBeVisible()
 
     await searchInput.clear()
-    await expect(page.locator('aside a[href="/notes/s-1"]')).toBeVisible()
-    await expect(page.locator('aside a[href="/notes/s-2"]')).toBeVisible()
-    await expect(page.locator('aside a[href="/notes/s-3"]')).toBeVisible()
+    await expect(page.locator('aside a[href="/notes/grocery-list"]')).toBeVisible()
+    await expect(page.locator('aside a[href="/notes/meeting-notes"]')).toBeVisible()
+    await expect(page.locator('aside a[href="/notes/travel-plans"]')).toBeVisible()
   })
 
   test('no matching notes shows empty message', async ({ page }) => {

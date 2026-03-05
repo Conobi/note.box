@@ -6,13 +6,22 @@ export function useNote(id: string) {
   const note = computed(() => get(id))
 
   let saveTimeout: ReturnType<typeof setTimeout> | null = null
+  let pendingContent: JSONContent | null = null
+  let pendingTitle: string | undefined
 
   function save(content: JSONContent, title?: string): void {
+    pendingContent = content
+    pendingTitle = title
     if (saveTimeout) clearTimeout(saveTimeout)
     saveTimeout = setTimeout(() => {
-      const noteTitle = title ?? extractTitle(content)
-      update(id, { content, title: noteTitle })
+      const noteTitle = pendingTitle ?? extractTitle(content)
+      const newSlug = update(id, { content, title: noteTitle })
       saveTimeout = null
+      pendingContent = null
+      pendingTitle = undefined
+      if (newSlug) {
+        onSlugChange?.(newSlug)
+      }
     }, 300)
   }
 
@@ -21,16 +30,29 @@ export function useNote(id: string) {
       clearTimeout(saveTimeout)
       saveTimeout = null
       const n = note.value
-      if (n) {
-        update(id, { content: n.content, title: n.title })
+      if (n && pendingContent) {
+        const noteTitle = pendingTitle ?? extractTitle(pendingContent)
+        const newSlug = update(id, { content: pendingContent, title: noteTitle })
+        pendingContent = null
+        pendingTitle = undefined
+        if (newSlug) {
+          onSlugChange?.(newSlug)
+        }
       }
     }
+  }
+
+  let onSlugChange: ((slug: string) => void) | null = null
+
+  function onSlugUpdate(callback: (slug: string) => void) {
+    onSlugChange = callback
   }
 
   return {
     note,
     save,
     flush,
+    onSlugUpdate,
   }
 }
 
