@@ -10,8 +10,19 @@ const route = useRoute()
 const { notes, remove, search } = useNotes()
 
 const searchQuery = ref('')
+const searchWrapperRef = ref<HTMLElement | null>(null)
+const forceExpanded = ref(false)
 
 const filteredNotes = computed(() => search(searchQuery.value))
+
+defineExpose({
+  focusSearch() {
+    forceExpanded.value = true
+    nextTick(() => {
+      searchWrapperRef.value?.querySelector('input')?.focus()
+    })
+  },
+})
 
 const activeSlug = computed(() => route.params.slug as string | undefined)
 
@@ -34,15 +45,23 @@ function deleteNote(id: string) {
 
 <template>
   <div class="flex flex-col h-full">
-    <div :class="['grid transition-[grid-template-rows] duration-300', alwaysExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr] group-hover/sidebar:grid-rows-[1fr]']">
+    <div :class="['grid transition-[grid-template-rows] duration-300', (alwaysExpanded || forceExpanded) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr] group-hover/sidebar:grid-rows-[1fr]']">
       <div class="overflow-hidden">
-        <div class="px-3 pb-2">
+        <div ref="searchWrapperRef" class="px-3 pb-2">
           <UInput
             v-model="searchQuery"
             icon="i-lucide-search"
             :placeholder="t('noteList.searchPlaceholder')"
             size="sm"
-          />
+            @blur="forceExpanded = false"
+          >
+            <template v-if="!searchQuery" #trailing>
+              <div class="flex items-center gap-0.5">
+                <UKbd value="meta" size="sm" />
+                <UKbd value="K" size="sm" />
+              </div>
+            </template>
+          </UInput>
         </div>
       </div>
     </div>

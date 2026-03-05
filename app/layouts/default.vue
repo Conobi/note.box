@@ -10,6 +10,30 @@ const { font, colorScheme, locale: appLocale } = useAppSettings()
 const { create } = useNotes()
 const settingsOpen = ref(false)
 const sidebarOpen = ref(false)
+const mobileNoteListRef = ref<{ focusSearch: () => void } | null>(null)
+const desktopNoteListRef = ref<{ focusSearch: () => void } | null>(null)
+
+const isMobile = () => window.innerWidth < 1024
+
+defineShortcuts({
+  meta_n: {
+    handler: () => createNote(),
+  },
+  'meta_,': {
+    handler: () => { settingsOpen.value = true },
+  },
+  meta_k: {
+    handler: () => {
+      if (isMobile()) {
+        sidebarOpen.value = true
+        nextTick(() => mobileNoteListRef.value?.focusSearch())
+      }
+      else {
+        desktopNoteListRef.value?.focusSearch()
+      }
+    },
+  },
+})
 
 const RTL_LOCALES = new Set(['ar'])
 const isRtl = computed(() => RTL_LOCALES.has(appLocale.value))
@@ -47,41 +71,47 @@ function createNote() {
   <div :class="['min-h-screen bg-default flex flex-col lg:flex-row', `font-${font}`]">
     <!-- Mobile top bar -->
     <header class="lg:hidden flex items-center justify-between px-3 py-2 border-b border-default">
-      <UButton
-        icon="i-lucide-menu"
-        size="sm"
-        color="neutral"
-        variant="ghost"
-        :aria-label="t('app.openMenu')"
-        @click="sidebarOpen = true"
-      />
+      <UTooltip :text="t('app.openMenu')">
+        <UButton
+          icon="i-lucide-menu"
+          size="sm"
+          color="neutral"
+          variant="ghost"
+          :aria-label="t('app.openMenu')"
+          @click="sidebarOpen = true"
+        />
+      </UTooltip>
       <h1 class="font-bold text-base text-highlighted">
         note.box
       </h1>
       <div class="flex items-center gap-0.5">
-        <UButton
-          icon="i-lucide-plus"
-          size="sm"
-          color="neutral"
-          variant="ghost"
-          :aria-label="t('app.newNote')"
-          @click="createNote"
-        />
-        <UButton
-          icon="i-lucide-settings"
-          size="sm"
-          color="neutral"
-          variant="ghost"
-          :aria-label="t('app.settings')"
-          @click="settingsOpen = true"
-        />
+        <UTooltip :text="t('app.newNote')" :kbds="['meta', 'N']">
+          <UButton
+            icon="i-lucide-plus"
+            size="sm"
+            color="neutral"
+            variant="ghost"
+            :aria-label="t('app.newNote')"
+            @click="createNote"
+          />
+        </UTooltip>
+        <UTooltip :text="t('app.settings')" :kbds="['meta', ',']">
+          <UButton
+            icon="i-lucide-settings"
+            size="sm"
+            color="neutral"
+            variant="ghost"
+            :aria-label="t('app.settings')"
+            @click="settingsOpen = true"
+          />
+        </UTooltip>
       </div>
     </header>
 
     <!-- Mobile slideover -->
     <USlideover v-model:open="sidebarOpen" :side="isRtl ? 'right' : 'left'" :title="t('noteList.notes')">
       <template #body>
-        <NoteList always-expanded />
+        <NoteList ref="mobileNoteListRef" always-expanded />
       </template>
     </USlideover>
 
@@ -92,25 +122,29 @@ function createNote() {
           note.box
         </h1>
         <div class="flex items-center gap-0.5 opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300">
-          <UButton
-            icon="i-lucide-plus"
-            size="sm"
-            color="neutral"
-            variant="ghost"
-            :aria-label="t('app.newNote')"
-            @click="createNote"
-          />
-          <UButton
-            icon="i-lucide-settings"
-            size="sm"
-            color="neutral"
-            variant="ghost"
-            :aria-label="t('app.settings')"
-            @click="settingsOpen = true"
-          />
+          <UTooltip :text="t('app.newNote')" :kbds="['meta', 'N']">
+            <UButton
+              icon="i-lucide-plus"
+              size="sm"
+              color="neutral"
+              variant="ghost"
+              :aria-label="t('app.newNote')"
+              @click="createNote"
+            />
+          </UTooltip>
+          <UTooltip :text="t('app.settings')" :kbds="['meta', ',']">
+            <UButton
+              icon="i-lucide-settings"
+              size="sm"
+              color="neutral"
+              variant="ghost"
+              :aria-label="t('app.settings')"
+              @click="settingsOpen = true"
+            />
+          </UTooltip>
         </div>
       </div>
-      <NoteList />
+      <NoteList ref="desktopNoteListRef" />
     </aside>
 
     <SettingsModal v-model:open="settingsOpen" />

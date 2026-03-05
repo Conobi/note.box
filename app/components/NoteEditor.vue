@@ -49,11 +49,11 @@ const toolbarItems = computed<EditorToolbarItem[][]>(() => [
     },
   ],
   [
-    { kind: 'mark', mark: 'bold', icon: 'i-lucide-bold', tooltip: { text: t('editor.bold') } },
-    { kind: 'mark', mark: 'italic', icon: 'i-lucide-italic', tooltip: { text: t('editor.italic') } },
-    { kind: 'mark', mark: 'underline', icon: 'i-lucide-underline', tooltip: { text: t('editor.underline') } },
-    { kind: 'mark', mark: 'strike', icon: 'i-lucide-strikethrough', tooltip: { text: t('editor.strikethrough') } },
-    { kind: 'mark', mark: 'code', icon: 'i-lucide-code', tooltip: { text: t('editor.code') } },
+    { kind: 'mark', mark: 'bold', icon: 'i-lucide-bold', tooltip: { text: t('editor.bold'), kbds: ['meta', 'B'] } },
+    { kind: 'mark', mark: 'italic', icon: 'i-lucide-italic', tooltip: { text: t('editor.italic'), kbds: ['meta', 'I'] } },
+    { kind: 'mark', mark: 'underline', icon: 'i-lucide-underline', tooltip: { text: t('editor.underline'), kbds: ['meta', 'U'] } },
+    { kind: 'mark', mark: 'strike', icon: 'i-lucide-strikethrough', tooltip: { text: t('editor.strikethrough'), kbds: ['meta', 'shift', 'S'] } },
+    { kind: 'mark', mark: 'code', icon: 'i-lucide-code', tooltip: { text: t('editor.code'), kbds: ['meta', 'E'] } },
   ],
 ])
 

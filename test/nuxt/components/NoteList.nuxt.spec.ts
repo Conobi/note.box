@@ -46,4 +46,19 @@ describe('NoteList', () => {
     expect(component.text()).toContain('First Note')
     expect(component.text()).not.toContain('No notes yet')
   })
+
+  it('renders keyboard shortcut hints in search input', async () => {
+    const component = await mountSuspended(NoteListWithProvider)
+
+    const kbds = component.findAllComponents({ name: 'UKbd' })
+    expect(kbds.length).toBe(2) // meta + K
+  })
+
+  it('exposes focusSearch method', async () => {
+    const component = await mountSuspended(NoteListWithProvider)
+
+    const noteList = component.findComponent({ name: 'NoteList' })
+    // defineExpose makes focusSearch available on the component's exposed properties
+    expect(typeof (noteList.vm.$ as any).exposed?.focusSearch).toBe('function')
+  })
 })

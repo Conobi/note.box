@@ -16,6 +16,8 @@ function createNote() {
       <h2 class="text-lg font-semibold text-highlighted">{{ t('emptyState.heading') }}</h2>
       <p class="text-sm text-muted mt-1">{{ t('emptyState.description') }}</p>
     </div>
-    <UButton :label="t('emptyState.newNote')" icon="i-lucide-plus" size="md" @click="createNote" />
+    <UTooltip :text="t('app.newNote')" :kbds="['meta', 'N']">
+      <UButton :label="t('emptyState.newNote')" icon="i-lucide-plus" size="md" @click="createNote" />
+    </UTooltip>
   </div>
 </template>
