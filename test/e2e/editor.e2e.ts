@@ -89,7 +89,7 @@ test.describe('Editor', () => {
     })
     const withPlaceholder = placeholderValues.filter((v: string) => v !== '')
     expect(withPlaceholder).toHaveLength(1)
-    expect(withPlaceholder[0]).toBe('Write, type \'/\' for commands...')
+    expect(withPlaceholder[0]).toBe('Start writing, type \'/\' for options...')
   })
 
   test('content survives full page reload', async ({ page, goto }) => {
