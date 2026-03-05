@@ -39,10 +39,7 @@ onBeforeUnmount(() => {
 
 const preview = computed(() => extractText(props.note.content, 80, { skipFirstHeading: true }))
 
-const formattedDate = computed(() => {
-  const date = new Date(props.note.updatedAt)
-  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-})
+const formattedDate = computed(() => formatSmartDate(props.note.updatedAt))
 </script>
 
 <template>
