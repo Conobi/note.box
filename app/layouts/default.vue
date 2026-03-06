@@ -81,9 +81,9 @@ function createNote() {
           @click="sidebarOpen = true"
         />
       </UTooltip>
-      <h1 class="font-bold text-base text-highlighted">
-        note.box
-      </h1>
+      <NuxtLink to="/" class="flex items-center text-highlighted" aria-label="note.box">
+        <AppLogo class="h-7" />
+      </NuxtLink>
       <div class="flex items-center gap-0.5">
         <UTooltip :text="t('app.newNote')" :kbds="['meta', 'N']">
           <UButton
@@ -118,9 +118,9 @@ function createNote() {
     <!-- Desktop persistent sidebar -->
     <aside class="hidden lg:flex group/sidebar w-55 shrink-0 flex-col bg-default border-r border-transparent hover:border-default transition-[border-color] duration-300">
       <div class="p-3 flex items-center justify-between">
-        <h1 class="font-bold text-base text-dimmed group-hover/sidebar:text-highlighted transition-colors duration-300">
-          note.box
-        </h1>
+        <NuxtLink to="/" class="flex items-center text-dimmed group-hover/sidebar:text-highlighted transition-colors duration-300" aria-label="note.box">
+          <AppLogo class="h-7" />
+        </NuxtLink>
         <div class="flex items-center gap-0.5 opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300">
           <UTooltip :text="t('app.newNote')" :kbds="['meta', 'N']">
             <UButton
