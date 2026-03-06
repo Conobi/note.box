@@ -18,8 +18,8 @@ const message = computed(() => {
   <UApp>
     <div class="min-h-screen bg-default flex items-center justify-center">
       <div class="flex flex-col items-center gap-6 text-center px-8">
-        <p class="text-[8rem] leading-none font-extralight text-dimmed tabular-nums tracking-tighter select-none">
-          {{ error.statusCode }}
+        <p class="text-[8rem] leading-none text-dimmed tabular-nums select-none" style="font-family: 'Vollkorn', serif; font-style: italic; font-weight: 400">
+          {{ error.statusCode }}.
         </p>
         <p class="text-lg text-muted max-w-xs">
           {{ message }}
