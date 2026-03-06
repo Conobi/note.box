@@ -45,5 +45,25 @@ export default defineNuxtConfig({
     ],
   },
 
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@tiptap/vue-3',
+        '@tiptap/pm/state',
+        '@tiptap/pm/view',
+        '@tiptap/pm/keymap',
+        '@tiptap/pm/model',
+        '@tiptap/pm/transform',
+        '@tiptap/pm/commands',
+        '@tiptap/pm/schema-list',
+        '@tiptap/pm/dropcursor',
+        '@tiptap/pm/gapcursor',
+        '@tiptap/pm/history',
+        '@tiptap/pm/inputrules',
+        '@tiptap/pm/tables',
+      ],
+    },
+  },
+
   compatibilityDate: '2025-03-01',
 })
