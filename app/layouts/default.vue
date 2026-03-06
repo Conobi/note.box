@@ -158,7 +158,7 @@ function createNote() {
     <SettingsModal v-model:open="settingsOpen" />
 
     <!-- Main content -->
-    <main class="flex-1 min-w-0 max-w-3xl mx-auto px-4 pb-10">
+    <main class="flex-1 min-w-0 w-full max-w-3xl mx-auto px-4 pb-10">
       <slot />
     </main>
   </div>
