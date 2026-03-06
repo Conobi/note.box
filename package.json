@@ -43,7 +43,8 @@
     "reka-ui": "2.8.2",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.8.2",
-    "vitest": "^3.0.9"
+    "vitest": "^3.0.9",
+    "vue-tsc": "^3.2.5"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -74,6 +74,34 @@ const TaskListInputRules = Extension.create({
 
 let _originalGetJSON: (() => ReturnType<Editor['getJSON']>) | null = null
 
+// Replace TipTap's useDebouncedRef with a deduplicating version.
+// TipTap schedules a NEW double-rAF on every set() without deduplication,
+// causing trigger() calls to accumulate during rapid input (30-60/sec).
+// This version ensures at most ONE pending trigger at any time.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function dedupedRef(initialValue: any) {
+  let value = initialValue
+  let scheduled = false
+  return customRef((track, trigger) => ({
+    get() {
+      track()
+      return value
+    },
+    set(newValue) {
+      value = newValue
+      if (!scheduled) {
+        scheduled = true
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            scheduled = false
+            trigger()
+          })
+        })
+      }
+    },
+  }))
+}
+
 const EditorRefCapture = Extension.create({
   name: 'editorRefCapture',
   onCreate() {
@@ -82,7 +110,15 @@ const EditorRefCapture = Extension.create({
     // Prevent UEditor's per-keystroke getJSON() tree walk.
     // Our save path calls the original via a lazy getter.
     _originalGetJSON = this.editor.getJSON.bind(this.editor)
-    this.editor.getJSON = () => ({ type: 'doc', content: [] })
+    this.editor.getJSON = () => ({ type: 'doc', content: [] }) as unknown as ReturnType<Editor['getJSON']>
+
+    // Replace TipTap's reactiveState refs with deduplicating versions.
+    // The beforeTransaction handler accesses this.reactiveState dynamically,
+    // so our replacement is picked up automatically.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const editor = this.editor as any
+    editor.reactiveState = dedupedRef(editor.view.state)
+    editor.reactiveExtensionStorage = dedupedRef(editor.extensionStorage)
   },
   onSelectionUpdate() {
     isInTable.value = this.editor.isActive('table')
