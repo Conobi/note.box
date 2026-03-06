@@ -3,6 +3,7 @@ import type { EditorToolbarItem, EditorSuggestionMenuItem } from '@nuxt/ui'
 import type { JSONContent, ChainedCommands, Editor } from '@tiptap/vue-3'
 import { Extension } from '@tiptap/vue-3'
 import { wrappingInputRule } from '@tiptap/core'
+import type { ExtendedRegExpMatchArray } from '@tiptap/core'
 import { TableKit } from '@tiptap/extension-table/kit'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { CellSelection } from '@tiptap/pm/tables'
@@ -63,7 +64,7 @@ const TaskListInputRules = Extension.create({
       wrappingInputRule({
         find: /^\s*\[([xX* ]?)\]\s$/,
         type: taskItemType,
-        getAttributes: (match) => ({
+        getAttributes: (match: ExtendedRegExpMatchArray) => ({
           checked: match[1] === 'x' || match[1] === 'X' || match[1] === '*',
         }),
       }),
