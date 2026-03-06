@@ -75,5 +75,10 @@
   },
   "date": {
     "yesterday": "Hier"
+  },
+  "error": {
+    "notFound": "Cette page n'existe pas.",
+    "generic": "Une erreur est survenue.",
+    "backHome": "Retour aux notes"
   }
 }

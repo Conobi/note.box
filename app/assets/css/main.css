@@ -1,6 +1,17 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+/* ── Page transitions ───────────────────────────────────────── */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 150ms ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
 /* ── Global typography baseline ──────────────────────────────── */
 .zen-editor .tiptap {
   font-kerning: auto;

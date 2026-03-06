@@ -75,5 +75,10 @@
   },
   "date": {
     "yesterday": "Ontem"
+  },
+  "error": {
+    "notFound": "Esta página não existe.",
+    "generic": "Algo deu errado.",
+    "backHome": "Voltar às notas"
   }
 }
