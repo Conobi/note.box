@@ -67,7 +67,11 @@
     "exportAll": "Exportar todas as notas",
     "exportDescription": "Baixe todas as suas notas como um arquivo .zip de arquivos Markdown.",
     "language": "Idioma",
-    "fontPreview": "À noite, vovô Kowalsky vê o ímã cair no pé do pinguim queixoso"
+    "fontPreview": "À noite, vovô Kowalsky vê o ímã cair no pé do pinguim queixoso",
+    "shortcuts": "Atalhos de teclado",
+    "shortcutNewNote": "Nova nota",
+    "shortcutSearch": "Pesquisar notas",
+    "shortcutSettings": "Abrir configurações"
   },
   "date": {
     "yesterday": "Ontem"

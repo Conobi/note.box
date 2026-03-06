@@ -67,7 +67,11 @@
     "exportAll": "모든 노트 내보내기",
     "exportDescription": "모든 노트를 Markdown 파일의 .zip 아카이브로 다운로드합니다.",
     "language": "언어",
-    "fontPreview": "다람쥐 헌 쳇바퀴에 타고파"
+    "fontPreview": "다람쥐 헌 쳇바퀴에 타고파",
+    "shortcuts": "키보드 단축키",
+    "shortcutNewNote": "새 노트",
+    "shortcutSearch": "노트 검색",
+    "shortcutSettings": "설정 열기"
   },
   "date": {
     "yesterday": "어제"
