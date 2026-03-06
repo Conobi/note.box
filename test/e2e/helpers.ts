@@ -120,6 +120,15 @@ export async function clickEditorText(page: Page, editor: Locator, text: string)
   }).toPass({ timeout: 5000 })
 }
 
+/** Switch locale via the settings modal. Must be called while UI is in English (after resetApp). */
+export async function switchToLocale(page: Page, goto: Goto, localeName: string) {
+  await seedNote(page, goto)
+  const settingsBtn = getSidebarSettingsButton(page)
+  await settingsBtn.click({ force: true })
+  await page.getByRole('dialog').getByRole('button', { name: localeName }).click()
+  await page.keyboard.press('Escape')
+}
+
 export function getSidebarAddButton(page: Page): Locator {
   return page.locator('aside').getByRole('button', { name: 'New note' })
 }

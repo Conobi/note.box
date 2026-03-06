@@ -44,7 +44,7 @@
     "deleteTable": "حذف الجدول"
   },
   "noteList": {
-    "searchPlaceholder": "البحث في الملاحظات...",
+    "searchPlaceholder": "بحث...",
     "noMatching": "لا توجد ملاحظات مطابقة",
     "noNotes": "لا توجد ملاحظات بعد",
     "notes": "ملاحظات"
@@ -67,7 +67,11 @@
     "exportAll": "تصدير جميع الملاحظات",
     "exportDescription": "قم بتنزيل جميع ملاحظاتك كأرشيف .zip من ملفات Markdown.",
     "language": "اللغة",
-    "fontPreview": "نص حكيم له سر قاطع وذو شأن عظيم مكتوب على ثوب أخضر ومغلف بجلد أزرق"
+    "fontPreview": "نص حكيم له سر قاطع وذو شأن عظيم مكتوب على ثوب أخضر ومغلف بجلد أزرق",
+    "shortcuts": "اختصارات لوحة المفاتيح",
+    "shortcutNewNote": "ملاحظة جديدة",
+    "shortcutSearch": "البحث في الملاحظات",
+    "shortcutSettings": "فتح الإعدادات"
   },
   "date": {
     "yesterday": "أمس"
