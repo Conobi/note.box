@@ -75,5 +75,10 @@
   },
   "date": {
     "yesterday": "昨日"
+  },
+  "error": {
+    "notFound": "ページが見つかりません。",
+    "generic": "エラーが発生しました。",
+    "backHome": "ノートに戻る"
   }
 }

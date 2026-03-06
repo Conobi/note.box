@@ -75,5 +75,10 @@
   },
   "date": {
     "yesterday": "昨天"
+  },
+  "error": {
+    "notFound": "页面不存在。",
+    "generic": "出了点问题。",
+    "backHome": "返回笔记"
   }
 }

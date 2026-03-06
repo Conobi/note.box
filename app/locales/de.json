@@ -75,5 +75,10 @@
   },
   "date": {
     "yesterday": "Gestern"
+  },
+  "error": {
+    "notFound": "Diese Seite existiert nicht.",
+    "generic": "Etwas ist schiefgelaufen.",
+    "backHome": "Zurück zu den Notizen"
   }
 }
