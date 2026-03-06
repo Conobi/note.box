@@ -44,7 +44,7 @@
     "deleteTable": "Supprimer le tableau"
   },
   "noteList": {
-    "searchPlaceholder": "Rechercher des notes...",
+    "searchPlaceholder": "Rechercher...",
     "noMatching": "Aucune note trouvée",
     "noNotes": "Pas encore de notes",
     "notes": "Notes"
@@ -67,7 +67,11 @@
     "exportAll": "Exporter toutes les notes",
     "exportDescription": "Téléchargez toutes vos notes sous forme d'archive .zip de fichiers Markdown.",
     "language": "Langue",
-    "fontPreview": "Portez ce vieux whisky au juge blond qui fume"
+    "fontPreview": "Portez ce vieux whisky au juge blond qui fume",
+    "shortcuts": "Raccourcis clavier",
+    "shortcutNewNote": "Nouvelle note",
+    "shortcutSearch": "Rechercher",
+    "shortcutSettings": "Ouvrir les paramètres"
   },
   "date": {
     "yesterday": "Hier"
