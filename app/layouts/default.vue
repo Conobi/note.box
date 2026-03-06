@@ -14,6 +14,7 @@ const mobileNoteListRef = ref<{ focusSearch: () => void } | null>(null)
 const desktopNoteListRef = ref<{ focusSearch: () => void } | null>(null)
 
 const isMobile = () => window.innerWidth < 1024
+const newNoteKbds = computed(() => isMac() ? ['meta', 'N'] : ['meta', 'shift', 'N'])
 
 defineShortcuts({
   meta_n: {
@@ -92,7 +93,7 @@ function createNote() {
         <AppLogo class="h-7" />
       </NuxtLink>
       <div class="flex items-center gap-0.5">
-        <UTooltip :text="t('app.newNote')" :kbds="['meta', 'N']">
+        <UTooltip :text="t('app.newNote')" :kbds="newNoteKbds">
           <UButton
             icon="i-lucide-plus"
             size="sm"
@@ -129,7 +130,7 @@ function createNote() {
           <AppLogo class="h-7" />
         </NuxtLink>
         <div class="flex items-center gap-0.5 opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300">
-          <UTooltip :text="t('app.newNote')" :kbds="['meta', 'N']">
+          <UTooltip :text="t('app.newNote')" :kbds="newNoteKbds">
             <UButton
               icon="i-lucide-plus"
               size="sm"

@@ -235,7 +235,12 @@ async function handleExport() {
             <div class="flex items-center justify-between px-1">
               <span class="text-sm text-default">{{ t('settings.shortcutNewNote') }}</span>
               <div class="flex items-center gap-1">
-                <UKbd value="meta" /><UKbd>N</UKbd>
+                <template v-if="isMac()">
+                  <UKbd value="meta" /><UKbd>N</UKbd>
+                </template>
+                <template v-else>
+                  <UKbd value="meta" /><UKbd value="shift" /><UKbd>N</UKbd>
+                </template>
               </div>
             </div>
             <div class="flex items-center justify-between px-1">
