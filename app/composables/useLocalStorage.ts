@@ -28,11 +28,27 @@ export function useLocalStorage<T>(key: string, defaultValue: T): Ref<T> {
     }
   }
 
+  let writeTimeout: ReturnType<typeof setTimeout> | null = null
+
+  function flushWrite(): void {
+    if (writeTimeout) {
+      clearTimeout(writeTimeout)
+      writeTimeout = null
+      write(data.value)
+    }
+  }
+
   watch(data, (newValue) => {
-    write(newValue)
+    if (writeTimeout) clearTimeout(writeTimeout)
+    writeTimeout = setTimeout(() => {
+      writeTimeout = null
+      write(newValue)
+    }, 500)
   }, { deep: true })
 
   if (import.meta.client) {
+    window.addEventListener('beforeunload', flushWrite)
+
     window.addEventListener('storage', (event) => {
       if (event.key === key) {
         data.value = event.newValue ? JSON.parse(event.newValue) as T : defaultValue

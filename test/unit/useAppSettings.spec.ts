@@ -1,12 +1,17 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import { useAppSettings } from '~/composables/useAppSettings'
 import { _resetLocalStorage } from '~/composables/useLocalStorage'
 
 describe('useAppSettings', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
     _resetLocalStorage()
     localStorage.clear()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('returns default settings', () => {
@@ -19,6 +24,7 @@ describe('useAppSettings', () => {
     const { font } = useAppSettings()
     font.value = 'inconsolata'
     await nextTick()
+    vi.advanceTimersByTime(500)
 
     const stored = JSON.parse(localStorage.getItem('note.box:settings')!)
     expect(stored.font).toBe('inconsolata')
@@ -28,6 +34,7 @@ describe('useAppSettings', () => {
     const { colorScheme } = useAppSettings()
     colorScheme.value = 'dark'
     await nextTick()
+    vi.advanceTimersByTime(500)
 
     const stored = JSON.parse(localStorage.getItem('note.box:settings')!)
     expect(stored.colorScheme).toBe('dark')
@@ -59,6 +66,7 @@ describe('useAppSettings', () => {
     const { locale } = useAppSettings()
     locale.value = 'fr'
     await nextTick()
+    vi.advanceTimersByTime(500)
 
     const stored = JSON.parse(localStorage.getItem('note.box:settings')!)
     expect(stored.locale).toBe('fr')

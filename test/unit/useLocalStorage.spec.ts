@@ -1,11 +1,16 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import { useLocalStorage, _resetLocalStorage } from '~/composables/useLocalStorage'
 
 describe('useLocalStorage', () => {
   beforeEach(() => {
+    vi.useFakeTimers()
     _resetLocalStorage()
     localStorage.clear()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('returns default value when storage is empty', () => {
@@ -19,10 +24,12 @@ describe('useLocalStorage', () => {
     expect(data.value).toBe('stored')
   })
 
-  it('writes changes to storage', async () => {
+  it('writes changes to storage after debounce', async () => {
     const data = useLocalStorage('test-key', 'initial')
     data.value = 'updated'
     await nextTick()
+    expect(localStorage.getItem('test-key')).toBeNull()
+    vi.advanceTimersByTime(500)
     expect(JSON.parse(localStorage.getItem('test-key')!)).toBe('updated')
   })
 
@@ -30,6 +37,7 @@ describe('useLocalStorage', () => {
     const data = useLocalStorage('test-key', { count: 0 })
     data.value.count = 42
     await nextTick()
+    vi.advanceTimersByTime(500)
     expect(JSON.parse(localStorage.getItem('test-key')!)).toEqual({ count: 42 })
   })
 
@@ -71,5 +79,29 @@ describe('useLocalStorage', () => {
     const a = useLocalStorage('shared-key', 'default')
     const b = useLocalStorage('shared-key', 'default')
     expect(a).toBe(b)
+  })
+
+  it('flushes pending write on beforeunload', async () => {
+    const data = useLocalStorage('test-key', 'initial')
+    data.value = 'updated'
+    await nextTick()
+    expect(localStorage.getItem('test-key')).toBeNull()
+    window.dispatchEvent(new Event('beforeunload'))
+    expect(JSON.parse(localStorage.getItem('test-key')!)).toBe('updated')
+  })
+
+  it('debounces rapid writes', async () => {
+    const data = useLocalStorage('test-key', 'initial')
+    data.value = 'first'
+    await nextTick()
+    vi.advanceTimersByTime(200)
+    data.value = 'second'
+    await nextTick()
+    vi.advanceTimersByTime(200)
+    data.value = 'third'
+    await nextTick()
+    expect(localStorage.getItem('test-key')).toBeNull()
+    vi.advanceTimersByTime(500)
+    expect(JSON.parse(localStorage.getItem('test-key')!)).toBe('third')
   })
 })
