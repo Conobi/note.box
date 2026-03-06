@@ -10,7 +10,6 @@ import ar from '~/locales/ar.json'
 
 export default defineI18nConfig(() => ({
   legacy: false,
-  locale: 'en',
   fallbackLocale: 'en',
   messages: { en, es, fr, de, pt, zh, ja, ko, ar },
 }))
