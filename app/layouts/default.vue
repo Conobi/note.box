@@ -17,12 +17,15 @@ const isMobile = () => window.innerWidth < 1024
 
 defineShortcuts({
   meta_n: {
+    usingInput: true,
     handler: () => createNote(),
   },
   'meta_,': {
+    usingInput: true,
     handler: () => { settingsOpen.value = true },
   },
   meta_k: {
+    usingInput: true,
     handler: () => {
       if (isMobile()) {
         sidebarOpen.value = true

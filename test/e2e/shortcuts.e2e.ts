@@ -85,6 +85,53 @@ test.describe('Keyboard Shortcuts', () => {
     await expect(page.getByRole('dialog')).not.toBeVisible()
   })
 
+  test('Ctrl/Cmd+N creates a new note when editor is focused', async ({ page, goto }) => {
+    await seedNote(page, goto)
+
+    // Focus the editor
+    const editor = page.locator('.tiptap')
+    await editor.locator('p').first().click()
+
+    const urlBefore = page.url()
+    await page.keyboard.press(`${meta}+n`)
+
+    // Should navigate to a new note
+    await expect(page).toHaveURL(/\/notes\//)
+    expect(page.url()).not.toBe(urlBefore)
+  })
+
+  test('Ctrl/Cmd+, opens settings when editor is focused', async ({ page, goto }) => {
+    await seedNote(page, goto)
+
+    // Focus the editor
+    const editor = page.locator('.tiptap')
+    await editor.locator('p').first().click()
+
+    await expect(page.getByRole('dialog')).not.toBeVisible()
+    await page.keyboard.press(`${meta}+,`)
+
+    // Settings modal should appear
+    await expect(page.getByRole('dialog')).toBeVisible()
+    await expect(page.getByRole('dialog').getByText('Settings')).toBeVisible()
+  })
+
+  test('Ctrl/Cmd+K focuses search when editor is focused', async ({ page, goto }) => {
+    await seedNotes(page, goto, [
+      { id: 'n-1', title: 'Alpha Note' },
+      { id: 'n-2', title: 'Beta Note' },
+    ])
+
+    // Focus the editor
+    const editor = page.locator('.tiptap')
+    await editor.locator('p').first().click()
+
+    await page.keyboard.press(`${meta}+k`)
+
+    // Search input should be focused
+    const searchInput = page.locator('aside input[placeholder="Search notes..."]')
+    await expect(searchInput).toBeFocused({ timeout: 2000 })
+  })
+
   test('meta shortcuts work even when search input is focused', async ({ page, goto }) => {
     await seedNotes(page, goto, [
       { id: 'n-1', title: 'Some Note' },
