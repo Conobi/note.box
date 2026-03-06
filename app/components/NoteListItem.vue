@@ -42,7 +42,7 @@ onBeforeUnmount(() => {
 
 const displayTitle = computed(() => props.note.title || t('editor.untitled'))
 const preview = computed(() => {
-  props.note.title // reactive signal — content is markRaw'd so we track title changes instead
+  void props.note.title // reactive signal — content is markRaw'd so we track title changes instead
   return extractText(props.note.content, 80, { skipFirstHeading: true })
 })
 
