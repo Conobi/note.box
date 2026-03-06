@@ -1,4 +1,9 @@
 const cache = new Map<string, Ref>()
+const writeSchedulers = new Map<string, () => void>()
+
+export function _scheduleWrite(key: string): void {
+  writeSchedulers.get(key)?.()
+}
 
 export function useLocalStorage<T>(key: string, defaultValue: T): Ref<T> {
   if (cache.has(key)) return cache.get(key) as Ref<T>
@@ -30,6 +35,14 @@ export function useLocalStorage<T>(key: string, defaultValue: T): Ref<T> {
 
   let writeTimeout: ReturnType<typeof setTimeout> | null = null
 
+  function scheduleWrite(): void {
+    if (writeTimeout) clearTimeout(writeTimeout)
+    writeTimeout = setTimeout(() => {
+      writeTimeout = null
+      write(data.value)
+    }, 500)
+  }
+
   function flushWrite(): void {
     if (writeTimeout) {
       clearTimeout(writeTimeout)
@@ -38,12 +51,10 @@ export function useLocalStorage<T>(key: string, defaultValue: T): Ref<T> {
     }
   }
 
-  watch(data, (newValue) => {
-    if (writeTimeout) clearTimeout(writeTimeout)
-    writeTimeout = setTimeout(() => {
-      writeTimeout = null
-      write(newValue)
-    }, 500)
+  writeSchedulers.set(key, scheduleWrite)
+
+  watch(data, () => {
+    scheduleWrite()
   }, { deep: true })
 
   if (import.meta.client) {
@@ -61,4 +72,5 @@ export function useLocalStorage<T>(key: string, defaultValue: T): Ref<T> {
 
 export function _resetLocalStorage() {
   cache.clear()
+  writeSchedulers.clear()
 }

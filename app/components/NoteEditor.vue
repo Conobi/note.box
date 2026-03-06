@@ -72,11 +72,17 @@ const TaskListInputRules = Extension.create({
   },
 })
 
+let _originalGetJSON: (() => ReturnType<Editor['getJSON']>) | null = null
+
 const EditorRefCapture = Extension.create({
   name: 'editorRefCapture',
   onCreate() {
     // this.editor is the core Editor, editorRef expects the Vue Editor
     editorRef.value = this.editor as unknown as Editor
+    // Prevent UEditor's per-keystroke getJSON() tree walk.
+    // Our save path calls the original via a lazy getter.
+    _originalGetJSON = this.editor.getJSON.bind(this.editor)
+    this.editor.getJSON = () => ({ type: 'doc', content: [] })
   },
   onSelectionUpdate() {
     isInTable.value = this.editor.isActive('table')
@@ -181,7 +187,13 @@ watch(note, (n) => {
 }, { immediate: true })
 
 function onUpdate(value: JSONContent) {
-  save(value)
+  if (_originalGetJSON) {
+    const getJSON = _originalGetJSON
+    save(() => getJSON() as JSONContent)
+  }
+  else {
+    save(() => value)
+  }
 }
 
 const handlers: CustomHandlers = {

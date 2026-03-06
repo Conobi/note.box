@@ -1,3 +1,4 @@
+import { isReactive } from 'vue'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useNotes } from '~/composables/useNotes'
 import { _resetLocalStorage } from '~/composables/useLocalStorage'
@@ -164,5 +165,15 @@ describe('useNotes', () => {
     create()
     create()
     expect(search('')).toHaveLength(2)
+  })
+
+  it('marks content as raw (non-reactive)', () => {
+    const { create, get, update } = useNotes()
+    const note = create()
+    expect(isReactive(note.content)).toBe(false)
+
+    update(note.id, { content: { type: 'doc', content: [{ type: 'paragraph' }] } })
+    const updated = get(note.id)!
+    expect(isReactive(updated.content)).toBe(false)
   })
 })
