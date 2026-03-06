@@ -41,7 +41,10 @@ onBeforeUnmount(() => {
 })
 
 const displayTitle = computed(() => props.note.title || t('editor.untitled'))
-const preview = computed(() => extractText(props.note.content, 80, { skipFirstHeading: true }))
+const preview = computed(() => {
+  props.note.title // reactive signal — content is markRaw'd so we track title changes instead
+  return extractText(props.note.content, 80, { skipFirstHeading: true })
+})
 
 const formattedDate = computed(() => formatSmartDate(props.note.updatedAt, new Date(), { yesterdayLabel: t('date.yesterday'), locale: locale.value }))
 </script>

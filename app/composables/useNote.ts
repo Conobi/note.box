@@ -6,18 +6,19 @@ export function useNote(id: string) {
   const note = computed(() => get(id))
 
   let saveTimeout: ReturnType<typeof setTimeout> | null = null
-  let pendingContent: JSONContent | null = null
+  let pendingGetContent: (() => JSONContent) | null = null
   let pendingTitle: string | undefined
 
-  function save(content: JSONContent, title?: string): void {
-    pendingContent = content
+  function save(getContent: () => JSONContent, title?: string): void {
+    pendingGetContent = getContent
     pendingTitle = title
     if (saveTimeout) clearTimeout(saveTimeout)
     saveTimeout = setTimeout(() => {
-      const noteTitle = pendingTitle ?? extractTitle(pendingContent!)
-      const newSlug = update(id, { content: pendingContent!, title: noteTitle }, { skipTimestamp: true })
+      const content = pendingGetContent!()
+      const noteTitle = pendingTitle ?? extractTitle(content)
+      const newSlug = update(id, { content, title: noteTitle }, { skipTimestamp: true })
       saveTimeout = null
-      pendingContent = null
+      pendingGetContent = null
       pendingTitle = undefined
       if (newSlug) {
         onSlugChange?.(newSlug)
@@ -30,10 +31,11 @@ export function useNote(id: string) {
       clearTimeout(saveTimeout)
       saveTimeout = null
       const n = note.value
-      if (n && pendingContent) {
-        const noteTitle = pendingTitle ?? extractTitle(pendingContent)
-        const newSlug = update(id, { content: pendingContent, title: noteTitle })
-        pendingContent = null
+      if (n && pendingGetContent) {
+        const content = pendingGetContent()
+        const noteTitle = pendingTitle ?? extractTitle(content)
+        const newSlug = update(id, { content, title: noteTitle })
+        pendingGetContent = null
         pendingTitle = undefined
         if (newSlug) {
           onSlugChange?.(newSlug)
