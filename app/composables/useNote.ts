@@ -14,8 +14,8 @@ export function useNote(id: string) {
     pendingTitle = title
     if (saveTimeout) clearTimeout(saveTimeout)
     saveTimeout = setTimeout(() => {
-      const noteTitle = pendingTitle ?? extractTitle(content)
-      const newSlug = update(id, { content, title: noteTitle })
+      const noteTitle = pendingTitle ?? extractTitle(pendingContent!)
+      const newSlug = update(id, { content: pendingContent!, title: noteTitle }, { skipTimestamp: true })
       saveTimeout = null
       pendingContent = null
       pendingTitle = undefined

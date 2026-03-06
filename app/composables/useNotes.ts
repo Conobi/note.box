@@ -62,18 +62,19 @@ export function useNotes() {
     }
   }
 
-  function update(id: string, updates: Partial<Pick<Note, 'title' | 'content'>>): string | undefined {
+  function update(id: string, updates: Partial<Pick<Note, 'title' | 'content'>>, options?: { skipTimestamp?: boolean }): string | undefined {
     const note = get(id)
     if (note) {
       const titleChanged = updates.title !== undefined && updates.title !== note.title
       let newSlug: string | undefined
+      const timestamp = options?.skipTimestamp ? {} : { updatedAt: new Date().toISOString() }
 
       if (titleChanged) {
         newSlug = generateUniqueSlug(updates.title!, id)
-        Object.assign(note, updates, { slug: newSlug, updatedAt: new Date().toISOString() })
+        Object.assign(note, updates, { slug: newSlug, ...timestamp })
       }
       else {
-        Object.assign(note, updates, { updatedAt: new Date().toISOString() })
+        Object.assign(note, updates, timestamp)
       }
 
       return newSlug
