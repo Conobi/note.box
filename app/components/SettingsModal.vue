@@ -231,9 +231,12 @@ async function handleExport() {
               {{ t('settings.shortcuts') }}
             </p>
           </div>
-          <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-between px-1">
-              <span class="text-sm text-default">{{ t('settings.shortcutNewNote') }}</span>
+          <div class="rounded-lg border border-default bg-elevated/50 divide-y divide-default">
+            <div class="flex items-center justify-between px-3 py-2.5">
+              <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-plus" class="size-3.5 text-muted" />
+                <span class="text-sm text-default">{{ t('settings.shortcutNewNote') }}</span>
+              </div>
               <div class="flex items-center gap-1">
                 <template v-if="isMac()">
                   <UKbd value="meta" /><UKbd>N</UKbd>
@@ -243,14 +246,20 @@ async function handleExport() {
                 </template>
               </div>
             </div>
-            <div class="flex items-center justify-between px-1">
-              <span class="text-sm text-default">{{ t('settings.shortcutSearch') }}</span>
+            <div class="flex items-center justify-between px-3 py-2.5">
+              <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-search" class="size-3.5 text-muted" />
+                <span class="text-sm text-default">{{ t('settings.shortcutSearch') }}</span>
+              </div>
               <div class="flex items-center gap-1">
                 <UKbd value="meta" /><UKbd>K</UKbd>
               </div>
             </div>
-            <div class="flex items-center justify-between px-1">
-              <span class="text-sm text-default">{{ t('settings.shortcutSettings') }}</span>
+            <div class="flex items-center justify-between px-3 py-2.5">
+              <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-settings" class="size-3.5 text-muted" />
+                <span class="text-sm text-default">{{ t('settings.shortcutSettings') }}</span>
+              </div>
               <div class="flex items-center gap-1">
                 <UKbd value="meta" /><UKbd>,</UKbd>
               </div>
