@@ -35,12 +35,52 @@
 
 .zen-editor .tiptap ul[data-type="taskList"] li > label {
   flex-shrink: 0;
-  margin-top: 0.25em;
+  display: flex;
+  align-items: center;
+  height: 1.5em;
 }
 
 .zen-editor .tiptap ul[data-type="taskList"] li > label input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: var(--radius-sm, 0.25rem);
+  border: 1.5px solid var(--ui-border-accented);
+  background: transparent;
   cursor: pointer;
-  accent-color: var(--ui-primary);
+  position: relative;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.zen-editor .tiptap ul[data-type="taskList"] li > label input[type="checkbox"]:hover {
+  border-color: var(--ui-primary);
+}
+
+.zen-editor .tiptap ul[data-type="taskList"] li > label input[type="checkbox"]:checked {
+  background-color: var(--ui-primary);
+  border-color: var(--ui-primary);
+}
+
+.zen-editor .tiptap ul[data-type="taskList"] li > label input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--ui-bg);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  mask-size: 70%;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  -webkit-mask-size: 70%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+.zen-editor .tiptap ul[data-type="taskList"] li > label input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--ui-primary);
+  outline-offset: 2px;
 }
 
 .zen-editor .tiptap ul[data-type="taskList"] li[data-checked="true"] > div > p {
@@ -68,6 +108,7 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   transition: background-color 0.15s ease;
+  position: relative;
 }
 
 .zen-editor .tiptap table th {
@@ -91,6 +132,52 @@
 .zen-editor .tiptap table th.has-focus {
   box-shadow: inset 0 0 0 1.5px var(--ui-primary);
   border-color: transparent;
+}
+
+/* ── Column resize handles ─────────────────────────────────── */
+.zen-editor .tiptap .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: -2px;
+  width: 4px;
+  background-color: var(--ui-primary);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.zen-editor .tiptap.resize-cursor {
+  cursor: col-resize;
+}
+
+/* ── Row/Column select gutters ─────────────────────────────── */
+.zen-editor .tiptap table tr td:first-child::before,
+.zen-editor .tiptap table tr th:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.zen-editor .tiptap table tr:first-child th::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 12px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.zen-editor .tiptap table tr td:first-child:hover::before,
+.zen-editor .tiptap table tr th:first-child:hover::before,
+.zen-editor .tiptap table tr:first-child th:hover::after {
+  background-color: color-mix(in srgb, var(--ui-primary) 8%, transparent);
 }
 
 /* ── Highlight ─────────────────────────────────────────────── */

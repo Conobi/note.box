@@ -2,7 +2,10 @@
 import type { EditorToolbarItem, EditorSuggestionMenuItem } from '@nuxt/ui'
 import type { JSONContent, ChainedCommands, Editor } from '@tiptap/vue-3'
 import { Extension } from '@tiptap/vue-3'
+import { wrappingInputRule } from '@tiptap/core'
 import { TableKit } from '@tiptap/extension-table/kit'
+import { Plugin, PluginKey } from '@tiptap/pm/state'
+import { CellSelection } from '@tiptap/pm/tables'
 import { TaskList } from '@tiptap/extension-task-list'
 import { TaskItem } from '@tiptap/extension-task-item'
 
@@ -14,12 +17,15 @@ interface EditorHandler {
 }
 
 type TableHandlerKey =
-  | 'addColumnAfter' | 'deleteColumn'
-  | 'addRowAfter' | 'deleteRow'
+  | 'addColumnBefore' | 'addColumnAfter' | 'deleteColumn'
+  | 'addRowBefore' | 'addRowAfter' | 'deleteRow'
   | 'toggleHeaderRow' | 'mergeCells' | 'splitCell'
   | 'deleteTable' | 'table'
 
 type CustomHandlers = Record<TableHandlerKey, EditorHandler>
+
+const editorRef = shallowRef<Editor>()
+const isInTable = ref(false)
 
 const TableKeymap = Extension.create({
   name: 'tableKeymap',
@@ -27,18 +33,120 @@ const TableKeymap = Extension.create({
     return {
       'Mod-Enter': () => this.editor.commands.addRowAfter(),
       'Mod-Shift-Backspace': () => this.editor.commands.deleteTable(),
+      'Mod-Shift-t': () => this.editor.commands.insertTable({ rows: 3, cols: 3, withHeaderRow: true }),
+      'Delete': () => {
+        const { selection } = this.editor.state
+        if (!(selection instanceof CellSelection)) return false
+        if (selection.isRowSelection()) return this.editor.commands.deleteRow()
+        if (selection.isColSelection()) return this.editor.commands.deleteColumn()
+        return false
+      },
+      'Backspace': () => {
+        const { selection } = this.editor.state
+        if (!(selection instanceof CellSelection)) return false
+        if (selection.isRowSelection()) return this.editor.commands.deleteRow()
+        if (selection.isColSelection()) return this.editor.commands.deleteColumn()
+        return false
+      },
     }
+  },
+})
+
+// Adds "[ ] ", "[] ", "[x] ", "[*] " input rules for task lists
+const TaskListInputRules = Extension.create({
+  name: 'taskListInputRules',
+  addInputRules() {
+    const taskItemType = this.editor.schema.nodes.taskItem
+    if (!taskItemType) return []
+
+    return [
+      wrappingInputRule({
+        find: /^\s*\[([xX* ]?)\]\s$/,
+        type: taskItemType,
+        getAttributes: (match) => ({
+          checked: match[1] === 'x' || match[1] === 'X' || match[1] === '*',
+        }),
+      }),
+    ]
+  },
+})
+
+const EditorRefCapture = Extension.create({
+  name: 'editorRefCapture',
+  onCreate() {
+    // this.editor is the core Editor, editorRef expects the Vue Editor
+    editorRef.value = this.editor as unknown as Editor
+  },
+  onSelectionUpdate() {
+    isInTable.value = this.editor.isActive('table')
+  },
+})
+
+const TableSelectGutter = Extension.create({
+  name: 'tableSelectGutter',
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: new PluginKey('tableSelectGutter'),
+        props: {
+          handleDOMEvents: {
+            mousedown: (view, event) => {
+              const target = event.target as HTMLElement
+              const cell = target.closest('td, th') as HTMLTableCellElement | null
+              if (!cell) return false
+
+              const table = cell.closest('table') as HTMLTableElement | null
+              const row = cell.closest('tr') as HTMLTableRowElement | null
+              if (!table || !row) return false
+
+              const rect = cell.getBoundingClientRect()
+              const isFirstCol = cell.cellIndex === 0
+              const isFirstRow = row.rowIndex === 0
+
+              const inLeftGutter = isFirstCol && (event.clientX - rect.left < 12)
+              const inTopGutter = isFirstRow && (event.clientY - rect.top < 12)
+
+              if (!inLeftGutter && !inTopGutter) return false
+
+              const pos = view.posAtDOM(cell, 0)
+              const $pos = view.state.doc.resolve(pos)
+
+              let cellDepth = $pos.depth
+              while (cellDepth > 0) {
+                if (['tableCell', 'tableHeader'].includes($pos.node(cellDepth).type.name)) break
+                cellDepth--
+              }
+              if (cellDepth === 0) return false
+
+              const $cell = view.state.doc.resolve($pos.before(cellDepth))
+              const selection = inLeftGutter
+                ? CellSelection.rowSelection($cell)
+                : CellSelection.colSelection($cell)
+
+              view.dispatch(view.state.tr.setSelection(selection))
+              event.preventDefault()
+              return true
+            },
+          },
+        },
+      }),
+    ]
   },
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const editorExtensions: any[] = [
-  TableKit,
+  TableKit.configure({
+    table: { resizable: true, handleWidth: 5, cellMinWidth: 50 },
+  }),
   TableKeymap,
   TaskList,
   TaskItem.configure({
     nested: true,
   }),
+  TaskListInputRules,
+  EditorRefCapture,
+  TableSelectGutter,
 ]
 
 const props = defineProps<{
@@ -81,6 +189,11 @@ const handlers: CustomHandlers = {
     execute: (editor: Editor) => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }),
     isActive: (editor: Editor) => editor.isActive('table'),
   },
+  addColumnBefore: {
+    canExecute: (editor: Editor) => editor.can().addColumnBefore(),
+    execute: (editor: Editor) => editor.chain().focus().addColumnBefore(),
+    isActive: () => false,
+  },
   addColumnAfter: {
     canExecute: (editor: Editor) => editor.can().addColumnAfter(),
     execute: (editor: Editor) => editor.chain().focus().addColumnAfter(),
@@ -89,6 +202,11 @@ const handlers: CustomHandlers = {
   deleteColumn: {
     canExecute: (editor: Editor) => editor.can().deleteColumn(),
     execute: (editor: Editor) => editor.chain().focus().deleteColumn(),
+    isActive: () => false,
+  },
+  addRowBefore: {
+    canExecute: (editor: Editor) => editor.can().addRowBefore(),
+    execute: (editor: Editor) => editor.chain().focus().addRowBefore(),
     isActive: () => false,
   },
   addRowAfter: {
@@ -150,7 +268,7 @@ const toolbarItems = computed<EditorToolbarItem<CustomHandlers>[][]>(() => [
     { kind: 'mark', mark: 'underline', icon: 'i-lucide-underline', tooltip: { text: t('editor.underline'), kbds: ['meta', 'U'] } },
     { kind: 'mark', mark: 'strike', icon: 'i-lucide-strikethrough', tooltip: { text: t('editor.strikethrough'), kbds: ['meta', 'shift', 'S'] } },
     { kind: 'mark', mark: 'code', icon: 'i-lucide-code', tooltip: { text: t('editor.code'), kbds: ['meta', 'E'] } },
-    { kind: 'link', icon: 'i-lucide-link', tooltip: { text: t('editor.link'), kbds: ['meta', 'K'] } },
+    { kind: 'link', icon: 'i-lucide-link', tooltip: { text: t('editor.link') } },
   ],
 ])
 
@@ -161,7 +279,11 @@ function shouldShowTableToolbar(props: { editor: any }) {
 
 const tableToolbarItems = computed<EditorToolbarItem<CustomHandlers>[][]>(() => [
   [
+    { kind: 'addColumnBefore', icon: 'i-lucide-columns-3', tooltip: { text: t('editor.addColumnBefore') } },
     { kind: 'addColumnAfter', icon: 'i-lucide-columns-3', tooltip: { text: t('editor.addColumnAfter') } },
+  ],
+  [
+    { kind: 'addRowBefore', icon: 'i-lucide-rows-3', tooltip: { text: t('editor.addRowBefore') } },
     { kind: 'addRowAfter', icon: 'i-lucide-rows-3', tooltip: { text: t('editor.addRowAfter') } },
   ],
   [
@@ -177,6 +299,37 @@ const tableToolbarItems = computed<EditorToolbarItem<CustomHandlers>[][]>(() => 
     { kind: 'deleteTable', icon: 'i-lucide-trash-2', tooltip: { text: t('editor.deleteTable') } },
   ],
 ])
+
+const tableContextMenuItems = computed(() => {
+  const editor = editorRef.value
+  if (!editor) return []
+  return [
+    [
+      { label: t('editor.addColumnBefore'), icon: 'i-lucide-columns-3', onSelect: () => editor.chain().focus().addColumnBefore().run() },
+      { label: t('editor.addColumnAfter'), icon: 'i-lucide-columns-3', onSelect: () => editor.chain().focus().addColumnAfter().run() },
+      { label: t('editor.deleteColumn'), icon: 'i-lucide-columns-2', onSelect: () => editor.chain().focus().deleteColumn().run() },
+    ],
+    [
+      { label: t('editor.addRowBefore'), icon: 'i-lucide-rows-3', onSelect: () => editor.chain().focus().addRowBefore().run() },
+      { label: t('editor.addRowAfter'), icon: 'i-lucide-rows-3', onSelect: () => editor.chain().focus().addRowAfter().run() },
+      { label: t('editor.deleteRow'), icon: 'i-lucide-rows-2', onSelect: () => editor.chain().focus().deleteRow().run() },
+    ],
+    [
+      { label: t('editor.toggleHeaderRow'), icon: 'i-lucide-heading', onSelect: () => editor.chain().focus().toggleHeaderRow().run() },
+      { label: t('editor.mergeCells'), icon: 'i-lucide-merge', onSelect: () => editor.chain().focus().mergeCells().run() },
+      { label: t('editor.splitCell'), icon: 'i-lucide-split', onSelect: () => editor.chain().focus().splitCell().run() },
+    ],
+    [
+      { label: t('editor.deleteTable'), icon: 'i-lucide-trash-2', onSelect: () => editor.chain().focus().deleteTable().run() },
+    ],
+  ]
+})
+
+function onContextMenu(event: MouseEvent) {
+  if (!editorRef.value?.isActive('table')) {
+    event.stopPropagation()
+  }
+}
 
 const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>(() => [
   [
@@ -203,28 +356,30 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
 </script>
 
 <template>
-  <div v-if="note" class="zen-editor pt-12 sm:pt-16">
-    <UEditor
-      v-slot="{ editor }"
-      :model-value="initialContent"
-      :extensions="editorExtensions"
-      :handlers="handlers"
-      content-type="json"
-      :placeholder="{
-        placeholder: ({ node, hasAnchor }: { node: any, hasAnchor: boolean }) => {
-          if (node.type.name === 'heading' && node.attrs.level === 1) return t('editor.untitled')
-          if (hasAnchor) return t('editor.placeholder')
-          return ''
-        },
-        showOnlyCurrent: false,
-      }"
-      :ui="{ base: 'py-4 min-h-[70vh]' }"
-      @update:model-value="onUpdate"
-    >
-      <UEditorToolbar :editor="editor" :items="toolbarItems" layout="bubble" />
-      <UEditorToolbar :editor="editor" :items="tableToolbarItems" layout="bubble" plugin-key="tableToolbar" :should-show="shouldShowTableToolbar" />
-      <UEditorSuggestionMenu :editor="editor" :items="suggestionItems" />
-      <UEditorDragHandle :editor="editor" />
-    </UEditor>
-  </div>
+  <UContextMenu v-if="note" :items="tableContextMenuItems">
+    <div class="zen-editor pt-12 sm:pt-16" @contextmenu="onContextMenu">
+      <UEditor
+        v-slot="{ editor }"
+        :model-value="initialContent"
+        :extensions="editorExtensions"
+        :handlers="handlers"
+        content-type="json"
+        :placeholder="{
+          placeholder: ({ node, hasAnchor }: { node: any, hasAnchor: boolean }) => {
+            if (node.type.name === 'heading' && node.attrs.level === 1) return t('editor.untitled')
+            if (hasAnchor) return t('editor.placeholder')
+            return ''
+          },
+          showOnlyCurrent: false,
+        }"
+        :ui="{ base: 'py-4 min-h-[70vh]' }"
+        @update:model-value="onUpdate"
+      >
+        <UEditorToolbar :editor="editor" :items="toolbarItems" layout="bubble" />
+        <UEditorToolbar :editor="editor" :items="tableToolbarItems" layout="bubble" plugin-key="tableToolbar" :should-show="shouldShowTableToolbar" />
+        <UEditorSuggestionMenu :editor="editor" :items="suggestionItems" />
+        <UEditorDragHandle :editor="editor" />
+      </UEditor>
+    </div>
+  </UContextMenu>
 </template>
