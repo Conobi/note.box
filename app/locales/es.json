@@ -67,7 +67,11 @@
     "exportAll": "Exportar todas las notas",
     "exportDescription": "Descarga todas tus notas como un archivo .zip de archivos Markdown.",
     "language": "Idioma",
-    "fontPreview": "El veloz murciélago hindú comía feliz cardillo y kiwi"
+    "fontPreview": "El veloz murciélago hindú comía feliz cardillo y kiwi",
+    "shortcuts": "Atajos de teclado",
+    "shortcutNewNote": "Nueva nota",
+    "shortcutSearch": "Buscar notas",
+    "shortcutSettings": "Abrir ajustes"
   },
   "date": {
     "yesterday": "Ayer"

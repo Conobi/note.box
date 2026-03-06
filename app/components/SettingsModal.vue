@@ -223,6 +223,38 @@ async function handleExport() {
 
         <USeparator />
 
+        <!-- Keyboard shortcuts section -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <UIcon name="i-lucide-keyboard" class="size-4 text-muted" />
+            <p class="text-sm font-medium text-muted">
+              {{ t('settings.shortcuts') }}
+            </p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between px-1">
+              <span class="text-sm text-default">{{ t('settings.shortcutNewNote') }}</span>
+              <div class="flex items-center gap-1">
+                <UKbd value="meta" /><UKbd>N</UKbd>
+              </div>
+            </div>
+            <div class="flex items-center justify-between px-1">
+              <span class="text-sm text-default">{{ t('settings.shortcutSearch') }}</span>
+              <div class="flex items-center gap-1">
+                <UKbd value="meta" /><UKbd>K</UKbd>
+              </div>
+            </div>
+            <div class="flex items-center justify-between px-1">
+              <span class="text-sm text-default">{{ t('settings.shortcutSettings') }}</span>
+              <div class="flex items-center gap-1">
+                <UKbd value="meta" /><UKbd>,</UKbd>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <USeparator />
+
         <!-- Data section -->
         <div>
           <div class="flex items-center gap-2 mb-4">

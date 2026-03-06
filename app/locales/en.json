@@ -67,7 +67,11 @@
     "exportAll": "Export all notes",
     "exportDescription": "Download all your notes as a .zip archive of Markdown files.",
     "language": "Language",
-    "fontPreview": "The quick brown fox jumps over the lazy dog"
+    "fontPreview": "The quick brown fox jumps over the lazy dog",
+    "shortcuts": "Keyboard shortcuts",
+    "shortcutNewNote": "New note",
+    "shortcutSearch": "Search notes",
+    "shortcutSettings": "Open settings"
   },
   "date": {
     "yesterday": "Yesterday"

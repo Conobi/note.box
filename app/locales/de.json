@@ -67,7 +67,11 @@
     "exportAll": "Alle Notizen exportieren",
     "exportDescription": "Lade alle deine Notizen als .zip-Archiv mit Markdown-Dateien herunter.",
     "language": "Sprache",
-    "fontPreview": "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg"
+    "fontPreview": "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg",
+    "shortcuts": "Tastaturkürzel",
+    "shortcutNewNote": "Neue Notiz",
+    "shortcutSearch": "Notizen durchsuchen",
+    "shortcutSettings": "Einstellungen öffnen"
   },
   "date": {
     "yesterday": "Gestern"

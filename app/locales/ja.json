@@ -67,7 +67,11 @@
     "exportAll": "すべてのノートをエクスポート",
     "exportDescription": "すべてのノートを Markdown ファイルの .zip アーカイブとしてダウンロードします。",
     "language": "言語",
-    "fontPreview": "いろはにほへとちりぬるをわかよたれそつねならむ"
+    "fontPreview": "いろはにほへとちりぬるをわかよたれそつねならむ",
+    "shortcuts": "キーボードショートカット",
+    "shortcutNewNote": "新規ノート",
+    "shortcutSearch": "ノートを検索",
+    "shortcutSettings": "設定を開く"
   },
   "date": {
     "yesterday": "昨日"

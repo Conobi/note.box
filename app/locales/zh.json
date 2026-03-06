@@ -67,7 +67,11 @@
     "exportAll": "导出所有笔记",
     "exportDescription": "将所有笔记下载为 Markdown 文件的 .zip 压缩包。",
     "language": "语言",
-    "fontPreview": "天地玄黄宇宙洪荒日月盈昃辰宿列张"
+    "fontPreview": "天地玄黄宇宙洪荒日月盈昃辰宿列张",
+    "shortcuts": "键盘快捷键",
+    "shortcutNewNote": "新建笔记",
+    "shortcutSearch": "搜索笔记",
+    "shortcutSettings": "打开设置"
   },
   "date": {
     "yesterday": "昨天"

@@ -20,6 +20,10 @@ defineShortcuts({
     usingInput: true,
     handler: () => createNote(),
   },
+  meta_shift_n: {
+    usingInput: true,
+    handler: () => createNote(),
+  },
   'meta_,': {
     usingInput: true,
     handler: () => { settingsOpen.value = true },
