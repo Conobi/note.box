@@ -3,6 +3,8 @@ import type { EditorToolbarItem, EditorSuggestionMenuItem } from '@nuxt/ui'
 import type { JSONContent, ChainedCommands, Editor } from '@tiptap/vue-3'
 import { Extension } from '@tiptap/vue-3'
 import { TableKit } from '@tiptap/extension-table/kit'
+import { TaskList } from '@tiptap/extension-task-list'
+import { TaskItem } from '@tiptap/extension-task-item'
 
 interface EditorHandler {
   canExecute: (editor: Editor) => boolean
@@ -30,9 +32,13 @@ const TableKeymap = Extension.create({
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const tableExtensions: any[] = [
+const editorExtensions: any[] = [
   TableKit,
   TableKeymap,
+  TaskList,
+  TaskItem.configure({
+    nested: true,
+  }),
 ]
 
 const props = defineProps<{
@@ -49,7 +55,16 @@ const noteId = computed(() => noteFromSlug.value?.id)
 const { note, save, flush, onSlugUpdate } = useNote(noteId.value ?? '')
 
 onSlugUpdate((newSlug) => {
-  router.replace(`/notes/${newSlug}`)
+  window.history.replaceState(window.history.state, '', `/notes/${newSlug}`)
+})
+
+const initialContent = note.value?.content
+
+useHead({
+  title: computed(() => {
+    const title = note.value?.title || t('editor.untitled')
+    return `${title} - note.box`
+  }),
 })
 
 watch(note, (n) => {
@@ -191,8 +206,8 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
   <div v-if="note" class="zen-editor pt-12 sm:pt-16">
     <UEditor
       v-slot="{ editor }"
-      :model-value="note.content"
-      :extensions="tableExtensions"
+      :model-value="initialContent"
+      :extensions="editorExtensions"
       :handlers="handlers"
       content-type="json"
       :placeholder="{
