@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>note.box — Branding Kit</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #f5f5f5;
+      --fg: #1a1a1a;
+      --fg-muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #3b82f6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.6;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    header p {
+      color: var(--fg-muted);
+      font-size: 14px;
+    }
+
+    section {
+      margin-bottom: 56px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .section-desc {
+      font-size: 13px;
+      color: var(--fg-muted);
+      margin-bottom: 24px;
+    }
+
+    .logo-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 20px 24px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .logo-row.dark {
+      background: var(--fg);
+      border-color: transparent;
+    }
+
+    .logo-row.dark .logo-label,
+    .logo-row.dark .logo-size {
+      color: #9ca3af;
+    }
+
+    .logo-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--fg-muted);
+      min-width: 80px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+
+    .logo-size {
+      font-size: 11px;
+      color: var(--fg-muted);
+      min-width: 56px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .logo-display {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 16px;
+    }
+
+    .icon-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .icon-card.dark {
+      background: var(--fg);
+      border-color: transparent;
+    }
+
+    .icon-card .icon-size {
+      font-size: 11px;
+      color: var(--fg-muted);
+    }
+
+    .icon-card.dark .icon-size {
+      color: #9ca3af;
+    }
+
+    .color-swatches {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .swatch-box {
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .swatch-label {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .swatch-value {
+      font-size: 11px;
+      color: var(--fg-muted);
+    }
+
+    .specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .specs-table th,
+    .specs-table td {
+      text-align: left;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .specs-table th {
+      font-weight: 500;
+      color: var(--fg-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    code {
+      font-size: 12px;
+      background: var(--bg-alt);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .files-list {
+      list-style: none;
+      font-size: 13px;
+    }
+
+    .files-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+    }
+
+    .files-list code {
+      font-weight: 500;
+      min-width: 160px;
+    }
+
+    .files-list span {
+      color: var(--fg-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>note.box — Branding Kit</h1>
+    <p>Logo assets, usage guidelines, and specifications</p>
+  </header>
+
+  <!-- ============================== -->
+  <!-- SECTION 1: Full Logo (Path)    -->
+  <!-- ============================== -->
+  <section>
+    <h2>Full Logo — Path Version</h2>
+    <p class="section-desc">Portable version with text converted to outlines. Works everywhere: <code>&lt;img&gt;</code>, CSS background, favicon, etc.</p>
+
+    <div class="logo-grid">
+      <!-- 16px — Favicon / Tab -->
+      <div class="logo-row">
+        <span class="logo-label">Favicon</span>
+        <div class="logo-display">
+          <img src="logo.svg" height="16">
+        </div>
+        <span class="logo-size">16px</span>
+      </div>
+
+      <!-- 24px — Navbar compact -->
+      <div class="logo-row">
+        <span class="logo-label">Navbar SM</span>
+        <div class="logo-display">
+          <img src="logo.svg" height="24">
+        </div>
+        <span class="logo-size">24px</span>
+      </div>
+
+      <!-- 32px — Navbar default -->
+      <div class="logo-row">
+        <span class="logo-label">Navbar</span>
+        <div class="logo-display">
+          <img src="logo.svg" height="32">
+        </div>
+        <span class="logo-size">32px</span>
+      </div>
+
+      <!-- 40px — Native size (1:1 with viewBox) -->
+      <div class="logo-row">
+        <span class="logo-label">Default</span>
+        <div class="logo-display">
+          <img src="logo.svg" height="40">
+        </div>
+        <span class="logo-size">40px</span>
+      </div>
+
+      <!-- 56px — Hero / Landing -->
+      <div class="logo-row">
+        <span class="logo-label">Hero</span>
+        <div class="logo-display">
+          <img src="logo.svg" height="56">
+        </div>
+        <span class="logo-size">56px</span>
+      </div>
+
+      <!-- 80px — Splash / Print -->
+      <div class="logo-row">
+        <span class="logo-label">Splash</span>
+        <div class="logo-display">
+          <img src="logo.svg" height="80">
+        </div>
+        <span class="logo-size">80px</span>
+      </div>
+
+      <!-- Dark backgrounds -->
+      <div class="logo-row dark">
+        <span class="logo-label">On dark</span>
+        <div class="logo-display">
+          <img src="logo.svg" height="40" style="filter: invert(1);">
+        </div>
+        <span class="logo-size">40px</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- SECTION 2: Full Logo (Text)    -->
+  <!-- ============================== -->
+  <section>
+    <h2>Full Logo — Text Version</h2>
+    <p class="section-desc">Live-text version using <code>@import</code> for Vollkorn, inlined for selectable text. Best for inline SVG where the font loads. Falls back to serif.</p>
+
+    <div class="logo-grid">
+      <div class="logo-row">
+        <span class="logo-label">Navbar SM</span>
+        <div class="logo-display">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 40" height="24"><defs><style>@import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@1,550&amp;display=swap');</style></defs><g transform="translate(6, 6) scale(1.167)" fill="currentColor"><path d="M5.4 6h13.2l-.85-1H6.25zm4.6 6.75l2-1l2 1V8h-4zM5 21q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V10q-.525 0-1.037.075t-.963.3V8h-3v5.125l-1.925 1.925L12 14l-4 2V8H5v11h7v2zM16 8h3zM5 8h9.075zm9 13v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></g><text x="42" y="26" font-family="'Vollkorn', serif" font-style="italic" font-weight="550" font-size="26" fill="currentColor">note.box</text></svg>
+        </div>
+        <span class="logo-size">24px</span>
+      </div>
+
+      <div class="logo-row">
+        <span class="logo-label">Navbar</span>
+        <div class="logo-display">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 40" height="32"><defs><style>@import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@1,550&amp;display=swap');</style></defs><g transform="translate(6, 6) scale(1.167)" fill="currentColor"><path d="M5.4 6h13.2l-.85-1H6.25zm4.6 6.75l2-1l2 1V8h-4zM5 21q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V10q-.525 0-1.037.075t-.963.3V8h-3v5.125l-1.925 1.925L12 14l-4 2V8H5v11h7v2zM16 8h3zM5 8h9.075zm9 13v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></g><text x="42" y="26" font-family="'Vollkorn', serif" font-style="italic" font-weight="550" font-size="26" fill="currentColor">note.box</text></svg>
+        </div>
+        <span class="logo-size">32px</span>
+      </div>
+
+      <div class="logo-row">
+        <span class="logo-label">Default</span>
+        <div class="logo-display">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 40" height="40"><defs><style>@import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@1,550&amp;display=swap');</style></defs><g transform="translate(6, 6) scale(1.167)" fill="currentColor"><path d="M5.4 6h13.2l-.85-1H6.25zm4.6 6.75l2-1l2 1V8h-4zM5 21q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V10q-.525 0-1.037.075t-.963.3V8h-3v5.125l-1.925 1.925L12 14l-4 2V8H5v11h7v2zM16 8h3zM5 8h9.075zm9 13v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></g><text x="42" y="26" font-family="'Vollkorn', serif" font-style="italic" font-weight="550" font-size="26" fill="currentColor">note.box</text></svg>
+        </div>
+        <span class="logo-size">40px</span>
+      </div>
+
+      <div class="logo-row">
+        <span class="logo-label">Hero</span>
+        <div class="logo-display">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 40" height="56"><defs><style>@import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@1,550&amp;display=swap');</style></defs><g transform="translate(6, 6) scale(1.167)" fill="currentColor"><path d="M5.4 6h13.2l-.85-1H6.25zm4.6 6.75l2-1l2 1V8h-4zM5 21q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V10q-.525 0-1.037.075t-.963.3V8h-3v5.125l-1.925 1.925L12 14l-4 2V8H5v11h7v2zM16 8h3zM5 8h9.075zm9 13v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></g><text x="42" y="26" font-family="'Vollkorn', serif" font-style="italic" font-weight="550" font-size="26" fill="currentColor">note.box</text></svg>
+        </div>
+        <span class="logo-size">56px</span>
+      </div>
+
+      <div class="logo-row">
+        <span class="logo-label">Splash</span>
+        <div class="logo-display">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 40" height="80"><defs><style>@import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@1,550&amp;display=swap');</style></defs><g transform="translate(6, 6) scale(1.167)" fill="currentColor"><path d="M5.4 6h13.2l-.85-1H6.25zm4.6 6.75l2-1l2 1V8h-4zM5 21q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V10q-.525 0-1.037.075t-.963.3V8h-3v5.125l-1.925 1.925L12 14l-4 2V8H5v11h7v2zM16 8h3zM5 8h9.075zm9 13v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></g><text x="42" y="26" font-family="'Vollkorn', serif" font-style="italic" font-weight="550" font-size="26" fill="currentColor">note.box</text></svg>
+        </div>
+        <span class="logo-size">80px</span>
+      </div>
+
+      <div class="logo-row dark">
+        <span class="logo-label">On dark</span>
+        <div class="logo-display">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138 40" height="40" style="color: white;"><defs><style>@import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@1,550&amp;display=swap');</style></defs><g transform="translate(6, 6) scale(1.167)" fill="currentColor"><path d="M5.4 6h13.2l-.85-1H6.25zm4.6 6.75l2-1l2 1V8h-4zM5 21q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V10q-.525 0-1.037.075t-.963.3V8h-3v5.125l-1.925 1.925L12 14l-4 2V8H5v11h7v2zM16 8h3zM5 8h9.075zm9 13v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm7.5-6.575l-.925-.925zm-6 5.075h.95l3.025-3.05l-.45-.475l-.475-.45l-3.05 3.025zm3.525-3.525l-.475-.45l.925.925z"/></g><text x="42" y="26" font-family="'Vollkorn', serif" font-style="italic" font-weight="550" font-size="26" fill="currentColor">note.box</text></svg>
+        </div>
+        <span class="logo-size">40px</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- SECTION 3: Icon Only           -->
+  <!-- ============================== -->
+  <section>
+    <h2>Icon Only</h2>
+    <p class="section-desc">Standalone icon for compact spaces: favicons, app icons, mobile tabs, avatars.</p>
+
+    <div class="icon-grid">
+      <div class="icon-card">
+        <img src="logo-icon.svg" width="16" height="16">
+        <span class="icon-size">16px</span>
+      </div>
+      <div class="icon-card">
+        <img src="logo-icon.svg" width="24" height="24">
+        <span class="icon-size">24px</span>
+      </div>
+      <div class="icon-card">
+        <img src="logo-icon.svg" width="32" height="32">
+        <span class="icon-size">32px</span>
+      </div>
+      <div class="icon-card">
+        <img src="logo-icon.svg" width="48" height="48">
+        <span class="icon-size">48px</span>
+      </div>
+      <div class="icon-card">
+        <img src="logo-icon.svg" width="64" height="64">
+        <span class="icon-size">64px</span>
+      </div>
+      <div class="icon-card dark">
+        <img src="logo-icon.svg" width="48" height="48" style="filter: invert(1);">
+        <span class="icon-size">48px dark</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- SECTION 4: Usage & Colors      -->
+  <!-- ============================== -->
+  <section>
+    <h2>Brand Colors</h2>
+    <p class="section-desc">The logo uses <code>currentColor</code> and adapts to its context. These are the recommended usage colors.</p>
+
+    <div class="color-swatches">
+      <div class="swatch">
+        <div class="swatch-box" style="background: #1a1a1a;"></div>
+        <span class="swatch-label">Primary</span>
+        <span class="swatch-value">#1A1A1A</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-box" style="background: #ffffff; border-color: #d1d5db;"></div>
+        <span class="swatch-label">Inverse</span>
+        <span class="swatch-value">#FFFFFF</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-box" style="background: #6b7280;"></div>
+        <span class="swatch-label">Muted</span>
+        <span class="swatch-value">#6B7280</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- SECTION 5: Specifications      -->
+  <!-- ============================== -->
+  <section>
+    <h2>Specifications</h2>
+    <p class="section-desc">Technical details for the logo construction.</p>
+
+    <table class="specs-table">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>ViewBox</td><td><code>0 0 138 40</code></td></tr>
+        <tr><td>Aspect ratio</td><td>3.45 : 1</td></tr>
+        <tr><td>Icon</td><td>material-symbols:box-edit-outline (28×28 optical)</td></tr>
+        <tr><td>Icon position</td><td><code>translate(6, 6) scale(1.167)</code></td></tr>
+        <tr><td>Typeface</td><td>Vollkorn Italic, weight 550</td></tr>
+        <tr><td>Font size</td><td>26 units</td></tr>
+        <tr><td>Text baseline</td><td>y = 26 (x-height optical center)</td></tr>
+        <tr><td>Icon-to-text gap</td><td>8 units (~28% of icon width)</td></tr>
+        <tr><td>Clear space</td><td>6 units (15% of height) on all sides</td></tr>
+        <tr><td>Fill</td><td><code>currentColor</code> (inherits from parent)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================== -->
+  <!-- SECTION 6: Files               -->
+  <!-- ============================== -->
+  <section>
+    <h2>Asset Files</h2>
+    <p class="section-desc">All source files in <code>app/assets/</code>.</p>
+
+    <ul class="files-list">
+      <li>
+        <code>logo.svg</code>
+        <span>Full logo with text as path outlines — portable, no font dependency</span>
+      </li>
+      <li>
+        <code>logo-text.svg</code>
+        <span>Full logo with live text — requires Vollkorn font, best for inline SVG</span>
+      </li>
+      <li>
+        <code>logo-icon.svg</code>
+        <span>Standalone icon (24×24) — favicons, app icons, compact UI</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============================== -->
+  <!-- SECTION 7: Recommended Sizes   -->
+  <!-- ============================== -->
+  <section>
+    <h2>Recommended Sizes</h2>
+    <p class="section-desc">Guidelines for common use cases.</p>
+
+    <table class="specs-table">
+      <thead>
+        <tr>
+          <th>Context</th>
+          <th>Asset</th>
+          <th>Height</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Browser favicon</td><td>logo-icon.svg</td><td>16px / 32px</td></tr>
+        <tr><td>Mobile app icon</td><td>logo-icon.svg</td><td>48px / 64px</td></tr>
+        <tr><td>Sidebar / compact nav</td><td>logo-icon.svg</td><td>24px</td></tr>
+        <tr><td>Navbar (small)</td><td>logo.svg</td><td>24px</td></tr>
+        <tr><td>Navbar (default)</td><td>logo.svg</td><td>32px</td></tr>
+        <tr><td>Page header</td><td>logo.svg</td><td>40px</td></tr>
+        <tr><td>Hero / landing</td><td>logo.svg</td><td>56px</td></tr>
+        <tr><td>Splash / print</td><td>logo.svg</td><td>80px+</td></tr>
+        <tr><td>Social media avatar</td><td>logo-icon.svg</td><td>48px / 64px</td></tr>
+        <tr><td>Email signature</td><td>logo.svg</td><td>32px</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</body>
+</html>
