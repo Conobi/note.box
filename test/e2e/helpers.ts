@@ -1,3 +1,4 @@
+import { expect } from '@nuxt/test-utils/playwright'
 import type { Locator, Page } from '@playwright/test'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,6 +92,32 @@ export async function seedNotes(
 /** Wait for debounced auto-save to complete (300ms debounce + buffer). */
 export async function waitForSave(page: Page) {
   await page.waitForTimeout(500)
+}
+
+/**
+ * Click on a text node inside the TipTap editor and verify the cursor
+ * actually landed in the expected block element (not the heading).
+ * TipTap may asynchronously reset cursor position during initialization,
+ * so we retry the click until the selection is confirmed.
+ */
+export async function clickEditorText(page: Page, editor: Locator, text: string) {
+  const target = editor.getByText(text)
+  await expect(target).toBeVisible()
+  await expect(async () => {
+    await target.click()
+    const inCorrectBlock = await page.evaluate((t) => {
+      const sel = window.getSelection()
+      if (!sel?.anchorNode) return false
+      let el: Element | null = sel.anchorNode instanceof Element
+        ? sel.anchorNode
+        : sel.anchorNode.parentElement
+      while (el && !el.matches('p, h1, h2, h3, h4, h5, h6, li')) {
+        el = el.parentElement
+      }
+      return el?.textContent?.includes(t) ?? false
+    }, text)
+    expect(inCorrectBlock).toBe(true)
+  }).toPass({ timeout: 5000 })
 }
 
 export function getSidebarAddButton(page: Page): Locator {

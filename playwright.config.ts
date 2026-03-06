@@ -9,6 +9,7 @@ export default defineConfig<ConfigOptions>({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1,
+  maxFailures: process.env.CI ? 0 : 1,
   reporter: 'html',
   // Nuxt build via _nuxtHooks worker fixture can take over 30s (font resolution,
   // vite optimizeDeps, etc.) — raise the default 30s test timeout accordingly.
