@@ -55,4 +55,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .output/public --project-name=note-box --branch=${{ steps.deploy-target.outputs.branch }}
+          command: pages deploy .output/public --project-name=notebox --branch=${{ steps.deploy-target.outputs.branch }} --commit-dirty=true
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
