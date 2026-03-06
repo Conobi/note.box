@@ -20,6 +20,12 @@ function applyMarks(text: string, marks?: JSONContent['marks']): string {
       case 'underline':
         result = `<u>${result}</u>`
         break
+      case 'highlight':
+        result = `==${result}==`
+        break
+      case 'link':
+        result = `[${result}](${mark.attrs?.href ?? ''})`
+        break
     }
   }
   return result
@@ -74,6 +80,29 @@ function convertNode(node: JSONContent, indent = ''): string {
     }
     case 'horizontalRule':
       return `${indent}---`
+    case 'taskList':
+      return (node.content ?? []).map((item) => {
+        const checked = item.attrs?.checked ? 'x' : ' '
+        const lines = (item.content ?? []).map((child, i) => {
+          const converted = convertNode(child, '  ')
+          return i === 0 ? `${indent}- [${checked}] ${converted.trimStart()}` : converted
+        })
+        return lines.join('\n')
+      }).join('\n')
+    case 'table': {
+      const rows = node.content ?? []
+      return rows.map((row, rowIndex) => {
+        const cells = (row.content ?? []).map(cell =>
+          (cell.content ?? []).map(child => inlineContent(child)).join(' '),
+        )
+        const line = `| ${cells.join(' | ')} |`
+        if (rowIndex === 0) {
+          const separator = `| ${cells.map(() => '---').join(' | ')} |`
+          return `${line}\n${separator}`
+        }
+        return line
+      }).join('\n')
+    }
     default:
       return ''
   }

@@ -179,4 +179,149 @@ describe('jsonContentToMarkdown', () => {
     }
     expect(jsonContentToMarkdown(doc)).toBe('***both***')
   })
+
+  it('applies highlight mark', () => {
+    const doc = {
+      type: 'doc' as const,
+      content: [
+        {
+          type: 'paragraph' as const,
+          content: [{ type: 'text' as const, text: 'important', marks: [{ type: 'highlight' }] }],
+        },
+      ],
+    }
+    expect(jsonContentToMarkdown(doc)).toBe('==important==')
+  })
+
+  it('applies link mark', () => {
+    const doc = {
+      type: 'doc' as const,
+      content: [
+        {
+          type: 'paragraph' as const,
+          content: [{ type: 'text' as const, text: 'click here', marks: [{ type: 'link', attrs: { href: 'https://example.com' } }] }],
+        },
+      ],
+    }
+    expect(jsonContentToMarkdown(doc)).toBe('[click here](https://example.com)')
+  })
+
+  it('converts task list with checked and unchecked items', () => {
+    const doc = {
+      type: 'doc' as const,
+      content: [
+        {
+          type: 'taskList' as const,
+          content: [
+            { type: 'taskItem' as const, attrs: { checked: false }, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'Todo' }] }] },
+            { type: 'taskItem' as const, attrs: { checked: true }, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'Done' }] }] },
+          ],
+        },
+      ],
+    }
+    expect(jsonContentToMarkdown(doc)).toBe('- [ ] Todo\n- [x] Done')
+  })
+
+  it('converts table with header row', () => {
+    const doc = {
+      type: 'doc' as const,
+      content: [
+        {
+          type: 'table' as const,
+          content: [
+            {
+              type: 'tableRow' as const,
+              content: [
+                { type: 'tableHeader' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'Name' }] }] },
+                { type: 'tableHeader' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'Value' }] }] },
+              ],
+            },
+            {
+              type: 'tableRow' as const,
+              content: [
+                { type: 'tableCell' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'A' }] }] },
+                { type: 'tableCell' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: '1' }] }] },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+    expect(jsonContentToMarkdown(doc)).toBe('| Name | Value |\n| --- | --- |\n| A | 1 |')
+  })
+
+  it('converts table with empty cells', () => {
+    const doc = {
+      type: 'doc' as const,
+      content: [
+        {
+          type: 'table' as const,
+          content: [
+            {
+              type: 'tableRow' as const,
+              content: [
+                { type: 'tableHeader' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'Col1' }] }] },
+                { type: 'tableHeader' as const, content: [{ type: 'paragraph' as const, content: [] }] },
+              ],
+            },
+            {
+              type: 'tableRow' as const,
+              content: [
+                { type: 'tableCell' as const, content: [{ type: 'paragraph' as const, content: [] }] },
+                { type: 'tableCell' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'Val' }] }] },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+    expect(jsonContentToMarkdown(doc)).toBe('| Col1 |  |\n| --- | --- |\n|  | Val |')
+  })
+
+  it('converts table with formatted content in cells', () => {
+    const doc = {
+      type: 'doc' as const,
+      content: [
+        {
+          type: 'table' as const,
+          content: [
+            {
+              type: 'tableRow' as const,
+              content: [
+                { type: 'tableHeader' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'Name', marks: [{ type: 'bold' }] }] }] },
+              ],
+            },
+            {
+              type: 'tableRow' as const,
+              content: [
+                { type: 'tableCell' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'link', marks: [{ type: 'link', attrs: { href: 'https://example.com' } }] }] }] },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+    expect(jsonContentToMarkdown(doc)).toBe('| **Name** |\n| --- |\n| [link](https://example.com) |')
+  })
+
+  it('converts table with header row only', () => {
+    const doc = {
+      type: 'doc' as const,
+      content: [
+        {
+          type: 'table' as const,
+          content: [
+            {
+              type: 'tableRow' as const,
+              content: [
+                { type: 'tableHeader' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'A' }] }] },
+                { type: 'tableHeader' as const, content: [{ type: 'paragraph' as const, content: [{ type: 'text' as const, text: 'B' }] }] },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+    expect(jsonContentToMarkdown(doc)).toBe('| A | B |\n| --- | --- |')
+  })
 })
