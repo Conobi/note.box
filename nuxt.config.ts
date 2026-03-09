@@ -16,11 +16,6 @@ export default defineNuxtConfig({
   },
 
   fonts: {
-    // Google Sans Flex is a proprietary Google font not available via any public
-    // provider — declare it explicitly so nuxt/fonts skips the network lookup.
-    families: [
-      { name: 'Google Sans Flex', provider: 'none' },
-    ],
     defaults: {
       fallbacks: {
         serif: ['Georgia', 'Times New Roman', 'serif'],
