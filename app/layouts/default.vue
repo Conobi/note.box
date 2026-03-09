@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SupportedLocale } from '~/types/settings'
+import { useSwipeGesture } from '~/composables/useSwipeGesture'
 
 const { t } = useI18n()
 const { setLocale, locale: i18nLocale } = useI18n()
@@ -50,6 +51,8 @@ defineShortcuts({
 const RTL_LOCALES = new Set(['ar'])
 const isRtl = computed(() => RTL_LOCALES.has(appLocale.value))
 
+useSwipeGesture(sidebarOpen, isRtl)
+
 watch(colorScheme, (scheme) => {
   colorMode.preference = scheme
 }, { immediate: true })
@@ -80,9 +83,9 @@ function createNote() {
 </script>
 
 <template>
-  <div :class="['min-h-screen bg-default flex flex-col lg:flex-row', `font-${font}`]">
+  <div :class="['min-h-dvh bg-default flex flex-col lg:flex-row', `font-${font}`]">
     <!-- Mobile top bar -->
-    <header class="lg:hidden flex items-center justify-between px-3 py-2 border-b border-default">
+    <header class="safe-top lg:hidden flex items-center justify-between px-3 py-2 border-b border-default">
       <UTooltip :text="t('app.openMenu')">
         <UButton
           icon="i-lucide-menu"
@@ -162,7 +165,7 @@ function createNote() {
     <SettingsModal v-model:open="settingsOpen" />
 
     <!-- Main content -->
-    <main class="flex-1 min-w-0 w-full max-w-3xl mx-auto px-4 pb-10">
+    <main class="safe-main flex-1 min-w-0 w-full max-w-3xl mx-auto px-4 pb-10">
       <slot />
     </main>
   </div>

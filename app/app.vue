@@ -13,8 +13,9 @@ useHead({
   meta: [
     { name: 'description', content: 'A minimal, distraction-free note-taking app.' },
     { name: 'theme-color', content: () => colorMode.value === 'dark' ? '#020617' : '#ffffff' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
-    { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+    { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
   ],
   link: [
     { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },

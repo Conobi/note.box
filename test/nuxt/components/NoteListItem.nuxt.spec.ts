@@ -102,4 +102,15 @@ describe('NoteListItem', () => {
     const deleteTooltip = tooltips.find(t => t.props('text') === 'Delete note')
     expect(deleteTooltip).toBeTruthy()
   })
+
+  it('delete button is always visible on touch devices via media query class', async () => {
+    const note = makeNote()
+    const component = await mountSuspended(wrapWithUApp(note, false))
+
+    const button = component.find('button')
+    // opacity-0 hides it by default; group-hover/item:opacity-100 shows on pointer hover;
+    // [@media(hover:none)]:opacity-100 ensures it is always visible on touch devices
+    expect(button.classes()).toContain('opacity-0')
+    expect(button.classes().some(c => c.includes('hover:none'))).toBe(true)
+  })
 })

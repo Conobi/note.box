@@ -155,3 +155,28 @@ export function getTopBarAddButton(page: Page): Locator {
 export function getTopBarSettingsButton(page: Page): Locator {
   return page.locator('header').getByRole('button', { name: 'Settings' })
 }
+
+/**
+ * Simulate a touch swipe by dispatching TouchEvents via the DOM.
+ * Requires the project to run on a touch-enabled device (hasTouch: true).
+ */
+export async function swipe(
+  page: Page,
+  from: { x: number, y: number },
+  to: { x: number, y: number },
+): Promise<void> {
+  await page.evaluate(({ from, to }) => {
+    const startEl = document.elementFromPoint(from.x, from.y) ?? document.body
+    const endEl = document.elementFromPoint(to.x, to.y) ?? document.body
+    const startTouch = new Touch({ identifier: 1, target: startEl, clientX: from.x, clientY: from.y })
+    const endTouch = new Touch({ identifier: 1, target: endEl, clientX: to.x, clientY: to.y })
+    startEl.dispatchEvent(new TouchEvent('touchstart', {
+      bubbles: true, cancelable: false,
+      touches: [startTouch], changedTouches: [startTouch],
+    }))
+    endEl.dispatchEvent(new TouchEvent('touchend', {
+      bubbles: true, cancelable: false,
+      touches: [], changedTouches: [endTouch],
+    }))
+  }, { from, to })
+}
