@@ -80,7 +80,7 @@ const formattedDate = computed(() => formatSmartDate(props.note.updatedAt, new D
             color="neutral"
             variant="ghost"
             :aria-label="t('noteListItem.deleteNote')"
-            class="opacity-0 group-hover/item:opacity-100"
+            class="opacity-0 group-hover/item:opacity-100 [@media(hover:none)]:opacity-100"
             @click.prevent="$emit('delete', note.id)"
           />
         </UTooltip>

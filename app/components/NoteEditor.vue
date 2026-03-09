@@ -292,6 +292,15 @@ if (import.meta.client) {
     flush()
     window.removeEventListener('beforeunload', flush)
   })
+
+  // Soft keyboard: scroll active element into view when virtual keyboard appears
+  function onViewportResize() {
+    document.activeElement?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }
+  window.visualViewport?.addEventListener('resize', onViewportResize)
+  onBeforeUnmount(() => {
+    window.visualViewport?.removeEventListener('resize', onViewportResize)
+  })
 }
 
 const toolbarItems = computed<EditorToolbarItem<CustomHandlers>[][]>(() => [
@@ -417,7 +426,7 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
 
 <template>
   <UContextMenu v-if="note" :modal="false" :items="tableContextMenuItems">
-    <div class="zen-editor pt-12 sm:pt-16" @contextmenu.capture="onContextMenu">
+    <div class="zen-editor pt-4 sm:pt-12" @contextmenu.capture="onContextMenu">
       <UEditor
         v-slot="{ editor }"
         :model-value="initialContent"

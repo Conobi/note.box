@@ -56,6 +56,22 @@ describe('NoteEditor', () => {
     vi.useRealTimers()
   })
 
+  it('editor wrapper has reduced mobile top padding (pt-4 sm:pt-12)', async () => {
+    seedNote()
+
+    const component = await mountSuspended(NoteEditor, {
+      props: { noteSlug: 'test-note' },
+      global: { stubs: editorStubs },
+    })
+
+    const wrapper = component.find('.zen-editor')
+    expect(wrapper.classes()).toContain('pt-4')
+    expect(wrapper.classes()).toContain('sm:pt-12')
+    // Ensure old over-padded classes are not present
+    expect(wrapper.classes()).not.toContain('pt-12')
+    expect(wrapper.classes()).not.toContain('sm:pt-16')
+  })
+
   it('redirects when note does not exist', async () => {
     const component = await mountSuspended(NoteEditor, {
       props: { noteSlug: 'nonexistent' },

@@ -32,7 +32,16 @@ export default defineConfig<ConfigOptions>({
   projects: [
     {
       name: 'chromium',
+      testIgnore: '**/swipe.e2e.ts',
       use: { ...devices['Desktop Chrome'], locale: 'en-US' },
+    },
+    {
+      // Touch-emulated mobile project: hasTouch=true, correct UA, 393x851 viewport.
+      // Runs only the swipe tests — those are the only tests that require real touch
+      // events. Responsive layout tests use manual setViewportSize and run on chromium.
+      name: 'mobile-chrome',
+      testMatch: '**/swipe.e2e.ts',
+      use: { ...devices['Pixel 5'], locale: 'en-US' },
     },
   ],
 })
