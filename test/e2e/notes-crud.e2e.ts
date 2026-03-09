@@ -23,6 +23,40 @@ test.describe('Notes CRUD', () => {
     await expect(page.locator('.tiptap')).toBeVisible()
   })
 
+  test('new note editor loads after creating while existing note has unsaved content', async ({ page, goto }) => {
+    await seedNote(page, goto)
+
+    // Type content into the existing note — this arms a pending debounced save
+    const editor = page.locator('.tiptap')
+    await editor.locator('p').first().click()
+    await page.keyboard.type('some unsaved content')
+
+    // Create a new note BEFORE the debounce fires (flush will run on unmount)
+    const addButton = getSidebarAddButton(page)
+    await addButton.click({ force: true })
+
+    // The new note's URL must differ from the old one
+    await expect(page).not.toHaveURL(/test-note/)
+    await expect(page).toHaveURL(/\/notes\//)
+
+    // The editor must be visible — this is the bug: it was not loading
+    await expect(page.locator('.tiptap')).toBeVisible()
+  })
+
+  test('new note editor shows blank default content, not content from previous note', async ({ page, goto }) => {
+    await seedNote(page, goto)
+
+    const addButton = getSidebarAddButton(page)
+    await addButton.click({ force: true })
+
+    await expect(page).toHaveURL(/\/notes\//)
+    await expect(page.locator('.tiptap')).toBeVisible()
+
+    // New note should not contain the previous note's text
+    await expect(page.locator('.tiptap')).not.toContainText('Test Note')
+    await expect(page.locator('.tiptap')).not.toContainText('Hello world')
+  })
+
   test('edit a note and auto-save persists content', async ({ page, goto }) => {
     await seedNote(page, goto)
 

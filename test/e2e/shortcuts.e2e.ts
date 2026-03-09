@@ -45,7 +45,7 @@ test.describe('Keyboard Shortcuts', () => {
 
     // Settings modal should appear
     await expect(page.getByRole('dialog')).toBeVisible()
-    await expect(page.getByRole('dialog').getByText('Settings')).toBeVisible()
+    await expect(page.getByRole('dialog').getByRole('heading', { name: 'Settings' })).toBeVisible()
   })
 
   test('Ctrl/Cmd+K focuses the search input on desktop', async ({ page, goto }) => {
@@ -95,9 +95,29 @@ test.describe('Keyboard Shortcuts', () => {
     const urlBefore = page.url()
     await page.keyboard.press(`${meta}+n`)
 
-    // Should navigate to a new note
-    await expect(page).toHaveURL(/\/notes\//)
+    // router.push() is async — wait until URL actually changes (not just matches /notes/,
+    // which the current URL already does)
+    await page.waitForURL(url => url.href !== urlBefore, { timeout: 10_000 })
     expect(page.url()).not.toBe(urlBefore)
+    await expect(page.locator('.tiptap')).toBeVisible()
+  })
+
+  test('Ctrl/Cmd+N new note editor loads after typing in the current note', async ({ page, goto }) => {
+    await seedNote(page, goto)
+
+    // Type content — arms the debounced save so flush() will fire on unmount
+    const editor = page.locator('.tiptap')
+    await editor.locator('p').first().click()
+    await page.keyboard.type('typed before creating new note')
+
+    const urlBefore = page.url()
+    await page.keyboard.press(`${meta}+n`)
+
+    // router.push() is async — wait until URL actually changes
+    await page.waitForURL(url => url.href !== urlBefore, { timeout: 10_000 })
+
+    // The editor must be visible — this is the regression
+    await expect(page.locator('.tiptap')).toBeVisible()
   })
 
   test('Ctrl/Cmd+, opens settings when editor is focused', async ({ page, goto }) => {
@@ -112,7 +132,7 @@ test.describe('Keyboard Shortcuts', () => {
 
     // Settings modal should appear
     await expect(page.getByRole('dialog')).toBeVisible()
-    await expect(page.getByRole('dialog').getByText('Settings')).toBeVisible()
+    await expect(page.getByRole('dialog').getByRole('heading', { name: 'Settings' })).toBeVisible()
   })
 
   test('Ctrl/Cmd+K focuses search when editor is focused', async ({ page, goto }) => {
@@ -158,8 +178,8 @@ test.describe('Tooltips', () => {
   test('sidebar new note button shows tooltip on hover', async ({ page, goto }) => {
     await seedNote(page, goto)
 
-    // Tab to the "New note" button (first Tab stop in sidebar)
-    await page.keyboard.press('Tab')
+    // Hover the button (force: true because it's inside opacity-0 container until sidebar is hovered)
+    await page.locator('aside').getByRole('button', { name: 'New note' }).hover({ force: true })
 
     const tooltip = page.locator('[role="tooltip"]', { hasText: 'New note' })
     await expect(tooltip).toBeVisible({ timeout: 3000 })
@@ -168,9 +188,8 @@ test.describe('Tooltips', () => {
   test('sidebar settings button shows tooltip on hover', async ({ page, goto }) => {
     await seedNote(page, goto)
 
-    // Tab twice to reach "Settings" button (second Tab stop)
-    await page.keyboard.press('Tab')
-    await page.keyboard.press('Tab')
+    // Hover the button (force: true because it's inside opacity-0 container until sidebar is hovered)
+    await page.locator('aside').getByRole('button', { name: 'Settings' }).hover({ force: true })
 
     const tooltip = page.locator('[role="tooltip"]', { hasText: 'Settings' })
     await expect(tooltip).toBeVisible({ timeout: 3000 })

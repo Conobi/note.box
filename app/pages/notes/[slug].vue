@@ -4,5 +4,7 @@ const noteSlug = computed(() => route.params.slug as string)
 </script>
 
 <template>
-  <NoteEditor :key="noteSlug" :note-slug="noteSlug" />
+  <div>
+    <NoteEditor :key="noteSlug" :note-slug="noteSlug" />
+  </div>
 </template>
