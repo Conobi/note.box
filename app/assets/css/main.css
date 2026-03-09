@@ -30,6 +30,14 @@
   opacity: 0;
 }
 
+/* ── Empty paragraph selection visibility ───────────────────── */
+/* Browsers don't paint selection over bare <br> elements, so an empty
+   paragraph included in a multi-paragraph selection looks invisible.
+   min-height ensures the line occupies space the browser can highlight. */
+.zen-editor .tiptap p:has(> br:only-child) {
+  min-height: 1lh;
+}
+
 /* ── Global typography baseline ──────────────────────────────── */
 .zen-editor .tiptap {
   font-kerning: auto;
