@@ -1,5 +1,18 @@
 # note.box
 
+## 0.2.0
+
+### Minor Changes
+
+- 3724d5b: Add mobile touch gestures, safe areas, and UI/UX improvements
+
+  - Swipe gestures on mobile for sidebar navigation
+  - Safe area insets support for notched devices
+  - Ctrl+Alt+N keyboard shortcut for new note (Chrome/Edge/Safari)
+  - Fix editor placeholder visibility when document has content
+  - Fix selection highlight on empty paragraphs in editor
+  - Self-hosted fonts via @fontsource packages
+
 ## 0.1.0
 
 ### Minor Changes
