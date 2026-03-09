@@ -14,7 +14,7 @@ const mobileNoteListRef = ref<{ focusSearch: () => void } | null>(null)
 const desktopNoteListRef = ref<{ focusSearch: () => void } | null>(null)
 
 const isMobile = () => window.innerWidth < 1024
-const newNoteKbds = computed(() => isMac() ? ['meta', 'N'] : ['meta', 'shift', 'N'])
+const newNoteKbds = computed(() => isFirefox() ? ['meta', 'shift', 'N'] : ['meta', 'alt', 'N'])
 
 defineShortcuts({
   meta_n: {
@@ -22,6 +22,10 @@ defineShortcuts({
     handler: () => createNote(),
   },
   meta_shift_n: {
+    usingInput: true,
+    handler: () => createNote(),
+  },
+  meta_alt_n: {
     usingInput: true,
     handler: () => createNote(),
   },
