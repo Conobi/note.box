@@ -45,8 +45,8 @@ test.describe('Editor', () => {
     await expect(editor.locator('p').first()).toContainText('Content A extra')
   })
 
-  test('placeholder appears only on the focused empty paragraph', async ({ page, goto }) => {
-    // Seed a note with multiple empty paragraphs to reproduce the duplicated placeholder bug
+  test('placeholder is hidden when document has content', async ({ page, goto }) => {
+    // A note with a heading + multiple empty paragraphs should show no placeholder
     const id = 'ed-ph'
     const slug = 'placeholder-test'
     await page.evaluate(({ id, slug }) => {
@@ -82,14 +82,49 @@ test.describe('Editor', () => {
     // Wait for TipTap decorations to update after selection change
     await page.waitForTimeout(100)
 
-    // Only the focused empty paragraph should have a non-empty data-placeholder
+    // No placeholder should appear when the document already has content
     const placeholderValues = await tiptap.evaluate((el) => {
       const paras = el.querySelectorAll('p.is-empty')
       return Array.from(paras).map(p => p.getAttribute('data-placeholder') || '')
     })
     const withPlaceholder = placeholderValues.filter((v: string) => v !== '')
-    expect(withPlaceholder).toHaveLength(1)
-    expect(withPlaceholder[0]).toBe('Start writing, type \'/\' for options...')
+    expect(withPlaceholder).toHaveLength(0)
+  })
+
+  test('placeholder appears on empty document', async ({ page, goto }) => {
+    // A brand-new note (empty doc) should show the placeholder when focused
+    const id = 'ed-ph-empty'
+    const slug = 'placeholder-empty'
+    await page.evaluate(({ id, slug }) => {
+      const now = new Date().toISOString()
+      const note = {
+        id,
+        slug,
+        title: '',
+        content: {
+          type: 'doc',
+          content: [
+            { type: 'heading', attrs: { level: 1 } },
+            { type: 'paragraph' },
+          ],
+        },
+        createdAt: now,
+        updatedAt: now,
+      }
+      localStorage.setItem('note.box:notes', JSON.stringify([note]))
+    }, { id, slug })
+
+    await goto(`/notes/${slug}`, { waitUntil: 'hydration' })
+
+    const tiptap = page.locator('.tiptap')
+
+    // Click on the empty paragraph to focus it
+    await tiptap.locator('p.is-empty').click()
+    await page.waitForTimeout(100)
+
+    // The focused paragraph should show the placeholder
+    const placeholder = await tiptap.locator('p.is-empty').getAttribute('data-placeholder')
+    expect(placeholder).toBe('Start writing, type \'/\' for options...')
   })
 
   test('content survives full page reload', async ({ page, goto }) => {
