@@ -1,9 +1,10 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, it, expect, vi, afterEach } from 'vitest'
+import type { Editor } from '@tiptap/vue-3'
 import MobileFormattingBar from '~/components/MobileFormattingBar.vue'
 
 // Minimal Editor stub with the methods MobileFormattingBar calls
-function makeEditor(overrides: Record<string, unknown> = {}) {
+function makeEditor(overrides: Record<string, unknown> = {}): Editor {
   const chainResult = {
     focus: () => chainResult,
     toggleBold: () => chainResult,
@@ -21,7 +22,7 @@ function makeEditor(overrides: Record<string, unknown> = {}) {
     isActive: vi.fn().mockReturnValue(false),
     getAttributes: vi.fn().mockReturnValue({}),
     ...overrides,
-  }
+  } as unknown as Editor
 }
 
 const stubs = {
@@ -77,7 +78,7 @@ describe('MobileFormattingBar', () => {
       toggleBold: vi.fn(() => chainResult),
       run: vi.fn(),
     }
-    const editor = { chain: () => chainResult, isActive: vi.fn().mockReturnValue(false), getAttributes: vi.fn().mockReturnValue({}) }
+    const editor = { chain: () => chainResult, isActive: vi.fn().mockReturnValue(false), getAttributes: vi.fn().mockReturnValue({}) } as unknown as Editor
     const wrapper = await mountSuspended(MobileFormattingBar, {
       props: { editor },
       global: { stubs },
@@ -93,7 +94,7 @@ describe('MobileFormattingBar', () => {
       toggleItalic: vi.fn(() => chainResult),
       run: vi.fn(),
     }
-    const editor = { chain: () => chainResult, isActive: vi.fn().mockReturnValue(false), getAttributes: vi.fn().mockReturnValue({}) }
+    const editor = { chain: () => chainResult, isActive: vi.fn().mockReturnValue(false), getAttributes: vi.fn().mockReturnValue({}) } as unknown as Editor
     const wrapper = await mountSuspended(MobileFormattingBar, {
       props: { editor },
       global: { stubs },
