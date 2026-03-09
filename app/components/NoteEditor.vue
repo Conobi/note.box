@@ -26,6 +26,12 @@ type TableHandlerKey =
 type CustomHandlers = Record<TableHandlerKey, EditorHandler>
 
 const editorRef = shallowRef<Editor>()
+const isTouch = import.meta.client ? isTouchDevice() : false
+const keyboardVisible = ref(
+  import.meta.client && window.visualViewport
+    ? window.visualViewport.height < window.innerHeight * 0.75
+    : false,
+)
 const TableKeymap = Extension.create({
   name: 'tableKeymap',
   priority: 200,
@@ -295,6 +301,9 @@ if (import.meta.client) {
 
   // Soft keyboard: scroll active element into view when virtual keyboard appears
   function onViewportResize() {
+    if (window.visualViewport) {
+      keyboardVisible.value = window.visualViewport.height < window.innerHeight * 0.75
+    }
     document.activeElement?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
   }
   window.visualViewport?.addEventListener('resize', onViewportResize)
@@ -444,11 +453,15 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
         :ui="{ base: 'py-4 min-h-[70vh]' }"
         @update:model-value="onUpdate"
       >
-        <UEditorToolbar :editor="editor" :items="toolbarItems" layout="bubble" />
+        <UEditorToolbar v-if="!isTouch" :editor="editor" :items="toolbarItems" layout="bubble" />
         <UEditorToolbar :editor="editor" :items="tableToolbarItems" layout="bubble" plugin-key="tableToolbar" :should-show="shouldShowTableToolbar" />
         <UEditorSuggestionMenu :editor="editor" :items="suggestionItems" />
         <UEditorDragHandle :editor="editor" />
       </UEditor>
+      <MobileFormattingBar
+        v-if="isTouch && keyboardVisible"
+        :editor="editorRef"
+      />
     </div>
   </UContextMenu>
 </template>
