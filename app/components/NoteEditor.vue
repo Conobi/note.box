@@ -425,9 +425,9 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
         :handlers="handlers"
         content-type="json"
         :placeholder="{
-          placeholder: ({ node, hasAnchor }: { node: any, hasAnchor: boolean }) => {
+          placeholder: ({ node, hasAnchor, editor }: { node: any, hasAnchor: boolean, editor: any }) => {
             if (node.type.name === 'heading' && node.attrs.level === 1) return t('editor.untitled')
-            if (hasAnchor) return t('editor.placeholder')
+            if (hasAnchor && editor.isEmpty) return t('editor.placeholder')
             return ''
           },
           showOnlyCurrent: false,
