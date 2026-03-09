@@ -298,6 +298,7 @@ if (import.meta.client) {
   // Soft keyboard: scroll active element into view when virtual keyboard appears
   function onViewportResize() {
     if (window.visualViewport) {
+      // 0.75: keyboard typically takes 40-50% of screen; 75% gives safe headroom
       keyboardVisible.value = window.visualViewport.height < window.innerHeight * 0.75
     }
     document.activeElement?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
