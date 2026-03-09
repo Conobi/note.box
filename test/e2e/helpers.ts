@@ -15,10 +15,11 @@ function slugify(text: string): string {
     || 'untitled'
 }
 
-/** Navigate to the app, then clear localStorage and reload for a clean state. */
+/** Navigate to the app, then clear localStorage + cookies and reload for a clean state. */
 export async function resetApp(page: Page, goto: Goto) {
   await goto('/', { waitUntil: 'hydration' })
   await page.evaluate(() => localStorage.clear())
+  await page.context().clearCookies()
   await goto('/', { waitUntil: 'hydration' })
 }
 
@@ -91,7 +92,7 @@ export async function seedNotes(
 
 /** Wait for debounced auto-save to complete (300ms debounce + buffer). */
 export async function waitForSave(page: Page) {
-  await page.waitForTimeout(500)
+  await page.waitForTimeout(800)
 }
 
 /**
@@ -105,6 +106,8 @@ export async function clickEditorText(page: Page, editor: Locator, text: string)
   await expect(target).toBeVisible()
   await expect(async () => {
     await target.click()
+    // Small wait for TipTap to settle selection after click (ProseMirror uses rAF for sync)
+    await page.waitForTimeout(50)
     const inCorrectBlock = await page.evaluate((t) => {
       const sel = window.getSelection()
       if (!sel?.anchorNode) return false

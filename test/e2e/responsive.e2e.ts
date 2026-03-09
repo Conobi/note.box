@@ -45,7 +45,7 @@ test.describe('Responsive — Mobile', () => {
     await getMenuButton(page).click()
     await page.getByRole('link', { name: 'Second Note' }).click()
 
-    await expect(page).toHaveURL(/\/notes\/mob-2/)
+    await expect(page).toHaveURL(/\/notes\/second-note/)
     // Slideover should close after route change
     await expect(page.locator('[data-state="open"]')).toBeHidden()
   })

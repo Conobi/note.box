@@ -16,6 +16,7 @@ export default defineConfig<ConfigOptions>({
   timeout: 120_000,
 
   use: {
+    locale: 'en-US',
     trace: 'on-first-retry',
     nuxt: {
       rootDir: fileURLToPath(new URL('.', import.meta.url)),
@@ -31,7 +32,7 @@ export default defineConfig<ConfigOptions>({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], locale: 'en-US' },
     },
   ],
 })

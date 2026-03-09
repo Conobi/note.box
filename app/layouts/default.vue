@@ -54,13 +54,6 @@ watch(() => route.fullPath, () => {
   sidebarOpen.value = false
 })
 
-// Sync app locale to i18n
-watch(appLocale, (loc) => {
-  if (i18nLocale.value !== loc) {
-    setLocale(loc)
-  }
-}, { immediate: true })
-
 // On first load, if no stored locale, adopt browser-detected locale
 if (!appLocale.value || appLocale.value === 'en') {
   const detected = i18nLocale.value as SupportedLocale
@@ -68,6 +61,13 @@ if (!appLocale.value || appLocale.value === 'en') {
     appLocale.value = detected
   }
 }
+
+// Sync app locale to i18n
+watch(appLocale, (loc) => {
+  if (i18nLocale.value !== loc) {
+    setLocale(loc)
+  }
+}, { immediate: true })
 
 function createNote() {
   const note = create()

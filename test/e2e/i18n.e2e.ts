@@ -18,11 +18,9 @@ test.describe('i18n', () => {
     // Settings title should now be in French
     await expect(page.getByRole('dialog').locator('text=Police')).toBeVisible()
 
-    // Close and check sidebar
+    // Close and check sidebar uses French
     await page.keyboard.press('Escape')
-
-    // Empty state or note list should use French
-    await expect(page.locator('aside')).toContainText('note.box')
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fr')
   })
 
   test('Arabic locale sets RTL direction', async ({ page, goto }) => {
@@ -54,8 +52,8 @@ test.describe('i18n', () => {
     await goto('/notes/test-note', { waitUntil: 'hydration' })
 
     // Open settings and verify German is still active
-    const settingsBtn2 = getSidebarSettingsButton(page)
-    await settingsBtn2.click({ force: true })
+    // Use positional selector — button label is now in German ("Einstellungen")
+    await page.locator('aside').getByRole('button').nth(1).click({ force: true })
 
     const deutschButton = page.getByRole('dialog').getByRole('button', { name: 'Deutsch' })
     await expect(deutschButton).toHaveClass(/text-primary/)

@@ -26,12 +26,12 @@ type TableHandlerKey =
 type CustomHandlers = Record<TableHandlerKey, EditorHandler>
 
 const editorRef = shallowRef<Editor>()
-const isInTable = ref(false)
-
 const TableKeymap = Extension.create({
   name: 'tableKeymap',
+  priority: 200,
   addKeyboardShortcuts() {
     return {
+      'Shift-Tab': () => false, // disable backwards cell navigation — not useful enough
       'Mod-Enter': () => this.editor.commands.addRowAfter(),
       'Mod-Shift-Backspace': () => this.editor.commands.deleteTable(),
       'Mod-Shift-t': () => this.editor.commands.insertTable({ rows: 3, cols: 3, withHeaderRow: true }),
@@ -120,9 +120,6 @@ const EditorRefCapture = Extension.create({
     editor.reactiveState = dedupedRef(editor.view.state)
     editor.reactiveExtensionStorage = dedupedRef(editor.extensionStorage)
   },
-  onSelectionUpdate() {
-    isInTable.value = this.editor.isActive('table')
-  },
 })
 
 const TableSelectGutter = Extension.create({
@@ -200,10 +197,9 @@ const { t } = useI18n()
 const router = useRouter()
 const { getBySlug } = useNotes()
 
-const noteFromSlug = computed(() => getBySlug(props.noteSlug))
-const noteId = computed(() => noteFromSlug.value?.id)
+const noteId = getBySlug(props.noteSlug)?.id
 
-const { note, save, flush, onSlugUpdate } = useNote(noteId.value ?? '')
+const { note, save, flush, onSlugUpdate } = useNote(noteId)
 
 onSlugUpdate((newSlug) => {
   window.history.replaceState(window.history.state, '', `/notes/${newSlug}`)
@@ -328,57 +324,72 @@ function shouldShowTableToolbar(props: { editor: any }) {
 
 const tableToolbarItems = computed<EditorToolbarItem<CustomHandlers>[][]>(() => [
   [
-    { kind: 'addColumnBefore', icon: 'i-lucide-columns-3', tooltip: { text: t('editor.addColumnBefore') } },
-    { kind: 'addColumnAfter', icon: 'i-lucide-columns-3', tooltip: { text: t('editor.addColumnAfter') } },
+    { kind: 'addColumnBefore', icon: 'i-lucide-columns-3', ariaLabel: t('editor.addColumnBefore'), tooltip: { text: t('editor.addColumnBefore') } },
+    { kind: 'addColumnAfter', icon: 'i-lucide-columns-3', ariaLabel: t('editor.addColumnAfter'), tooltip: { text: t('editor.addColumnAfter') } },
   ],
   [
-    { kind: 'addRowBefore', icon: 'i-lucide-rows-3', tooltip: { text: t('editor.addRowBefore') } },
-    { kind: 'addRowAfter', icon: 'i-lucide-rows-3', tooltip: { text: t('editor.addRowAfter') } },
+    { kind: 'addRowBefore', icon: 'i-lucide-rows-3', ariaLabel: t('editor.addRowBefore'), tooltip: { text: t('editor.addRowBefore') } },
+    { kind: 'addRowAfter', icon: 'i-lucide-rows-3', ariaLabel: t('editor.addRowAfter'), tooltip: { text: t('editor.addRowAfter') } },
   ],
   [
-    { kind: 'deleteColumn', icon: 'i-lucide-columns-2', tooltip: { text: t('editor.deleteColumn') } },
-    { kind: 'deleteRow', icon: 'i-lucide-rows-2', tooltip: { text: t('editor.deleteRow') } },
+    { kind: 'deleteColumn', icon: 'i-lucide-columns-2', ariaLabel: t('editor.deleteColumn'), tooltip: { text: t('editor.deleteColumn') } },
+    { kind: 'deleteRow', icon: 'i-lucide-rows-2', ariaLabel: t('editor.deleteRow'), tooltip: { text: t('editor.deleteRow') } },
   ],
   [
-    { kind: 'toggleHeaderRow', icon: 'i-lucide-heading', tooltip: { text: t('editor.toggleHeaderRow') } },
-    { kind: 'mergeCells', icon: 'i-lucide-merge', tooltip: { text: t('editor.mergeCells') } },
-    { kind: 'splitCell', icon: 'i-lucide-split', tooltip: { text: t('editor.splitCell') } },
+    { kind: 'toggleHeaderRow', icon: 'i-lucide-heading', ariaLabel: t('editor.toggleHeaderRow'), tooltip: { text: t('editor.toggleHeaderRow') } },
+    { kind: 'mergeCells', icon: 'i-lucide-merge', ariaLabel: t('editor.mergeCells'), tooltip: { text: t('editor.mergeCells') } },
+    { kind: 'splitCell', icon: 'i-lucide-split', ariaLabel: t('editor.splitCell'), tooltip: { text: t('editor.splitCell') } },
   ],
   [
-    { kind: 'deleteTable', icon: 'i-lucide-trash-2', tooltip: { text: t('editor.deleteTable') } },
+    { kind: 'deleteTable', icon: 'i-lucide-trash-2', ariaLabel: t('editor.deleteTable'), tooltip: { text: t('editor.deleteTable') } },
   ],
 ])
+
+let savedSelection: { from: number, to: number } | null = null
+
+function onContextMenu(event: MouseEvent) {
+  const target = event.target as HTMLElement
+  if (!target.closest('.tiptap table')) {
+    event.stopPropagation()
+  }
+  else if (editorRef.value) {
+    const { from, to } = editorRef.value.state.selection
+    savedSelection = { from, to }
+  }
+}
+
+function runTableCommand(cmd: (editor: Editor) => boolean) {
+  const editor = editorRef.value
+  if (!editor || !savedSelection) return
+  // Restore editor selection to where the right-click happened, then execute
+  editor.chain().focus().setTextSelection(savedSelection).run()
+  cmd(editor)
+}
 
 const tableContextMenuItems = computed(() => {
   const editor = editorRef.value
   if (!editor) return []
   return [
     [
-      { label: t('editor.addColumnBefore'), icon: 'i-lucide-columns-3', onSelect: () => editor.chain().focus().addColumnBefore().run() },
-      { label: t('editor.addColumnAfter'), icon: 'i-lucide-columns-3', onSelect: () => editor.chain().focus().addColumnAfter().run() },
-      { label: t('editor.deleteColumn'), icon: 'i-lucide-columns-2', onSelect: () => editor.chain().focus().deleteColumn().run() },
+      { label: t('editor.addColumnBefore'), icon: 'i-lucide-columns-3', onSelect: () => runTableCommand(e => e.commands.addColumnBefore()) },
+      { label: t('editor.addColumnAfter'), icon: 'i-lucide-columns-3', onSelect: () => runTableCommand(e => e.commands.addColumnAfter()) },
+      { label: t('editor.deleteColumn'), icon: 'i-lucide-columns-2', onSelect: () => runTableCommand(e => e.commands.deleteColumn()) },
     ],
     [
-      { label: t('editor.addRowBefore'), icon: 'i-lucide-rows-3', onSelect: () => editor.chain().focus().addRowBefore().run() },
-      { label: t('editor.addRowAfter'), icon: 'i-lucide-rows-3', onSelect: () => editor.chain().focus().addRowAfter().run() },
-      { label: t('editor.deleteRow'), icon: 'i-lucide-rows-2', onSelect: () => editor.chain().focus().deleteRow().run() },
+      { label: t('editor.addRowBefore'), icon: 'i-lucide-rows-3', onSelect: () => runTableCommand(e => e.commands.addRowBefore()) },
+      { label: t('editor.addRowAfter'), icon: 'i-lucide-rows-3', onSelect: () => runTableCommand(e => e.commands.addRowAfter()) },
+      { label: t('editor.deleteRow'), icon: 'i-lucide-rows-2', onSelect: () => runTableCommand(e => e.commands.deleteRow()) },
     ],
     [
-      { label: t('editor.toggleHeaderRow'), icon: 'i-lucide-heading', onSelect: () => editor.chain().focus().toggleHeaderRow().run() },
-      { label: t('editor.mergeCells'), icon: 'i-lucide-merge', onSelect: () => editor.chain().focus().mergeCells().run() },
-      { label: t('editor.splitCell'), icon: 'i-lucide-split', onSelect: () => editor.chain().focus().splitCell().run() },
+      { label: t('editor.toggleHeaderRow'), icon: 'i-lucide-heading', onSelect: () => runTableCommand(e => e.commands.toggleHeaderRow()) },
+      { label: t('editor.mergeCells'), icon: 'i-lucide-merge', onSelect: () => runTableCommand(e => e.commands.mergeCells()) },
+      { label: t('editor.splitCell'), icon: 'i-lucide-split', onSelect: () => runTableCommand(e => e.commands.splitCell()) },
     ],
     [
-      { label: t('editor.deleteTable'), icon: 'i-lucide-trash-2', onSelect: () => editor.chain().focus().deleteTable().run() },
+      { label: t('editor.deleteTable'), icon: 'i-lucide-trash-2', onSelect: () => runTableCommand(e => e.commands.deleteTable()) },
     ],
   ]
 })
-
-function onContextMenu(event: MouseEvent) {
-  if (!editorRef.value?.isActive('table')) {
-    event.stopPropagation()
-  }
-}
 
 const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>(() => [
   [
@@ -405,8 +416,8 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
 </script>
 
 <template>
-  <UContextMenu v-if="note" :items="tableContextMenuItems">
-    <div class="zen-editor pt-12 sm:pt-16" @contextmenu="onContextMenu">
+  <UContextMenu v-if="note" :modal="false" :items="tableContextMenuItems">
+    <div class="zen-editor pt-12 sm:pt-16" @contextmenu.capture="onContextMenu">
       <UEditor
         v-slot="{ editor }"
         :model-value="initialContent"

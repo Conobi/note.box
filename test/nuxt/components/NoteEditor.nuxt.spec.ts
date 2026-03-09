@@ -120,6 +120,24 @@ describe('NoteEditor', () => {
     replaceStateSpy.mockRestore()
   })
 
+  it('renders editor for a note that exists only in the reactive store (not pre-seeded in localStorage)', async () => {
+    // Simulate the exact sequence that createNote() triggers:
+    //   1. create() pushes the note into the reactive store (in-memory only)
+    //   2. router.push() navigates — localStorage write is still debounced
+    //   3. NoteEditor mounts and must find the note via the reactive store
+    // _resetLocalStorage() ran in beforeEach, so the cache is empty; the first
+    // useNotes() call below initialises it from empty localStorage (→ []).
+    const { create } = useNotes()
+    const newNote = create()
+
+    const component = await mountSuspended(NoteEditor, {
+      props: { noteSlug: newNote.slug },
+      global: { stubs: editorStubs },
+    })
+
+    expect(component.find('.zen-editor').exists()).toBe(true)
+  })
+
   it('passes initial content to UEditor, not reactive note content', async () => {
     const initialContent = {
       type: 'doc',

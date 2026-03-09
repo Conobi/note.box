@@ -18,7 +18,7 @@ test.describe('Task List', () => {
 
     // Type slash command to insert task list
     await page.keyboard.type('/')
-    await page.getByText('Task list').click()
+    await page.getByRole('option', { name: 'Task list' }).click()
 
     // Type first task item
     await page.keyboard.type('Buy groceries')
@@ -179,7 +179,7 @@ test.describe('Task List', () => {
     await page.keyboard.press('End')
     await page.keyboard.press('Enter')
     await page.keyboard.type('/')
-    await page.getByText('Task list').click()
+    await page.getByRole('option', { name: 'Task list' }).click()
 
     // Type multiple tasks separated by Enter
     await page.keyboard.type('Task one')
