@@ -16,13 +16,6 @@ export default defineNuxtConfig({
   },
 
   fonts: {
-    // Disable remote font providers — Inter is referenced in CSS but we rely on
-    // the browser's system Inter (or fallback). No network fetch needed.
-    providers: {
-      google: false,
-      bunny: false,
-      fontshare: false,
-    },
     defaults: {
       fallbacks: {
         serif: ['Georgia', 'Times New Roman', 'serif'],
