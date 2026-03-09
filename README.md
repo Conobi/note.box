@@ -63,6 +63,16 @@ pnpm typecheck    # Type-check
 
 Contributions are welcome! Please open an issue first to discuss what you'd like to change.
 
+### Release process
+
+This project uses [Changesets](https://github.com/changesets/changesets) for versioning and releases.
+
+1. Make your changes on a branch and open a PR.
+2. Run `pnpm changeset` and follow the prompts to describe your changes.
+3. Commit the generated changeset file alongside your code changes.
+4. Once merged to `main`, the Release workflow opens a **"Version Packages"** PR that bumps versions and updates the changelog.
+5. Merging that PR triggers a production deploy to Cloudflare Pages and creates a GitHub Release.
+
 ## License
 
 [AGPL-3.0](LICENSE)
