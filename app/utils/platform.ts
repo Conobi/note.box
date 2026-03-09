@@ -5,3 +5,7 @@ export function isMac(): boolean {
 export function isFirefox(): boolean {
   return typeof navigator !== 'undefined' && /Firefox\//.test(navigator.userAgent)
 }
+
+export function isTouchDevice(): boolean {
+  return typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0
+}
