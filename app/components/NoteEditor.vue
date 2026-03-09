@@ -27,11 +27,7 @@ type CustomHandlers = Record<TableHandlerKey, EditorHandler>
 
 const editorRef = shallowRef<Editor>()
 const isTouch = import.meta.client ? isTouchDevice() : false
-const keyboardVisible = ref(
-  import.meta.client && window.visualViewport
-    ? window.visualViewport.height < window.innerHeight * 0.75
-    : false,
-)
+const keyboardVisible = ref(false)
 const TableKeymap = Extension.create({
   name: 'tableKeymap',
   priority: 200,
