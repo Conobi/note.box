@@ -238,11 +238,11 @@ async function handleExport() {
                 <span class="text-sm text-default">{{ t('settings.shortcutNewNote') }}</span>
               </div>
               <div class="flex items-center gap-1">
-                <template v-if="isMac()">
-                  <UKbd value="meta" /><UKbd>N</UKbd>
+                <template v-if="isFirefox()">
+                  <UKbd value="meta" /><UKbd value="shift" /><UKbd>N</UKbd>
                 </template>
                 <template v-else>
-                  <UKbd value="meta" /><UKbd value="shift" /><UKbd>N</UKbd>
+                  <UKbd value="meta" /><UKbd value="alt" /><UKbd>N</UKbd>
                 </template>
               </div>
             </div>
