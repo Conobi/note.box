@@ -307,6 +307,7 @@ if (import.meta.client) {
     document.activeElement?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
   }
   window.visualViewport?.addEventListener('resize', onViewportResize)
+  onViewportResize()
   onBeforeUnmount(() => {
     window.visualViewport?.removeEventListener('resize', onViewportResize)
   })
@@ -460,7 +461,7 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
       </UEditor>
       <MobileFormattingBar
         v-if="isTouch && keyboardVisible"
-        :editor="editorRef"
+        :editor="editorRef!"
       />
     </div>
   </UContextMenu>
