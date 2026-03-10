@@ -7,25 +7,12 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const showSecondary = ref(false)
+type SecondaryPanel = 'headings' | 'formatting' | null
+const secondaryPanel = ref<SecondaryPanel>(null)
 
-const headingItems = computed(() => [[
-  {
-    label: t('editor.heading1'),
-    icon: 'i-lucide-heading-1',
-    onSelect: () => props.editor.chain().focus().toggleHeading({ level: 1 }).run(),
-  },
-  {
-    label: t('editor.heading2'),
-    icon: 'i-lucide-heading-2',
-    onSelect: () => props.editor.chain().focus().toggleHeading({ level: 2 }).run(),
-  },
-  {
-    label: t('editor.heading3'),
-    icon: 'i-lucide-heading-3',
-    onSelect: () => props.editor.chain().focus().toggleHeading({ level: 3 }).run(),
-  },
-]])
+function togglePanel(panel: 'headings' | 'formatting') {
+  secondaryPanel.value = secondaryPanel.value === panel ? null : panel
+}
 
 function setLink() {
   const previous = props.editor.getAttributes('link').href as string | undefined
@@ -39,26 +26,53 @@ function setLink() {
   }
 }
 
-// Shift the bar above the virtual keyboard
-const barBottom = ref(0)
+const bottomOffset = ref(0)
 
-function onViewportResize() {
+function onViewportChange() {
   if (!window.visualViewport) return
-  barBottom.value = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop
+  const vp = window.visualViewport
+  bottomOffset.value = Math.max(0, window.innerHeight - (vp.offsetTop + vp.height))
 }
 
 onMounted(() => {
-  window.visualViewport?.addEventListener('resize', onViewportResize)
+  onViewportChange()
+  window.visualViewport?.addEventListener('resize', onViewportChange)
+  window.visualViewport?.addEventListener('scroll', onViewportChange)
 })
 
 onBeforeUnmount(() => {
-  window.visualViewport?.removeEventListener('resize', onViewportResize)
+  window.visualViewport?.removeEventListener('resize', onViewportChange)
+  window.visualViewport?.removeEventListener('scroll', onViewportChange)
 })
 </script>
 
 <template>
-  <div class="mobile-bar" :style="{ bottom: `${barBottom}px` }">
-    <div v-if="showSecondary" class="mobile-bar__secondary">
+  <div class="mobile-bar" :style="{ bottom: `${bottomOffset}px` }" @pointerdown.prevent>
+    <div v-if="secondaryPanel === 'headings'" class="mobile-bar__secondary">
+      <UButton
+        icon="i-lucide-heading-1"
+        :variant="editor.isActive('heading', { level: 1 }) ? 'solid' : 'ghost'"
+        :aria-label="t('editor.heading1')"
+        data-testid="heading1-btn"
+        @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
+      />
+      <UButton
+        icon="i-lucide-heading-2"
+        :variant="editor.isActive('heading', { level: 2 }) ? 'solid' : 'ghost'"
+        :aria-label="t('editor.heading2')"
+        data-testid="heading2-btn"
+        @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
+      />
+      <UButton
+        icon="i-lucide-heading-3"
+        :variant="editor.isActive('heading', { level: 3 }) ? 'solid' : 'ghost'"
+        :aria-label="t('editor.heading3')"
+        data-testid="heading3-btn"
+        @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
+      />
+    </div>
+
+    <div v-if="secondaryPanel === 'formatting'" class="mobile-bar__secondary">
       <UButton
         icon="i-lucide-underline"
         :variant="editor.isActive('underline') ? 'solid' : 'ghost'"
@@ -83,14 +97,13 @@ onBeforeUnmount(() => {
     </div>
 
     <div class="mobile-bar__primary">
-      <UDropdownMenu :items="headingItems">
-        <UButton
-          icon="i-lucide-heading"
-          :variant="editor.isActive('heading') ? 'solid' : 'ghost'"
-          :aria-label="t('editor.headings')"
-          data-testid="heading-btn"
-        />
-      </UDropdownMenu>
+      <UButton
+        icon="i-lucide-heading"
+        :variant="secondaryPanel === 'headings' || editor.isActive('heading') ? 'solid' : 'ghost'"
+        :aria-label="t('editor.headings')"
+        data-testid="heading-btn"
+        @click="togglePanel('headings')"
+      />
 
       <UButton
         icon="i-lucide-bold"
@@ -118,10 +131,10 @@ onBeforeUnmount(() => {
 
       <UButton
         icon="i-lucide-ellipsis"
-        :variant="showSecondary ? 'solid' : 'ghost'"
+        :variant="secondaryPanel === 'formatting' ? 'solid' : 'ghost'"
         :aria-label="t('editor.moreFormatting')"
         data-testid="more-btn"
-        @click="showSecondary = !showSecondary"
+        @click="togglePanel('formatting')"
       />
     </div>
   </div>
@@ -130,11 +143,16 @@ onBeforeUnmount(() => {
 <style scoped>
 .mobile-bar {
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 50;
-  border-top: 1px solid var(--ui-border);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-xl);
   background-color: var(--ui-bg);
+  box-shadow: var(--ui-shadow-md, 0 4px 16px rgb(0 0 0 / 0.12));
+  margin-bottom: 0.5rem;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
 }
 
 .mobile-bar__primary,

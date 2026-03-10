@@ -27,7 +27,18 @@ type CustomHandlers = Record<TableHandlerKey, EditorHandler>
 
 const editorRef = shallowRef<Editor>()
 const isTouch = import.meta.client ? isTouchDevice() : false
-const keyboardVisible = ref(false)
+const editorFocused = ref(false)
+// Debounce hiding the bar so a tap on the bar (which briefly blurs the editor)
+// doesn't unmount it before the click event fires.
+let blurTimer: ReturnType<typeof setTimeout> | null = null
+function onEditorFocus() {
+  if (blurTimer !== null) { clearTimeout(blurTimer); blurTimer = null }
+  editorFocused.value = true
+}
+function onEditorBlur() {
+  blurTimer = setTimeout(() => { editorFocused.value = false; blurTimer = null }, 200)
+}
+onBeforeUnmount(() => { if (blurTimer !== null) clearTimeout(blurTimer) })
 const TableKeymap = Extension.create({
   name: 'tableKeymap',
   priority: 200,
@@ -296,17 +307,8 @@ if (import.meta.client) {
   })
 
   // Soft keyboard: scroll active element into view when virtual keyboard appears
-  function onViewportResize() {
-    if (window.visualViewport) {
-      // 0.75: keyboard typically takes 40-50% of screen; 75% gives safe headroom
-      keyboardVisible.value = window.visualViewport.height < window.innerHeight * 0.75
-    }
+  window.visualViewport?.addEventListener('resize', () => {
     document.activeElement?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-  }
-  window.visualViewport?.addEventListener('resize', onViewportResize)
-  onViewportResize()
-  onBeforeUnmount(() => {
-    window.visualViewport?.removeEventListener('resize', onViewportResize)
   })
 }
 
@@ -450,6 +452,8 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
         }"
         :ui="{ base: 'py-4 min-h-[70vh]' }"
         @update:model-value="onUpdate"
+        @focus="onEditorFocus"
+        @blur="onEditorBlur"
       >
         <UEditorToolbar v-if="!isTouch" :editor="editor" :items="toolbarItems" layout="bubble" />
         <UEditorToolbar :editor="editor" :items="tableToolbarItems" layout="bubble" plugin-key="tableToolbar" :should-show="shouldShowTableToolbar" />
@@ -457,7 +461,7 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
         <UEditorDragHandle :editor="editor" />
       </UEditor>
       <MobileFormattingBar
-        v-if="isTouch && keyboardVisible"
+        v-if="isTouch && editorFocused"
         :editor="editorRef!"
       />
     </div>

@@ -165,37 +165,22 @@ describe('NoteEditor', () => {
     expect(component.findComponent({ name: 'MobileFormattingBar' }).exists()).toBe(false)
   })
 
-  it('renders MobileFormattingBar on touch devices', async () => {
+  it('renders MobileFormattingBar when editor is focused on touch', async () => {
     seedNote()
     vi.spyOn(navigator, 'maxTouchPoints', 'get').mockReturnValue(5)
-    // Simulate keyboard visible: shrink visualViewport height
-    const originalViewport = window.visualViewport
-    const originalInnerHeight = window.innerHeight
-    Object.defineProperty(window, 'visualViewport', {
-      value: { height: 300, offsetTop: 0, addEventListener: vi.fn(), removeEventListener: vi.fn() },
-      writable: true,
-    })
-    Object.defineProperty(window, 'innerHeight', { value: 800, writable: true })
     const component = await mountSuspended(NoteEditor, {
       props: { noteSlug: 'test-note' },
       global: { stubs: editorStubs },
     })
+    await component.findComponent({ name: 'UEditor' }).vm.$emit('focus')
+    await nextTick()
     expect(component.findComponent({ name: 'MobileFormattingBar' }).exists()).toBe(true)
     vi.restoreAllMocks()
-    Object.defineProperty(window, 'visualViewport', { value: originalViewport, writable: true })
-    Object.defineProperty(window, 'innerHeight', { value: originalInnerHeight, writable: true })
   })
 
   it('does not render text bubble toolbar on touch devices', async () => {
     seedNote()
     vi.spyOn(navigator, 'maxTouchPoints', 'get').mockReturnValue(5)
-    const originalViewport = window.visualViewport
-    const originalInnerHeight = window.innerHeight
-    Object.defineProperty(window, 'visualViewport', {
-      value: { height: 300, offsetTop: 0, addEventListener: vi.fn(), removeEventListener: vi.fn() },
-      writable: true,
-    })
-    Object.defineProperty(window, 'innerHeight', { value: 800, writable: true })
     const component = await mountSuspended(NoteEditor, {
       props: { noteSlug: 'test-note' },
       global: { stubs: editorStubs },
@@ -204,8 +189,6 @@ describe('NoteEditor', () => {
     const toolbars = component.findAllComponents({ name: 'UEditorToolbar' })
     expect(toolbars).toHaveLength(1)
     vi.restoreAllMocks()
-    Object.defineProperty(window, 'visualViewport', { value: originalViewport, writable: true })
-    Object.defineProperty(window, 'innerHeight', { value: originalInnerHeight, writable: true })
   })
 
   it('passes initial content to UEditor, not reactive note content', async () => {
