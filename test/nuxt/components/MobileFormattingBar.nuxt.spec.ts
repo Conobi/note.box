@@ -88,6 +88,26 @@ describe('MobileFormattingBar', () => {
     expect(chainResult.run).toHaveBeenCalled()
   })
 
+  it('computes bottomOffset from visualViewport', async () => {
+    const originalViewport = window.visualViewport
+    const originalInnerHeight = Object.getOwnPropertyDescriptor(window, 'innerHeight')
+    Object.defineProperty(window, 'visualViewport', {
+      value: { height: 300, offsetTop: 0, addEventListener: vi.fn(), removeEventListener: vi.fn() },
+      writable: true,
+      configurable: true,
+    })
+    Object.defineProperty(window, 'innerHeight', { value: 800, writable: true, configurable: true })
+    const editor = makeEditor()
+    const wrapper = await mountSuspended(MobileFormattingBar, {
+      props: { editor },
+      global: { stubs },
+    })
+    const bar = wrapper.find('.mobile-bar')
+    expect(bar.attributes('style')).toContain('bottom: 500px')
+    Object.defineProperty(window, 'visualViewport', { value: originalViewport, writable: true, configurable: true })
+    if (originalInnerHeight) Object.defineProperty(window, 'innerHeight', originalInnerHeight)
+  })
+
   it('calls toggleItalic chain on italic button click', async () => {
     const chainResult = {
       focus: () => chainResult,
