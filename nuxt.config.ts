@@ -9,13 +9,18 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
 
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NUXT_DEVTOOLS !== 'false' },
 
   colorMode: {
     preference: 'light',
   },
 
   fonts: {
+    // All fonts are self-hosted via @fontsource packages — disable Google Fonts
+    // provider to prevent network fetch failures in offline/local-network dev environments.
+    providers: {
+      google: false,
+    },
     defaults: {
       fallbacks: {
         serif: ['Georgia', 'Times New Roman', 'serif'],
@@ -50,6 +55,9 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    server: {
+      allowedHosts: true,
+    },
     optimizeDeps: {
       include: [
         '@tiptap/vue-3',
