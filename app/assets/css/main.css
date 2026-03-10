@@ -9,6 +9,22 @@
   --safe-right:  env(safe-area-inset-right, 0px);
 }
 
+/* ── Prevent browser swipe-to-navigate / swipe-to-switch-tabs ── */
+/* Horizontal swipe navigation is handled entirely in-app via useSwipeGesture.
+   overscroll-behavior-x: none prevents Firefox from claiming horizontal swipes
+   as navigation gestures (confirmed by Mozilla Bug 1443710).
+   touch-action: pan-y on the layout root surrenders horizontal gesture ownership
+   to the app before any events fire, which handles cases where overscroll-behavior
+   is not honored on first interaction (Mozilla Bug 1595791). */
+html {
+  overscroll-behavior-x: none;
+}
+
+/* Restore horizontal scroll for elements that need it (tables, code blocks, etc.) */
+.zen-editor .tiptap {
+  touch-action: pan-x pan-y;
+}
+
 .safe-top {
   padding-top: max(0.5rem, env(safe-area-inset-top));
 }

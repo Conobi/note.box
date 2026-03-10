@@ -51,7 +51,7 @@ defineShortcuts({
 const RTL_LOCALES = new Set(['ar'])
 const isRtl = computed(() => RTL_LOCALES.has(appLocale.value))
 
-useSwipeGesture(sidebarOpen, isRtl)
+useSwipeGesture(sidebarOpen, settingsOpen, isRtl)
 
 watch(colorScheme, (scheme) => {
   colorMode.preference = scheme
@@ -83,7 +83,7 @@ function createNote() {
 </script>
 
 <template>
-  <div :class="['min-h-dvh bg-default flex flex-col lg:flex-row', `font-${font}`]">
+  <div :class="['min-h-dvh bg-default flex flex-col lg:flex-row', `font-${font}`]" style="touch-action: pan-y">
     <!-- Mobile top bar -->
     <header class="safe-top lg:hidden flex items-center justify-between px-3 py-2 border-b border-default">
       <UTooltip :text="t('app.openMenu')">
