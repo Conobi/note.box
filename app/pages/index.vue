@@ -8,3 +8,7 @@ const target = notes.value.length > 0
 
 router.replace(`/notes/${target.slug}`)
 </script>
+
+<template>
+  <div />
+</template>
