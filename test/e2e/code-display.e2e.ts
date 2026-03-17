@@ -94,24 +94,21 @@ test.describe('Code Display', () => {
     await expect(editor.locator('.language-label')).toContainText('py')
   })
 
-  test('Markdown paste creates code block with language', async ({ page, goto }) => {
+  test('Markdown paste creates code block with language', async ({ page, goto, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
     await seedNote(page, goto, { title: 'Paste Test', body: '' })
     const editor = page.locator('.tiptap')
 
     await editor.locator('p').first().click()
 
-    // Paste Markdown with a fenced code block
+    // Write Markdown to clipboard then paste via keyboard shortcut
     const markdown = '```python\nprint("hello")\n```'
-    await page.evaluate((md) => {
-      const dt = new DataTransfer()
-      dt.setData('text/plain', md)
-      const event = new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true })
-      document.querySelector('.tiptap')!.dispatchEvent(event)
-    }, markdown)
+    await page.evaluate(md => navigator.clipboard.writeText(md), markdown)
+    await page.keyboard.press('Meta+v')
 
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(1000)
 
-    // Should have a code block with python language
+    // Should have a code block
     await expect(editor.locator('.code-block-wrapper')).toBeVisible()
   })
 })
