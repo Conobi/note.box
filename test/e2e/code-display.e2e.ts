@@ -94,8 +94,19 @@ test.describe('Code Display', () => {
     await expect(editor.locator('.language-label')).toContainText('py')
   })
 
-  // TODO: @tiptap/markdown v3 provides parse/serialize infrastructure but does NOT
-  // auto-transform pasted text. A custom clipboardTextParser ProseMirror plugin is
-  // needed to handle Markdown paste. Tracked for follow-up implementation.
-  test.skip('Markdown paste creates code block with language', async () => {})
+  test('Markdown paste creates code block', async ({ page, goto, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await seedNote(page, goto, { title: 'Paste Test', body: '' })
+    const editor = page.locator('.tiptap')
+
+    await editor.locator('p').first().click()
+
+    // Write Markdown to system clipboard, then paste via keyboard
+    const markdown = '```python\nprint("hello")\n```'
+    await page.evaluate(md => navigator.clipboard.writeText(md), markdown)
+    await page.keyboard.press('ControlOrMeta+v')
+
+    // Should have a code block
+    await expect(editor.locator('.code-block-wrapper')).toBeVisible({ timeout: 3000 })
+  })
 })
