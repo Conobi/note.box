@@ -445,6 +445,7 @@ const suggestionItems = computed<EditorSuggestionMenuItem<CustomHandlers>[][]>((
         :model-value="initialContent"
         :extensions="editorExtensions"
         :handlers="handlers"
+        :starter-kit="{ codeBlock: false }"
         content-type="json"
         :placeholder="{
           placeholder: ({ node, hasAnchor, editor }: { node: any, hasAnchor: boolean, editor: any }) => {
