@@ -12,6 +12,9 @@ vi.mock('@tiptap/extension-task-list', () => ({
 vi.mock('@tiptap/extension-task-item', () => ({
   TaskItem: { configure: () => ({}) },
 }))
+vi.mock('@tiptap/markdown', () => ({
+  Markdown: { configure: () => ({}) },
+}))
 vi.mock('@tiptap/vue-3', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@tiptap/vue-3')>()
   return {
