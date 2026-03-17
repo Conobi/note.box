@@ -42,7 +42,10 @@
     "toggleHeaderRow": "Alternar fila de encabezado",
     "mergeCells": "Fusionar celdas",
     "splitCell": "Dividir celda",
-    "deleteTable": "Eliminar tabla"
+    "deleteTable": "Eliminar tabla",
+    "searchLanguages": "Buscar lenguajes...",
+    "copied": "¡Copiado!",
+    "plainText": "Texto plano"
   },
   "noteList": {
     "searchPlaceholder": "Buscar notas...",

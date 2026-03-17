@@ -42,7 +42,10 @@
     "toggleHeaderRow": "머리글 행 전환",
     "mergeCells": "셀 병합",
     "splitCell": "셀 분할",
-    "deleteTable": "표 삭제"
+    "deleteTable": "표 삭제",
+    "searchLanguages": "언어 검색...",
+    "copied": "복사됨!",
+    "plainText": "일반 텍스트"
   },
   "noteList": {
     "searchPlaceholder": "노트 검색...",

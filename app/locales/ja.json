@@ -42,7 +42,10 @@
     "toggleHeaderRow": "ヘッダー行の切替",
     "mergeCells": "セルを結合",
     "splitCell": "セルを分割",
-    "deleteTable": "テーブルを削除"
+    "deleteTable": "テーブルを削除",
+    "searchLanguages": "言語を検索...",
+    "copied": "コピーしました！",
+    "plainText": "プレーンテキスト"
   },
   "noteList": {
     "searchPlaceholder": "ノートを検索...",

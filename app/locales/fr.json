@@ -42,7 +42,10 @@
     "toggleHeaderRow": "Basculer la ligne d'en-tête",
     "mergeCells": "Fusionner les cellules",
     "splitCell": "Diviser la cellule",
-    "deleteTable": "Supprimer le tableau"
+    "deleteTable": "Supprimer le tableau",
+    "searchLanguages": "Rechercher un langage...",
+    "copied": "Copié !",
+    "plainText": "Texte brut"
   },
   "noteList": {
     "searchPlaceholder": "Rechercher...",
