@@ -8,6 +8,7 @@ import { TableKit } from '@tiptap/extension-table/kit'
 import { CodeBlockShiki } from '~/extensions/CodeBlockShiki'
 import { Markdown } from '@tiptap/markdown'
 import { CodeMarkFix } from '~/extensions/CodeMarkFix'
+import { MarkdownPaste } from '~/extensions/MarkdownPaste'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { CellSelection } from '@tiptap/pm/tables'
 import { TaskList } from '@tiptap/extension-task-list'
@@ -206,6 +207,7 @@ const editorExtensions: any[] = [
   TableSelectGutter,
   CodeBlockShiki,
   Markdown,
+  MarkdownPaste,
 ]
 
 const props = defineProps<{
