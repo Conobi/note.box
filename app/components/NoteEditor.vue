@@ -6,6 +6,7 @@ import { wrappingInputRule } from '@tiptap/core'
 import type { ExtendedRegExpMatchArray } from '@tiptap/core'
 import { TableKit } from '@tiptap/extension-table/kit'
 import { CodeBlockShiki } from '~/extensions/CodeBlockShiki'
+import { Markdown } from '@tiptap/markdown'
 import { CodeMarkFix } from '~/extensions/CodeMarkFix'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { CellSelection } from '@tiptap/pm/tables'
@@ -204,6 +205,7 @@ const editorExtensions: any[] = [
   EditorRefCapture,
   TableSelectGutter,
   CodeBlockShiki,
+  Markdown,
 ]
 
 const props = defineProps<{
