@@ -333,6 +333,44 @@ html {
   padding: 0;
 }
 
+/* ── Shiki overlay ───────────────────────────────────────────── */
+.zen-editor .tiptap .shiki-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+  padding: 0.625rem 1rem 1rem;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 0.875em;
+  line-height: 1.6;
+}
+
+.zen-editor .tiptap .shiki-overlay pre {
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+}
+
+.zen-editor .tiptap .shiki-overlay code {
+  font-family: inherit;
+  font-size: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* Dark mode: class-based (Nuxt UI) */
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+}
+
+/* Dark mode: media query fallback */
+@media (prefers-color-scheme: dark) {
+  .shiki span {
+    color: var(--shiki-dark) !important;
+  }
+}
+
 
 /* ═══════════════════════════════════════════════════════════════
    INTER — clean geometric sans, disambiguation for UI clarity
