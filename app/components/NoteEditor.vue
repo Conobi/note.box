@@ -5,6 +5,8 @@ import { Extension } from '@tiptap/vue-3'
 import { wrappingInputRule } from '@tiptap/core'
 import type { ExtendedRegExpMatchArray } from '@tiptap/core'
 import { TableKit } from '@tiptap/extension-table/kit'
+import { CodeBlockShiki } from '~/extensions/CodeBlockShiki'
+import { CodeMarkFix } from '~/extensions/CodeMarkFix'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { CellSelection } from '@tiptap/pm/tables'
 import { TaskList } from '@tiptap/extension-task-list'
@@ -198,8 +200,10 @@ const editorExtensions: any[] = [
     nested: true,
   }),
   TaskListInputRules,
+  CodeMarkFix,
   EditorRefCapture,
   TableSelectGutter,
+  CodeBlockShiki,
 ]
 
 const props = defineProps<{
