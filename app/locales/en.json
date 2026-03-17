@@ -42,7 +42,10 @@
     "toggleHeaderRow": "Toggle header row",
     "mergeCells": "Merge cells",
     "splitCell": "Split cell",
-    "deleteTable": "Delete table"
+    "deleteTable": "Delete table",
+    "searchLanguages": "Search languages...",
+    "copied": "Copied!",
+    "plainText": "Plain text"
   },
   "noteList": {
     "searchPlaceholder": "Search notes...",

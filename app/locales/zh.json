@@ -42,7 +42,10 @@
     "toggleHeaderRow": "切换标题行",
     "mergeCells": "合并单元格",
     "splitCell": "拆分单元格",
-    "deleteTable": "删除表格"
+    "deleteTable": "删除表格",
+    "searchLanguages": "搜索语言...",
+    "copied": "已复制！",
+    "plainText": "纯文本"
   },
   "noteList": {
     "searchPlaceholder": "搜索笔记...",

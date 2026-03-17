@@ -42,7 +42,10 @@
     "toggleHeaderRow": "تبديل صف العنوان",
     "mergeCells": "دمج الخلايا",
     "splitCell": "تقسيم الخلية",
-    "deleteTable": "حذف الجدول"
+    "deleteTable": "حذف الجدول",
+    "searchLanguages": "البحث عن لغات...",
+    "copied": "تم النسخ!",
+    "plainText": "نص عادي"
   },
   "noteList": {
     "searchPlaceholder": "بحث...",

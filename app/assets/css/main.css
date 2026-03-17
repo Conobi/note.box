@@ -241,6 +241,99 @@ html {
 }
 
 
+/* ── Inline code ─────────────────────────────────────────────── */
+.zen-editor .tiptap code:not(.shiki *) {
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 0.875em;
+  background-color: var(--ui-bg-muted);
+  border: 1px solid var(--ui-border);
+  border-radius: 0.3em;
+  padding: 0.1em 0.35em;
+}
+
+/* Inside headings: inherit the heading size — don't shrink */
+.zen-editor .tiptap h1 code:not(.shiki *),
+.zen-editor .tiptap h2 code:not(.shiki *),
+.zen-editor .tiptap h3 code:not(.shiki *) {
+  font-size: 0.9em;
+}
+
+/* ── Code block ──────────────────────────────────────────────── */
+.zen-editor .tiptap .code-block-wrapper {
+  position: relative;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-md);
+  background-color: var(--ui-bg-muted);
+  margin: 1em 0;
+  overflow: hidden;
+}
+
+.zen-editor .tiptap .code-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem 0;
+}
+
+.zen-editor .tiptap .code-block-header .language-label {
+  font-size: 0.7em;
+  font-family: ui-monospace, monospace;
+  color: var(--ui-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.zen-editor .tiptap .code-block-header .language-label:hover {
+  color: var(--ui-text);
+}
+
+.zen-editor .tiptap .code-block-header .copy-button {
+  opacity: 0;
+  transition: opacity 150ms;
+  background: none;
+  border: none;
+  color: var(--ui-text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+}
+
+.zen-editor .tiptap .code-block-header .copy-button:hover {
+  color: var(--ui-text);
+}
+
+.zen-editor .tiptap .code-block-wrapper:hover .copy-button,
+.zen-editor .tiptap .code-block-wrapper:focus-within .copy-button {
+  opacity: 1;
+}
+
+.zen-editor .tiptap .code-content {
+  position: relative;
+  overflow-x: auto;
+}
+
+.zen-editor .tiptap .code-block-wrapper pre {
+  margin: 0;
+  padding: 0.625rem 1rem 1rem;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 0.875em;
+  line-height: 1.6;
+  background: transparent;
+}
+
+.zen-editor .tiptap .code-block-wrapper code {
+  font-family: inherit;
+  font-size: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+
 /* ═══════════════════════════════════════════════════════════════
    INTER — clean geometric sans, disambiguation for UI clarity
    Axes: wght 100–900, opsz 14–32

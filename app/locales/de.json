@@ -42,7 +42,10 @@
     "toggleHeaderRow": "Kopfzeile umschalten",
     "mergeCells": "Zellen verbinden",
     "splitCell": "Zelle teilen",
-    "deleteTable": "Tabelle löschen"
+    "deleteTable": "Tabelle löschen",
+    "searchLanguages": "Sprachen suchen...",
+    "copied": "Kopiert!",
+    "plainText": "Klartext"
   },
   "noteList": {
     "searchPlaceholder": "Notizen suchen...",
