@@ -7,7 +7,7 @@ describe('CodeBlockLanguagePicker', () => {
     const component = await mountSuspended(CodeBlockLanguagePicker, {
       props: { language: 'js' },
     })
-    expect(component.text()).toContain('js')
+    expect(component.text()).toContain('JavaScript')
   })
 
   it('shows "Plain text" when no language is set', async () => {
