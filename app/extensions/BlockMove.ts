@@ -1,6 +1,27 @@
 import { Extension } from '@tiptap/core'
 import { TextSelection } from '@tiptap/pm/state'
 import type { EditorState, Transaction } from '@tiptap/pm/state'
+import type { ResolvedPos } from '@tiptap/pm/model'
+
+const CONTAINERS = ['bulletList', 'orderedList', 'taskList', 'blockquote', 'table', 'doc']
+
+/**
+ * Returns true if the selection spans across different container boundaries
+ * (e.g. starts in a list and ends in a paragraph outside it).
+ * Such selections are too ambiguous to move — no-op.
+ */
+function isCrossContainerSelection(state: EditorState): boolean {
+  const { $from, $to } = state.selection
+  if ($from.pos === $to.pos) return false
+
+  const fromDepth = findMoveDepthForPos($from)
+  const toDepth = findMoveDepthForPos($to)
+
+  if (fromDepth === null || toDepth === null) return true
+  if (fromDepth !== toDepth) return true
+
+  return $from.node(fromDepth - 1) !== $to.node(toDepth - 1)
+}
 
 export const BlockMove = Extension.create({
   name: 'blockMove',
@@ -9,6 +30,7 @@ export const BlockMove = Extension.create({
     return {
       'Alt-ArrowUp': ({ editor }) => {
         const { state, dispatch } = editor.view
+        if (isCrossContainerSelection(state)) return true
         return (
           moveCodeBlockLine(state, dispatch, 'up') ||
           moveNodeInParent(state, dispatch, 'up')
@@ -17,6 +39,7 @@ export const BlockMove = Extension.create({
 
       'Alt-ArrowDown': ({ editor }) => {
         const { state, dispatch } = editor.view
+        if (isCrossContainerSelection(state)) return true
         return (
           moveCodeBlockLine(state, dispatch, 'down') ||
           moveNodeInParent(state, dispatch, 'down')
@@ -112,11 +135,9 @@ function moveCodeBlockLine(
  *
  * Reorderable containers: bulletList, orderedList, taskList, blockquote, doc.
  */
-function findMoveDepth(state: EditorState): number | null {
-  const { $from } = state.selection
-  for (let depth = $from.depth; depth >= 1; depth--) {
-    const parentType = $from.node(depth - 1).type.name
-    if (['bulletList', 'orderedList', 'taskList', 'blockquote', 'table', 'doc'].includes(parentType)) {
+function findMoveDepthForPos($pos: ResolvedPos): number | null {
+  for (let depth = $pos.depth; depth >= 1; depth--) {
+    if (CONTAINERS.includes($pos.node(depth - 1).type.name)) {
       return depth
     }
   }
@@ -134,7 +155,7 @@ function moveNodeInParent(
   dispatch: (tr: Transaction) => void,
   direction: 'up' | 'down',
 ): boolean {
-  const depth = findMoveDepth(state)
+  const depth = findMoveDepthForPos(state.selection.$from)
   if (depth === null) return false
 
   const { $from, $to } = state.selection
