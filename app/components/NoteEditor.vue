@@ -8,6 +8,7 @@ import { TableKit } from '@tiptap/extension-table/kit'
 import { CodeBlockShiki } from '~/extensions/CodeBlockShiki'
 import { Markdown } from '@tiptap/markdown'
 import { CodeMarkFix } from '~/extensions/CodeMarkFix'
+import { BlockMove } from '~/extensions/BlockMove'
 import { MarkdownPaste } from '~/extensions/MarkdownPaste'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { CellSelection } from '@tiptap/pm/tables'
@@ -203,6 +204,7 @@ const editorExtensions: any[] = [
   }),
   TaskListInputRules,
   CodeMarkFix,
+  BlockMove,
   EditorRefCapture,
   TableSelectGutter,
   CodeBlockShiki.configure({
