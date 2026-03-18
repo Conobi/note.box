@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { filterLanguages } from '~/utils/languages'
+import { filterLanguages, languageDisplayName } from '~/utils/languages'
 
-defineProps<{
+const props = defineProps<{
   language: string | null
 }>()
+
+const displayLabel = computed(() =>
+  props.language ? languageDisplayName(props.language) : null,
+)
 
 const emit = defineEmits<{
   select: [language: string | null]
@@ -74,7 +78,7 @@ watch(open, (isOpen) => {
       type="button"
       @click.stop
     >
-      {{ language || $t('editor.plainText') }}
+      {{ displayLabel || $t('editor.plainText') }}
     </button>
 
     <template #content>
