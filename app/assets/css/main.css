@@ -325,6 +325,15 @@ html {
   background: transparent;
 }
 
+/* When Shiki overlay is active, hide the raw text but keep the element
+   for cursor tracking. The caret-color stays visible for editing. */
+.zen-editor .tiptap .code-content.has-highlight pre code {
+  color: transparent;
+}
+.zen-editor .tiptap .code-content.has-highlight pre {
+  caret-color: var(--ui-text);
+}
+
 .zen-editor .tiptap .code-block-wrapper code {
   font-family: inherit;
   font-size: inherit;
@@ -338,11 +347,15 @@ html {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  transition: opacity 150ms ease;
   padding: 0.625rem 1rem 1rem;
   font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
   font-size: 0.875em;
   line-height: 1.6;
+  transition: opacity 150ms ease;
+}
+
+.zen-editor .tiptap .shiki-overlay.shiki-hidden {
+  opacity: 0;
 }
 
 .zen-editor .tiptap .shiki-overlay pre {
