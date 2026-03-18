@@ -34,7 +34,7 @@ Ordered by priority:
 
 A single new TipTap extension — `ClipboardCopy` — that hooks into ProseMirror's copy pipeline.
 
-#### `clipboardSerializer` (HTML mode)
+#### `clipboardSerializer`
 
 Patches the schema's default `DOMSerializer` by overriding only the broken node serializers. All other nodes (headings, paragraphs, lists, blockquotes, marks, etc.) use ProseMirror's defaults unchanged.
 
@@ -46,13 +46,52 @@ const patchedNodes = { ...base.nodes }
 return new DOMSerializer(patchedNodes, base.marks)
 ```
 
-#### `handleCopy` / `handleCut` (Markdown mode)
+The patched serializer produces clean, semantic HTML used by `handleCopy` when serializing the copied fragment to `text/html`.
 
-When `copyFormat` is `'markdown'`, intercepts copy/cut to use `navigator.clipboard.write()` with Markdown in both `text/plain` and `text/html` (wrapped in `<pre>` to prevent rich-text interpretation).
+#### `handleCopy` / `handleCut` (both modes)
 
-When `copyFormat` is `'html'`, returns `false` to let ProseMirror's native pipeline handle it (using the patched `clipboardSerializer`).
+`handleCopy` and `handleCut` are used in **both** modes (HTML and Markdown) to gain full control over both clipboard MIME types. They use the synchronous `ClipboardEvent.clipboardData.setData()` API, which is universally supported and requires no permissions.
 
-Fallback: if `navigator.clipboard.write()` is unavailable, let ProseMirror's default copy handle it.
+```ts
+handleCopy(view, event) {
+  const markdown = sliceToMarkdown(slice)
+  if (copyFormat === 'html') {
+    const html = serializeSliceToHTML(slice, patchedSerializer)
+    event.clipboardData?.setData('text/html', html)
+    event.clipboardData?.setData('text/plain', markdown)
+  } else {
+    event.clipboardData?.setData('text/html', `<pre>${escapeHtml(markdown)}</pre>`)
+    event.clipboardData?.setData('text/plain', markdown)
+  }
+  event.preventDefault()
+  return true
+}
+```
+
+**Slice-to-Markdown conversion:** `handleCopy`/`handleCut` receives a ProseMirror `Slice`, not `JSONContent`. Convert via:
+```ts
+function sliceToMarkdown(slice: Slice): string {
+  const json = { type: 'doc', content: slice.content.toJSON() }
+  return jsonContentToMarkdown(json)
+}
+```
+
+#### Extension configuration
+
+The extension reads `copyFormat` from a reactive ref passed as an extension option, configured in `NoteEditor.vue`:
+
+```ts
+ClipboardCopy.configure({ copyFormat: settings.value.copyFormat })
+```
+
+Inside the extension:
+```ts
+addOptions() {
+  return { copyFormat: 'html' as CopyFormat }
+}
+```
+
+The option is read inside plugin props via `this.options.copyFormat`.
 
 ### Node Override Specifications
 
@@ -86,7 +125,8 @@ Fallback: if `navigator.clipboard.write()` is unavailable, let ProseMirror's def
 
 - Semantic `<thead>`/`<tbody>`/`<th>` structure.
 - Inline `border` and `padding` styles — necessary because Docs, Word, and Teams strip CSS classes.
-- First row treated as header row (uses `<th>` in `<thead>`).
+- **Header detection by node type:** Rows containing `tableHeader` nodes are wrapped in `<thead>` (with `<th>` elements). Rows containing `tableCell` nodes are wrapped in `<tbody>` (with `<td>` elements). Detection is based on ProseMirror node types, not row position.
+- **Merged cells:** Preserve `colspan` and `rowspan` attributes from ProseMirror node attrs when present.
 
 #### Task Lists
 
@@ -103,17 +143,23 @@ Fallback: if `navigator.clipboard.write()` is unavailable, let ProseMirror's def
 
 ### Copy Format Setting
 
-New field in `useAppSettings`:
+New type in `app/types/settings.ts`:
 
 ```ts
-copyFormat: 'html' | 'markdown'  // default: 'html'
+export type CopyFormat = 'html' | 'markdown'
+```
+
+New field in `AppSettings`:
+
+```ts
+copyFormat: CopyFormat  // default: 'html'
 ```
 
 Clipboard content per mode:
 
 | Clipboard slot | `html` mode | `markdown` mode |
 |---|---|---|
-| `text/html` | Clean semantic HTML | Markdown wrapped in `<pre>` |
+| `text/html` | Clean semantic HTML (via patched DOMSerializer) | Markdown wrapped in `<pre>` |
 | `text/plain` | Markdown via `jsonContentToMarkdown` | Markdown via `jsonContentToMarkdown` |
 
 The `text/plain` slot always contains Markdown regardless of mode, using the existing `jsonContentToMarkdown()` utility.
@@ -130,10 +176,10 @@ A select in `SettingsModal.vue`:
 | File | Action |
 |------|--------|
 | `app/extensions/ClipboardCopy.ts` | New — the extension |
-| `app/types/settings.ts` | Modify — add `copyFormat` field |
+| `app/types/settings.ts` | Modify — add `CopyFormat` type and `copyFormat` field |
 | `app/composables/useAppSettings.ts` | Modify — add default value |
 | `app/components/SettingsModal.vue` | Modify — add toggle UI |
-| `app/components/NoteEditor.vue` | Modify — register extension |
+| `app/components/NoteEditor.vue` | Modify — register extension, pass `copyFormat` option |
 | `i18n/` locale files | Modify — add i18n keys |
 
 ## Testing
@@ -143,9 +189,14 @@ A select in `SettingsModal.vue`:
 - Code block with language produces `<pre><code class="language-X">`
 - Code block without language produces `<pre><code>` (no empty class)
 - Table produces `<thead>`/`<tbody>`/`<th>` with inline styles
+- Table with merged cells preserves `colspan`/`rowspan`
+- Table header detection based on node type (not row position)
 - Task list produces `<input type="checkbox">` with correct checked state
+- `sliceToMarkdown` correctly converts a Slice to Markdown
 
 ### E2E Tests (`test/e2e/clipboard-copy.e2e.ts`)
+
+E2E tests use Playwright with `context.grantPermissions(['clipboard-read', 'clipboard-write'])` to access clipboard contents, and `page.evaluate(() => navigator.clipboard.read())` to read back clipboard data for assertions.
 
 - Copy a table, verify `text/html` has proper structure
 - Copy a code block, verify `language-*` class in HTML
