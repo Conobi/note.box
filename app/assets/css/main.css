@@ -344,9 +344,14 @@ html {
    For dark mode, we override to use --shiki-dark instead. We also need to
    override the background-color set on the wrapper node decoration. */
 
-/* Override Shiki's inline background on the wrapper so our design system bg shows */
+/* Override Shiki's inline bg/fg on the wrapper so our design system shows through.
+   The node decoration sets background-color and color from the light theme. We
+   override both to use our design tokens. Token spans set their own colors via
+   --shiki-light / --shiki-dark CSS vars, so the wrapper color only affects
+   unstyled/plain text tokens that inherit. */
 .zen-editor .tiptap .code-block-wrapper[style] {
   background-color: var(--ui-bg-muted) !important;
+  color: var(--ui-text) !important;
 }
 
 /* Dark mode: class-based (Nuxt UI) */
