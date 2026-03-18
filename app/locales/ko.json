@@ -75,7 +75,11 @@
     "shortcuts": "키보드 단축키",
     "shortcutNewNote": "새 노트",
     "shortcutSearch": "노트 검색",
-    "shortcutSettings": "설정 열기"
+    "shortcutSettings": "설정 열기",
+    "copyFormat": "복사 형식",
+    "copyFormatHtml": "HTML",
+    "copyFormatMarkdown": "Markdown",
+    "copyFormatDescription": "HTML은 Docs, Word, Teams에 적합합니다. Markdown은 GitHub, Telegram에 적합합니다."
   },
   "date": {
     "yesterday": "어제"

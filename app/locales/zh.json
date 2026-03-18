@@ -75,7 +75,11 @@
     "shortcuts": "键盘快捷键",
     "shortcutNewNote": "新建笔记",
     "shortcutSearch": "搜索笔记",
-    "shortcutSettings": "打开设置"
+    "shortcutSettings": "打开设置",
+    "copyFormat": "复制格式",
+    "copyFormatHtml": "HTML",
+    "copyFormatMarkdown": "Markdown",
+    "copyFormatDescription": "HTML 适用于 Docs、Word、Teams。Markdown 适用于 GitHub、Telegram。"
   },
   "date": {
     "yesterday": "昨天"

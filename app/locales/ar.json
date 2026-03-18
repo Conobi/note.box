@@ -75,7 +75,11 @@
     "shortcuts": "اختصارات لوحة المفاتيح",
     "shortcutNewNote": "ملاحظة جديدة",
     "shortcutSearch": "البحث في الملاحظات",
-    "shortcutSettings": "فتح الإعدادات"
+    "shortcutSettings": "فتح الإعدادات",
+    "copyFormat": "تنسيق النسخ",
+    "copyFormatHtml": "HTML",
+    "copyFormatMarkdown": "Markdown",
+    "copyFormatDescription": "HTML يعمل بشكل أفضل مع Docs وWord وTeams. Markdown يعمل بشكل أفضل مع GitHub وTelegram."
   },
   "date": {
     "yesterday": "أمس"

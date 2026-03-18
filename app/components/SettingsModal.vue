@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { WritingFont, ColorScheme, SupportedLocale } from '~/types/settings'
+import type { WritingFont, ColorScheme, SupportedLocale, CopyFormat } from '~/types/settings'
 import type { Note } from '~/types/note'
 
 const open = defineModel<boolean>('open', { default: false })
 
 const { t } = useI18n()
 const { setLocale } = useI18n()
-const { font, colorScheme, locale: appLocale } = useAppSettings()
+const { font, colorScheme, locale: appLocale, copyFormat } = useAppSettings()
 const { notes } = useNotes()
 const exporting = ref(false)
 
@@ -26,6 +26,11 @@ const fontOptions: FontOption[] = [
   { label: 'Inconsolata', value: 'inconsolata', family: "'Inconsolata', monospace", category: 'Mono' },
   { label: 'Lexend', value: 'lexend', family: "'Lexend', sans-serif", category: 'Dyslexia-friendly' },
 ]
+
+const copyFormatOptions = computed<{ label: string, value: CopyFormat, icon: string }[]>(() => [
+  { label: t('settings.copyFormatHtml'), value: 'html', icon: 'i-lucide-code' },
+  { label: t('settings.copyFormatMarkdown'), value: 'markdown', icon: 'i-lucide-hash' },
+])
 
 const themeOptions = computed<{ label: string, value: ColorScheme, icon: string }[]>(() => [
   { label: t('settings.light'), value: 'light', icon: 'i-lucide-sun' },
@@ -219,6 +224,45 @@ async function handleExport() {
               />
             </button>
           </div>
+        </div>
+
+        <USeparator />
+
+        <!-- Copy format section -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <UIcon name="i-lucide-clipboard-copy" class="size-4 text-muted" />
+            <p class="text-sm font-medium text-muted">
+              {{ t('settings.copyFormat') }}
+            </p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <button
+              v-for="opt in copyFormatOptions"
+              :key="opt.value"
+              :aria-label="opt.label"
+              class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border transition-all duration-150"
+              :class="copyFormat === opt.value
+                ? 'border-primary/40 bg-primary/5 ring-1 ring-primary/20'
+                : 'border-default hover:border-muted hover:bg-elevated'"
+              @click="copyFormat = opt.value"
+            >
+              <UIcon
+                :name="opt.icon"
+                class="size-4"
+                :class="copyFormat === opt.value ? 'text-primary' : 'text-muted'"
+              />
+              <span
+                class="text-sm font-medium"
+                :class="copyFormat === opt.value ? 'text-primary' : 'text-default'"
+              >
+                {{ opt.label }}
+              </span>
+            </button>
+          </div>
+          <p class="text-xs text-dimmed mt-2 px-1">
+            {{ t('settings.copyFormatDescription') }}
+          </p>
         </div>
 
         <USeparator />
