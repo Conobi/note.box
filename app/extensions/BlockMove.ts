@@ -11,7 +11,7 @@ export const BlockMove = Extension.create({
         const { state, dispatch } = editor.view
         return (
           moveCodeBlockLine(state, dispatch, 'up') ||
-          moveTopLevelBlock(state, dispatch, 'up')
+          moveNodeInParent(state, dispatch, 'up')
         )
       },
 
@@ -19,7 +19,7 @@ export const BlockMove = Extension.create({
         const { state, dispatch } = editor.view
         return (
           moveCodeBlockLine(state, dispatch, 'down') ||
-          moveTopLevelBlock(state, dispatch, 'down')
+          moveNodeInParent(state, dispatch, 'down')
         )
       },
     }
@@ -106,111 +106,84 @@ function moveCodeBlockLine(
 }
 
 /**
- * Moves a top-level block (direct child of the document) up or down.
+ * Walks up from the current cursor position to find the depth at which the node
+ * can be reordered among its siblings. Returns the depth of the moveable node,
+ * or null if none found.
+ *
+ * Reorderable containers: bulletList, orderedList, taskList, blockquote, doc.
+ */
+function findMoveDepth(state: EditorState): number | null {
+  const { $from } = state.selection
+  for (let depth = $from.depth; depth >= 1; depth--) {
+    const parentType = $from.node(depth - 1).type.name
+    if (['bulletList', 'orderedList', 'taskList', 'blockquote', 'doc'].includes(parentType)) {
+      return depth
+    }
+  }
+  return null
+}
+
+/**
+ * Moves a block up or down within its nearest reorderable container.
+ * Handles list items inside lists, paragraphs inside blockquotes, and
+ * top-level blocks — at any nesting depth.
  * Returns true if handled (including boundary no-ops), false if not applicable.
  */
-function moveTopLevelBlock(
+function moveNodeInParent(
   state: EditorState,
   dispatch: (tr: Transaction) => void,
   direction: 'up' | 'down',
 ): boolean {
-  const { selection, doc } = state
-  const { $from, $to } = selection
+  const depth = findMoveDepth(state)
+  if (depth === null) return false
 
-  // Only handle blocks that are direct children of the document (depth 1)
-  if ($from.depth !== 1) return false
+  const { $from, $to } = state.selection
+  const parent = $from.node(depth - 1)
 
-  // Find the first and last top-level block nodes touched by the selection
-  // $from.before(1) is the position just before the node at depth 1
-  const firstBlockPos = $from.before(1)
-  const lastBlockPos = $to.before(1)
+  // Indices of the first and last selected nodes at this depth within their parent
+  const firstIndex = $from.index(depth - 1)
+  const lastIndex = $to.index(depth - 1)
 
-  const firstBlockIndex = doc.resolve(firstBlockPos + 1).index(0)
-  const lastBlockIndex = doc.resolve(lastBlockPos + 1).index(0)
+  // Boundary checks — consume the event so the editor doesn't do anything else
+  if (direction === 'up' && firstIndex === 0) return true
+  if (direction === 'down' && lastIndex >= parent.childCount - 1) return true
+
+  const tr = state.tr
 
   if (direction === 'up') {
-    // Can't move up if the first selected block is already the first child
-    if (firstBlockIndex === 0) return true
+    const siblingIndex = firstIndex - 1
+    const siblingNode = parent.child(siblingIndex)
 
-    // The sibling block just above the first selected block
-    const siblingIndex = firstBlockIndex - 1
-    const siblingNode = doc.child(siblingIndex)
-
-    // Calculate the start position of the sibling node
-    // (sum of sizes of all nodes before it, plus 1 for the doc start token)
-    let siblingStart = 0
-    for (let i = 0; i < siblingIndex; i++) {
-      siblingStart += doc.child(i).nodeSize
-    }
-    // siblingStart is now the absolute position of the sibling node's opening token
-
+    // Position just before the sibling node at this depth
+    const siblingStart = $from.posAtIndex(siblingIndex, depth - 1)
     const siblingEnd = siblingStart + siblingNode.nodeSize
 
-    // The end position of the last selected block
-    let lastBlockEnd = 0
-    for (let i = 0; i <= lastBlockIndex; i++) {
-      lastBlockEnd += doc.child(i).nodeSize
-    }
+    // Position just after the last selected node (= before the next sibling)
+    const afterLastSelected = $from.posAtIndex(lastIndex + 1, depth - 1)
 
-    // To move up: delete the sibling above the selection, then re-insert it after the last selected block
-    const tr = state.tr
-
-    // Delete the sibling (which is above our selection)
+    // Delete the sibling above, then re-insert it after the last selected node
     tr.delete(siblingStart, siblingEnd)
-
-    // After deletion, the insertion point is: lastBlockEnd - siblingNode.nodeSize
-    // because everything from siblingEnd onward shifted left by siblingNode.nodeSize
-    const insertPos = lastBlockEnd - siblingNode.nodeSize
-
+    const insertPos = tr.mapping.map(afterLastSelected)
     tr.insert(insertPos, siblingNode)
-
-    // Preserve selection via mapping (positions shifted left by siblingNode.nodeSize)
-    const newFrom = tr.mapping.map($from.pos)
-    const newTo = tr.mapping.map($to.pos)
-    tr.setSelection(TextSelection.create(tr.doc, newFrom, newTo))
-
-    dispatch(tr)
-    return true
   } else {
-    // Can't move down if the last selected block is the last child
-    if (lastBlockIndex === doc.childCount - 1) return true
+    const siblingIndex = lastIndex + 1
+    const siblingNode = parent.child(siblingIndex)
 
-    // The sibling block just below the last selected block
-    const siblingIndex = lastBlockIndex + 1
-    const siblingNode = doc.child(siblingIndex)
-
-    // Calculate the start position of the sibling node
-    let siblingStart = 0
-    for (let i = 0; i < siblingIndex; i++) {
-      siblingStart += doc.child(i).nodeSize
-    }
-
+    // Position just before the sibling node below the selection
+    const siblingStart = $from.posAtIndex(siblingIndex, depth - 1)
     const siblingEnd = siblingStart + siblingNode.nodeSize
 
-    // The start position of the first selected block
-    let firstBlockStart = 0
-    for (let i = 0; i < firstBlockIndex; i++) {
-      firstBlockStart += doc.child(i).nodeSize
-    }
+    // Position just before the first selected node
+    const beforeFirstSelected = $from.posAtIndex(firstIndex, depth - 1)
 
-    // To move down: delete the sibling below the selection, then re-insert it before the first selected block
-    const tr = state.tr
-
-    // Delete the sibling (which is below our selection)
+    // Delete the sibling below, then re-insert it before the first selected node
     tr.delete(siblingStart, siblingEnd)
-
-    // Insert the sibling before the first selected block
-    // firstBlockStart did not change since we deleted after it
-    tr.insert(firstBlockStart, siblingNode)
-
-    // Preserve selection via mapping
-    const newFrom = tr.mapping.map($from.pos)
-    const newTo = tr.mapping.map($to.pos)
-    tr.setSelection(TextSelection.create(tr.doc, newFrom, newTo))
-
-    dispatch(tr)
-    return true
+    tr.insert(tr.mapping.map(beforeFirstSelected), siblingNode)
   }
+
+  tr.setSelection(TextSelection.create(tr.doc, tr.mapping.map($from.pos), tr.mapping.map($to.pos)))
+  dispatch(tr)
+  return true
 }
 
 /**
