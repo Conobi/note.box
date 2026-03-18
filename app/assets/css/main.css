@@ -358,7 +358,7 @@ html {
    color mode, and the media query would conflict when OS dark ≠ app dark. */
 .dark .code-block-wrapper[style] {
   color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
+  background-color: var(--ui-bg-elevated) !important;
 }
 
 .dark .code-block-wrapper span[style] {
