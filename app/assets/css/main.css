@@ -334,26 +334,40 @@ html {
 }
 
 /* ── Shiki decoration theming ────────────────────────────────── */
-/* tiptap-extension-code-block-shiki applies decorations with inline
-   styles via ProseMirror. Override Shiki background on the <pre> so
-   our design system background shows through. */
-.zen-editor .tiptap .code-block-wrapper pre[style] {
-  background-color: transparent !important;
+/* tiptap-extension-code-block-shiki applies Decoration.node on the
+   codeBlock node (which is our NodeViewWrapper div.code-block-wrapper)
+   with inline style + class="shiki". It also applies Decoration.inline
+   on each token span with inline style containing CSS vars:
+   --shiki-light, --shiki-dark for colors.
+
+   The light theme colors are set as the default (color: var(--shiki-light)).
+   For dark mode, we override to use --shiki-dark instead. We also need to
+   override the background-color set on the wrapper node decoration. */
+
+/* Override Shiki's inline background on the wrapper so our design system bg shows */
+.zen-editor .tiptap .code-block-wrapper[style] {
+  background-color: var(--ui-bg-muted) !important;
 }
 
 /* Dark mode: class-based (Nuxt UI) */
-.dark .shiki,
-.dark .shiki span {
+.dark .code-block-wrapper[style] {
+  background-color: var(--ui-bg-muted) !important;
   color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
+}
+
+.dark .code-block-wrapper span[style] {
+  color: var(--shiki-dark) !important;
 }
 
 /* Dark mode: media query fallback */
 @media (prefers-color-scheme: dark) {
-  .shiki,
-  .shiki span {
+  .code-block-wrapper[style] {
+    background-color: var(--ui-bg-muted) !important;
     color: var(--shiki-dark) !important;
-    background-color: var(--shiki-dark-bg) !important;
+  }
+
+  .code-block-wrapper span[style] {
+    color: var(--shiki-dark) !important;
   }
 }
 
