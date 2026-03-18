@@ -39,6 +39,19 @@ export const LANGUAGES: Language[] = [
   { name: 'YAML', alias: 'yaml' },
 ]
 
+// Build a lookup: alias or lowercase name → display name
+const displayNameLookup = new Map<string, string>()
+for (const lang of LANGUAGES) {
+  displayNameLookup.set(lang.alias, lang.name)
+  displayNameLookup.set(lang.name.toLowerCase(), lang.name)
+}
+
+/** Get the display name for a language identifier.
+ *  e.g. "py" → "Python", "javascript" → "JavaScript", "ts" → "TypeScript" */
+export function languageDisplayName(input: string): string {
+  return displayNameLookup.get(input.toLowerCase()) ?? input
+}
+
 export function filterLanguages(query: string): Language[] {
   if (!query) return LANGUAGES
   const q = query.toLowerCase()
