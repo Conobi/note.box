@@ -75,7 +75,11 @@
     "shortcuts": "キーボードショートカット",
     "shortcutNewNote": "新規ノート",
     "shortcutSearch": "ノートを検索",
-    "shortcutSettings": "設定を開く"
+    "shortcutSettings": "設定を開く",
+    "copyFormat": "コピー形式",
+    "copyFormatHtml": "HTML",
+    "copyFormatMarkdown": "Markdown",
+    "copyFormatDescription": "HTMLはDocs、Word、Teamsに最適です。MarkdownはGitHub、Telegramに最適です。"
   },
   "date": {
     "yesterday": "昨日"

@@ -75,7 +75,11 @@
     "shortcuts": "Atalhos de teclado",
     "shortcutNewNote": "Nova nota",
     "shortcutSearch": "Pesquisar notas",
-    "shortcutSettings": "Abrir configurações"
+    "shortcutSettings": "Abrir configurações",
+    "copyFormat": "Formato de cópia",
+    "copyFormatHtml": "HTML",
+    "copyFormatMarkdown": "Markdown",
+    "copyFormatDescription": "HTML funciona melhor para Docs, Word, Teams. Markdown funciona melhor para GitHub, Telegram."
   },
   "date": {
     "yesterday": "Ontem"
