@@ -325,15 +325,6 @@ html {
   background: transparent;
 }
 
-/* When Shiki overlay is active, hide the raw text but keep the element
-   for cursor tracking. The caret-color stays visible for editing. */
-.zen-editor .tiptap .code-content.has-highlight pre code {
-  color: transparent;
-}
-.zen-editor .tiptap .code-content.has-highlight pre {
-  caret-color: var(--ui-text);
-}
-
 .zen-editor .tiptap .code-block-wrapper code {
   font-family: inherit;
   font-size: inherit;
@@ -342,45 +333,27 @@ html {
   padding: 0;
 }
 
-/* ── Shiki overlay ───────────────────────────────────────────── */
-.zen-editor .tiptap .shiki-overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  padding: 0.625rem 1rem 1rem;
-  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
-  font-size: 0.875em;
-  line-height: 1.6;
-  transition: opacity 150ms ease;
-}
-
-.zen-editor .tiptap .shiki-overlay.shiki-hidden {
-  opacity: 0;
-}
-
-.zen-editor .tiptap .shiki-overlay pre {
-  margin: 0;
-  padding: 0;
-  background: transparent !important;
-}
-
-.zen-editor .tiptap .shiki-overlay code {
-  font-family: inherit;
-  font-size: inherit;
-  background: none;
-  border: none;
-  padding: 0;
+/* ── Shiki decoration theming ────────────────────────────────── */
+/* tiptap-extension-code-block-shiki applies decorations with inline
+   styles via ProseMirror. Override Shiki background on the <pre> so
+   our design system background shows through. */
+.zen-editor .tiptap .code-block-wrapper pre[style] {
+  background-color: transparent !important;
 }
 
 /* Dark mode: class-based (Nuxt UI) */
+.dark .shiki,
 .dark .shiki span {
   color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }
 
 /* Dark mode: media query fallback */
 @media (prefers-color-scheme: dark) {
+  .shiki,
   .shiki span {
     color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
   }
 }
 

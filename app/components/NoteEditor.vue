@@ -205,7 +205,13 @@ const editorExtensions: any[] = [
   CodeMarkFix,
   EditorRefCapture,
   TableSelectGutter,
-  CodeBlockShiki,
+  CodeBlockShiki.configure({
+    defaultTheme: 'github-light',
+    themes: {
+      light: 'github-light',
+      dark: 'github-dark',
+    },
+  }),
   Markdown,
   MarkdownPaste,
 ]
