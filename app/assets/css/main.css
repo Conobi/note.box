@@ -263,9 +263,11 @@ html {
   position: relative;
   border: 1px solid var(--ui-border);
   border-radius: var(--radius-md);
-  background-color: var(--ui-bg-muted);
   margin: 1em 0;
   overflow: hidden;
+  /* Background is set by Shiki's theme via inline style decoration.
+     Fallback for when Shiki hasn't loaded yet: */
+  background-color: var(--ui-bg-elevated);
 }
 
 .zen-editor .tiptap .code-block-header {
@@ -344,20 +346,17 @@ html {
    For dark mode, we override to use --shiki-dark instead. We also need to
    override the background-color set on the wrapper node decoration. */
 
-/* Override Shiki's inline bg/fg on the wrapper so our design system shows through.
-   The node decoration sets background-color and color from the light theme. We
-   override both to use our design tokens. Token spans set their own colors via
-   --shiki-light / --shiki-dark CSS vars, so the wrapper color only affects
-   unstyled/plain text tokens that inherit. */
-.zen-editor .tiptap .code-block-wrapper[style] {
-  background-color: var(--ui-bg-muted) !important;
-  color: var(--ui-text) !important;
-}
+/* Shiki decoration theming:
+   tiptap-extension-code-block-shiki sets inline style (background-color, color)
+   on the wrapper via Decoration.node, and inline token colors via Decoration.inline.
+   In dual-theme mode, tokens use CSS vars (--shiki-light / --shiki-dark).
+   We let Shiki's theme background show through (it was designed for its own bg)
+   and only override in dark mode to switch token colors. */
 
 /* Dark mode: class-based (Nuxt UI) */
 .dark .code-block-wrapper[style] {
-  background-color: var(--ui-bg-muted) !important;
   color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }
 
 .dark .code-block-wrapper span[style] {
@@ -367,8 +366,8 @@ html {
 /* Dark mode: media query fallback */
 @media (prefers-color-scheme: dark) {
   .code-block-wrapper[style] {
-    background-color: var(--ui-bg-muted) !important;
     color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
   }
 
   .code-block-wrapper span[style] {
