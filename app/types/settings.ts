@@ -11,8 +11,11 @@ export type ColorScheme = 'light' | 'dark'
 
 export type SupportedLocale = 'en' | 'es' | 'fr' | 'de' | 'pt' | 'zh' | 'ja' | 'ko' | 'ar'
 
+export type CopyFormat = 'html' | 'markdown'
+
 export interface AppSettings {
   font: WritingFont
   colorScheme: ColorScheme
   locale?: SupportedLocale
+  copyFormat?: CopyFormat
 }
