@@ -49,6 +49,13 @@ function seedCodeNote() {
 describe('CodeBlockNodeView', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    // Stub requestAnimationFrame if not available (nuxt test env).
+    // TipTap's internal useDebouncedRef uses rAF, and Shiki's initDecorations
+    // dispatches a transaction after the test env is torn down.
+    if (typeof globalThis.requestAnimationFrame === 'undefined') {
+      globalThis.requestAnimationFrame = (cb: FrameRequestCallback) => setTimeout(cb, 0) as unknown as number
+      globalThis.cancelAnimationFrame = (id: number) => clearTimeout(id)
+    }
     _resetLocalStorage()
     localStorage.clear()
   })
