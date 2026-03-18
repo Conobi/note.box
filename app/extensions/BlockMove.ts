@@ -116,7 +116,7 @@ function findMoveDepth(state: EditorState): number | null {
   const { $from } = state.selection
   for (let depth = $from.depth; depth >= 1; depth--) {
     const parentType = $from.node(depth - 1).type.name
-    if (['bulletList', 'orderedList', 'taskList', 'blockquote', 'doc'].includes(parentType)) {
+    if (['bulletList', 'orderedList', 'taskList', 'blockquote', 'table', 'doc'].includes(parentType)) {
       return depth
     }
   }
