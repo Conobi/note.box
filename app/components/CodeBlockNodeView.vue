@@ -55,7 +55,7 @@ onBeforeUnmount(() => {
       </button>
     </div>
     <div class="code-content">
-      <pre><NodeViewContent as="code" /></pre>
+      <pre spellcheck="false"><NodeViewContent as="code" /></pre>
     </div>
   </NodeViewWrapper>
 </template>
