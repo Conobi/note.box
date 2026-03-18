@@ -211,6 +211,8 @@ const editorExtensions: any[] = [
       light: 'github-light',
       dark: 'github-dark',
     },
+    enableTabIndentation: true,
+    tabSize: 2,
   }),
   Markdown,
   MarkdownPaste,
