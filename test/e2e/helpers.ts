@@ -57,6 +57,21 @@ export async function seedNote(
   await goto(`/notes/${slug}`, { waitUntil: 'hydration' })
 }
 
+/** Seed a note with custom JSONContent and reload. */
+export async function seedNoteWithContent(
+  page: Page,
+  goto: Goto,
+  opts: { id: string, slug: string, title: string, content: Record<string, unknown> },
+) {
+  const now = new Date().toISOString()
+  await page.evaluate(({ id, slug, title, content, now }) => {
+    localStorage.clear()
+    const note = { id, slug, title, content, createdAt: now, updatedAt: now }
+    localStorage.setItem('note.box:notes', JSON.stringify([note]))
+  }, { ...opts, now })
+  await goto(`/notes/${opts.slug}`, { waitUntil: 'hydration' })
+}
+
 /** Seed multiple notes into localStorage. */
 export async function seedNotes(
   page: Page,

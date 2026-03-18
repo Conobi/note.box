@@ -147,22 +147,20 @@ export const ClipboardCopy = Extension.create<ClipboardCopyOptions>({
     return [
       new Plugin({
         key: new PluginKey('clipboardCopy'),
-        // handleCopy/handleCut are valid ProseMirror EditorProps but
-        // @tiptap/pm re-exports narrowed types that omit them. Cast to
-        // satisfy TS while keeping runtime correctness.
-         
         props: {
-          handleCopy(view: EditorView, event: Event) {
-            return handleClipboard(getCopyFormat, serializer)(view, event as ClipboardEvent)
+          handleDOMEvents: {
+            copy(view: EditorView, event: Event) {
+              return handleClipboard(getCopyFormat, serializer)(view, event as ClipboardEvent)
+            },
+            cut(view: EditorView, event: Event) {
+              const handled = handleClipboard(getCopyFormat, serializer)(view, event as ClipboardEvent)
+              if (handled) {
+                view.dispatch(view.state.tr.deleteSelection().scrollIntoView())
+              }
+              return handled
+            },
           },
-          handleCut(view: EditorView, event: Event) {
-            const handled = handleClipboard(getCopyFormat, serializer)(view, event as ClipboardEvent)
-            if (handled) {
-              view.dispatch(view.state.tr.deleteSelection().scrollIntoView())
-            }
-            return handled
-          },
-        } as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+        },
       }),
     ]
   },
