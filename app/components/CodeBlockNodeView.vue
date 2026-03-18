@@ -119,13 +119,13 @@ onBeforeUnmount(() => {
         <UIcon :name="copied ? 'i-lucide-check' : 'i-lucide-copy'" class="size-3.5" />
       </button>
     </div>
-    <div class="code-content">
+    <div class="code-content" :class="{ 'has-highlight': highlightedHtml && !isFocused }">
       <pre><NodeViewContent as="code" /></pre>
       <!-- eslint-disable vue/no-v-html -->
       <div
         v-if="highlightedHtml"
         class="shiki-overlay"
-        :class="{ 'opacity-0': isFocused }"
+        :class="{ 'shiki-hidden': isFocused }"
         aria-hidden="true"
         v-html="highlightedHtml"
       />
