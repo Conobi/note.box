@@ -10,6 +10,7 @@ import { Markdown } from '@tiptap/markdown'
 import { CodeMarkFix } from '~/extensions/CodeMarkFix'
 import { BlockMove } from '~/extensions/BlockMove'
 import { MarkdownPaste } from '~/extensions/MarkdownPaste'
+import { ClipboardCopy } from '~/extensions/ClipboardCopy'
 import { BacktickWrap } from '~/extensions/BacktickWrap'
 import { TaskToggle } from '~/extensions/TaskToggle'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
@@ -194,6 +195,8 @@ const TableSelectGutter = Extension.create({
   },
 })
 
+const { copyFormat } = useAppSettings()
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const editorExtensions: any[] = [
   TableKit.configure({
@@ -222,6 +225,7 @@ const editorExtensions: any[] = [
   TaskToggle,
   Markdown,
   MarkdownPaste,
+  ClipboardCopy.configure({ getCopyFormat: () => copyFormat.value }),
 ]
 
 const props = defineProps<{
