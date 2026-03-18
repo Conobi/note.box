@@ -353,7 +353,9 @@ html {
    We let Shiki's theme background show through (it was designed for its own bg)
    and only override in dark mode to switch token colors. */
 
-/* Dark mode: class-based (Nuxt UI) */
+/* Dark mode: class-based only (Nuxt UI uses .dark on <html>).
+   No @media (prefers-color-scheme) fallback — the app controls its own
+   color mode, and the media query would conflict when OS dark ≠ app dark. */
 .dark .code-block-wrapper[style] {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
@@ -361,18 +363,6 @@ html {
 
 .dark .code-block-wrapper span[style] {
   color: var(--shiki-dark) !important;
-}
-
-/* Dark mode: media query fallback */
-@media (prefers-color-scheme: dark) {
-  .code-block-wrapper[style] {
-    color: var(--shiki-dark) !important;
-    background-color: var(--shiki-dark-bg) !important;
-  }
-
-  .code-block-wrapper span[style] {
-    color: var(--shiki-dark) !important;
-  }
 }
 
 
