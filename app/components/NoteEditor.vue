@@ -10,6 +10,8 @@ import { Markdown } from '@tiptap/markdown'
 import { CodeMarkFix } from '~/extensions/CodeMarkFix'
 import { BlockMove } from '~/extensions/BlockMove'
 import { MarkdownPaste } from '~/extensions/MarkdownPaste'
+import { BacktickWrap } from '~/extensions/BacktickWrap'
+import { TaskToggle } from '~/extensions/TaskToggle'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { CellSelection } from '@tiptap/pm/tables'
 import { TaskList } from '@tiptap/extension-task-list'
@@ -216,6 +218,8 @@ const editorExtensions: any[] = [
     enableTabIndentation: true,
     tabSize: 2,
   }),
+  BacktickWrap,
+  TaskToggle,
   Markdown,
   MarkdownPaste,
 ]
