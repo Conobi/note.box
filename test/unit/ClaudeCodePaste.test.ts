@@ -147,6 +147,15 @@ describe('cleanClaudeCodeContent', () => {
     expect(lines[6]).toBe('1. Ordered item')
   })
 
+  it('does not join forward from a structural line even at terminal width', () => {
+    // A heading that fills the terminal width should NOT absorb the next line
+    const longHeading = '# ' + 'A'.repeat(74) // + 2 leading = 78, padded to 80
+    const nextLine = 'This is a regular line'
+    const text = [ccLine(longHeading), ccLine(nextLine)].join('\n')
+    const result = cleanClaudeCodeContent(text, 80)
+    expect(result).toBe(longHeading + '\n' + nextLine)
+  })
+
   it('does not join onto lines starting with * or + (list markers)', () => {
     const longLine = 'A'.repeat(76)
     const text = [
