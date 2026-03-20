@@ -56,21 +56,19 @@ const MARKDOWN_STRUCTURAL_RE = /^(#{1,6}\s|[-*+]\s|>\s|```|\||\d+\.\s)/
 export function cleanClaudeCodeContent(text: string, terminalWidth: number): string {
   const rawLines = text.split('\n')
 
-  // Step 1 & 2: strip, but track original lengths for wrap detection
+  // Step 1 & 2: strip padding, but track trimmed lengths for wrap detection.
+  // A line was truly hard-wrapped only if its content (without trailing spaces)
+  // filled the terminal width. We can't use the raw length because Claude Code
+  // pads ALL lines to terminal width.
   const stripped: string[] = []
-  const originalLengths: number[] = []
+  const trimmedLengths: number[] = []
 
   for (const raw of rawLines) {
-    originalLengths.push(raw.length)
+    trimmedLengths.push(raw.trimEnd().length)
     let line = raw.replace(/\s+$/, '') // strip trailing spaces
     if (line.startsWith('  ')) line = line.slice(2) // strip 2-space indent
     stripped.push(line)
   }
-
-  // Step 3: rejoin hard-wrapped lines
-  // Track trimmed lengths: a line was truly hard-wrapped only if content filled
-  // the terminal width (i.e. trimEnd length is within 2 of terminalWidth).
-  const trimmedLengths: number[] = rawLines.map(raw => raw.trimEnd().length)
 
   const result: string[] = []
   let i = 0
