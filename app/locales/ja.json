@@ -85,7 +85,8 @@
     "yesterday": "昨日"
   },
   "paste": {
-    "claudeCodeDetected": "Claude Code のコンテンツを検出しクリーンアップしました",
+    "claudeCodeDetectedTitle": "Claude Code のペースト内容をクリーンアップしました",
+    "claudeCodeDetectedDescription": "ターミナル形式を検出して削除しました。",
     "undo": "元に戻す"
   },
   "error": {

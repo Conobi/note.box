@@ -85,7 +85,8 @@
     "yesterday": "Yesterday"
   },
   "paste": {
-    "claudeCodeDetected": "Claude Code content detected and cleaned up",
+    "claudeCodeDetectedTitle": "Claude Code paste cleaned up",
+    "claudeCodeDetectedDescription": "Terminal formatting detected and removed.",
     "undo": "Undo"
   },
   "error": {

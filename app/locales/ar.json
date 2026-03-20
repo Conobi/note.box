@@ -85,7 +85,8 @@
     "yesterday": "أمس"
   },
   "paste": {
-    "claudeCodeDetected": "تم اكتشاف محتوى Claude Code وتنظيفه",
+    "claudeCodeDetectedTitle": "تم تنظيف لصق Claude Code",
+    "claudeCodeDetectedDescription": "تم اكتشاف تنسيق المحطة الطرفية وإزالته.",
     "undo": "تراجع"
   },
   "error": {

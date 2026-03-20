@@ -85,7 +85,8 @@
     "yesterday": "어제"
   },
   "paste": {
-    "claudeCodeDetected": "Claude Code 콘텐츠가 감지되어 정리되었습니다",
+    "claudeCodeDetectedTitle": "Claude Code 붙여넣기가 정리되었습니다",
+    "claudeCodeDetectedDescription": "터미널 형식이 감지되어 제거되었습니다.",
     "undo": "실행 취소"
   },
   "error": {
