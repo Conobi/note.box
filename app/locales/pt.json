@@ -84,6 +84,10 @@
   "date": {
     "yesterday": "Ontem"
   },
+  "paste": {
+    "claudeCodeDetected": "Conteúdo do Claude Code detectado e limpo",
+    "undo": "Desfazer"
+  },
   "error": {
     "notFound": "Esta página não existe.",
     "generic": "Algo deu errado.",

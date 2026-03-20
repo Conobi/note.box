@@ -84,6 +84,10 @@
   "date": {
     "yesterday": "أمس"
   },
+  "paste": {
+    "claudeCodeDetected": "تم اكتشاف محتوى Claude Code وتنظيفه",
+    "undo": "تراجع"
+  },
   "error": {
     "notFound": "هذه الصفحة غير موجودة.",
     "generic": "حدث خطأ ما.",

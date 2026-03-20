@@ -1,4 +1,6 @@
 import { Extension } from '@tiptap/core'
+import { Plugin, PluginKey } from '@tiptap/pm/state'
+import { Slice } from '@tiptap/pm/model'
 
 // --- Pure functions (exported for testing) ---
 
@@ -95,10 +97,20 @@ export function cleanClaudeCodeContent(text: string, terminalWidth: number): str
   return result.join('\n')
 }
 
-// --- TipTap Extension (wired in Task 2) ---
+// --- TipTap Extension ---
 
-export const ClaudeCodePaste = Extension.create({
+export interface ClaudeCodePasteOptions {
+  showToast: (rawText: string) => void
+}
+
+export const ClaudeCodePaste = Extension.create<ClaudeCodePasteOptions>({
   name: 'claudeCodePaste',
+
+  addOptions() {
+    return {
+      showToast: () => {},
+    }
+  },
 
   addStorage() {
     return {
@@ -108,7 +120,56 @@ export const ClaudeCodePaste = Extension.create({
   },
 
   addProseMirrorPlugins() {
-    // Placeholder — wired in Task 2
-    return []
+    const editor = this.editor
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const storage = (this.editor.storage as any).claudeCodePaste
+    const { showToast } = this.options
+
+    return [
+      new Plugin({
+        key: new PluginKey('claudeCodePaste'),
+        props: {
+          clipboardTextParser: (function (text: string, _$context: unknown, plain: boolean): Slice | null {
+            if (plain) return null
+
+            const { detected, terminalWidth } = isClaudeCodeContent(text)
+            if (!detected) return null
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const manager = (editor as any).storage.markdown?.manager
+            if (!manager) return null
+
+            const cleaned = cleanClaudeCodeContent(text, terminalWidth)
+
+            // Store raw text for undo
+            storage.rawText = text
+            storage.detectedFlag = true
+
+            try {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const json = (manager as any).parse(cleaned)
+              const doc = editor.state.schema.nodeFromJSON(json)
+              return new Slice(doc.content, 0, 0)
+            }
+            catch {
+              storage.detectedFlag = false
+              return null
+            }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          }) as any,
+
+          handlePaste: (_view: unknown, _event: unknown) => {
+            if (!storage.detectedFlag) return false
+            storage.detectedFlag = false
+
+            // Show toast after a microtask so the paste transaction completes first
+            const rawText = storage.rawText
+            Promise.resolve().then(() => showToast(rawText))
+
+            return false // Don't handle the paste — the Slice from clipboardTextParser is used
+          },
+        },
+      }),
+    ]
   },
 })
