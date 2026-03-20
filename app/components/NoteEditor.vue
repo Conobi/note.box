@@ -10,10 +10,12 @@ import { Markdown } from '@tiptap/markdown'
 import { CodeMarkFix } from '~/extensions/CodeMarkFix'
 import { BlockMove } from '~/extensions/BlockMove'
 import { MarkdownPaste } from '~/extensions/MarkdownPaste'
+import { ClaudeCodePaste } from '~/extensions/ClaudeCodePaste'
 import { ClipboardCopy } from '~/extensions/ClipboardCopy'
 import { BacktickWrap } from '~/extensions/BacktickWrap'
 import { TaskToggle } from '~/extensions/TaskToggle'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
+import { Slice } from '@tiptap/pm/model'
 import { CellSelection } from '@tiptap/pm/tables'
 import { TaskList } from '@tiptap/extension-task-list'
 import { TaskItem } from '@tiptap/extension-task-item'
@@ -196,6 +198,8 @@ const TableSelectGutter = Extension.create({
 })
 
 const { copyFormat } = useAppSettings()
+const toast = useToast()
+const { t } = useI18n()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const editorExtensions: any[] = [
@@ -224,6 +228,35 @@ const editorExtensions: any[] = [
   BacktickWrap,
   TaskToggle,
   Markdown,
+  ClaudeCodePaste.configure({
+    showToast: (rawText: string) => {
+      toast.add({
+        title: t('paste.claudeCodeDetected'),
+        actions: [{
+          label: t('paste.undo'),
+          onClick: () => {
+            const editor = editorRef.value
+            if (!editor) return
+            editor.commands.undo()
+            // Re-insert raw text through the markdown manager (without cleanup)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const manager = (editor as any).storage.markdown?.manager
+            if (manager) {
+              try {
+                const json = manager.parse(rawText)
+                const doc = editor.state.schema.nodeFromJSON(json)
+                const slice = new Slice(doc.content, 0, 0)
+                editor.view.dispatch(editor.state.tr.replaceSelection(slice))
+              }
+              catch {
+                editor.commands.insertContent(rawText)
+              }
+            }
+          },
+        }],
+      })
+    },
+  }),
   MarkdownPaste,
   ClipboardCopy.configure({ getCopyFormat: () => copyFormat.value }),
 ]
@@ -232,7 +265,6 @@ const props = defineProps<{
   noteSlug: string
 }>()
 
-const { t } = useI18n()
 const router = useRouter()
 const { getBySlug } = useNotes()
 

@@ -18,7 +18,7 @@ export const MarkdownPaste = Extension.create({
           // ProseMirror types the return as Slice, but null at runtime signals
           // "fall through to default". We cast through unknown to satisfy TS.
           // Reference: aguingand/tiptap-markdown uses the same approach.
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           clipboardTextParser: (function (text: string, _$context: unknown, plain: boolean): Slice | null {
             // Shift+paste = don't parse as Markdown, let default handle it
             if (plain) return null

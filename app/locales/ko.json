@@ -84,6 +84,10 @@
   "date": {
     "yesterday": "어제"
   },
+  "paste": {
+    "claudeCodeDetected": "Claude Code 콘텐츠가 감지되어 정리되었습니다",
+    "undo": "실행 취소"
+  },
   "error": {
     "notFound": "페이지를 찾을 수 없습니다.",
     "generic": "문제가 발생했습니다.",
