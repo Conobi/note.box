@@ -15,34 +15,21 @@ export function isClaudeCodeContent(text: string): { detected: boolean, terminal
 
   if (nonEmptyLines.length < 2) return { detected: false, terminalWidth: 0 }
 
-  // Find the most common line length (= terminal width)
-  const lengthCounts = new Map<number, number>()
-  for (const line of nonEmptyLines) {
-    const len = line.length
-    lengthCounts.set(len, (lengthCounts.get(len) ?? 0) + 1)
-  }
+  // Terminal width = longest line (the line that filled the terminal edge).
+  // More robust than mode — works even with 2 lines of different lengths.
+  const terminalWidth = Math.max(...nonEmptyLines.map(l => l.length))
 
-  let terminalWidth = 0
-  let maxCount = 0
-  for (const [len, count] of lengthCounts) {
-    if (count > maxCount) {
-      maxCount = count
-      terminalWidth = len
-    }
-  }
+  if (terminalWidth <= 60) return { detected: false, terminalWidth: 0 }
 
-  if (terminalWidth <= 40) return { detected: false, terminalWidth: 0 }
-
-  // Check both signals
-  let trailingSpaceCount = 0
+  // Check leading 2-space indent (Claude Code's left margin).
+  // Must be exactly 2 spaces — not deeper indentation (3+).
   let leadingIndentCount = 0
   for (const line of nonEmptyLines) {
-    if (/\s{3,}$/.test(line)) trailingSpaceCount++
-    if (line.startsWith('  ')) leadingIndentCount++
+    if (line.startsWith('  ') && !line.startsWith('   ')) leadingIndentCount++
   }
 
   const total = nonEmptyLines.length
-  const detected = (trailingSpaceCount / total) > 0.5 && (leadingIndentCount / total) > 0.5
+  const detected = (leadingIndentCount / total) > 0.5
 
   return { detected, terminalWidth }
 }
@@ -112,61 +99,49 @@ export const ClaudeCodePaste = Extension.create<ClaudeCodePasteOptions>({
     }
   },
 
-  addStorage() {
-    return {
-      detectedFlag: false,
-      rawText: '',
-    }
-  },
-
   addProseMirrorPlugins() {
     const editor = this.editor
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const storage = (this.editor.storage as any).claudeCodePaste
     const { showToast } = this.options
 
     return [
       new Plugin({
         key: new PluginKey('claudeCodePaste'),
         props: {
-          clipboardTextParser: (function (text: string, _$context: unknown, plain: boolean): Slice | null {
-            if (plain) return null
+          // handlePaste fires regardless of clipboard content type (HTML or plain text).
+          // clipboardTextParser is skipped when HTML is on the clipboard (which terminals do),
+          // so we must intercept at handlePaste level.
+          handlePaste: (view, event) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            if ((view as any).input?.shiftKey) return false // Shift+paste = force plain text, skip
+
+            const text = event.clipboardData?.getData('text/plain')
+            if (!text) return false
 
             const { detected, terminalWidth } = isClaudeCodeContent(text)
-            if (!detected) return null
+            if (!detected) return false
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const manager = (editor as any).storage.markdown?.manager
-            if (!manager) return null
+            if (!manager) return false
 
             const cleaned = cleanClaudeCodeContent(text, terminalWidth)
-
-            // Store raw text for undo
-            storage.rawText = text
-            storage.detectedFlag = true
 
             try {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const json = (manager as any).parse(cleaned)
               const doc = editor.state.schema.nodeFromJSON(json)
-              return new Slice(doc.content, 0, 0)
+              const slice = new Slice(doc.content, 0, 0)
+              const tr = view.state.tr.replaceSelection(slice)
+              view.dispatch(tr)
+
+              // Show toast with undo after the transaction is applied
+              showToast(text)
+
+              return true // Paste handled — prevent default
             }
             catch {
-              storage.detectedFlag = false
-              return null
+              return false // Fall through to default paste
             }
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          }) as any,
-
-          handlePaste: (_view: unknown, _event: unknown) => {
-            if (!storage.detectedFlag) return false
-            storage.detectedFlag = false
-
-            // Show toast after a microtask so the paste transaction completes first
-            const rawText = storage.rawText
-            Promise.resolve().then(() => showToast(rawText))
-
-            return false // Don't handle the paste — the Slice from clipboardTextParser is used
           },
         },
       }),

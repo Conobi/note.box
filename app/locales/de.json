@@ -85,7 +85,8 @@
     "yesterday": "Gestern"
   },
   "paste": {
-    "claudeCodeDetected": "Claude Code-Inhalt erkannt und bereinigt",
+    "claudeCodeDetectedTitle": "Claude Code-Einfügung bereinigt",
+    "claudeCodeDetectedDescription": "Terminalformatierung erkannt und entfernt.",
     "undo": "Rückgängig"
   },
   "error": {

@@ -85,7 +85,8 @@
     "yesterday": "Ayer"
   },
   "paste": {
-    "claudeCodeDetected": "Contenido de Claude Code detectado y limpiado",
+    "claudeCodeDetectedTitle": "Pegado de Claude Code limpiado",
+    "claudeCodeDetectedDescription": "Formato de terminal detectado y eliminado.",
     "undo": "Deshacer"
   },
   "error": {

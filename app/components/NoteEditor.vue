@@ -231,7 +231,8 @@ const editorExtensions: any[] = [
   ClaudeCodePaste.configure({
     showToast: (rawText: string) => {
       toast.add({
-        title: t('paste.claudeCodeDetected'),
+        title: t('paste.claudeCodeDetectedTitle'),
+        description: t('paste.claudeCodeDetectedDescription'),
         actions: [{
           label: t('paste.undo'),
           onClick: () => {

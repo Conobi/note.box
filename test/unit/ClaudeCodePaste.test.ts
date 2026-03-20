@@ -27,7 +27,18 @@ describe('isClaudeCodeContent', () => {
     expect(isClaudeCodeContent(text).detected).toBe(false)
   })
 
-  it('rejects text with only trailing spaces but no leading indent', () => {
+  it('detects Claude Code output without trailing spaces (terminal strips them)', () => {
+    const text = [
+      '  ' + 'A'.repeat(118),  // 120 chars total, no trailing spaces
+      '  end of paragraph',
+    ].join('\n')
+
+    const result = isClaudeCodeContent(text)
+    expect(result.detected).toBe(true)
+    expect(result.terminalWidth).toBe(120)
+  })
+
+  it('rejects text without leading 2-space indent', () => {
     const text = [
       'No indent here' + ' '.repeat(60),
       'Still no indent' + ' '.repeat(60),
@@ -35,15 +46,23 @@ describe('isClaudeCodeContent', () => {
     expect(isClaudeCodeContent(text).detected).toBe(false)
   })
 
-  it('rejects text with only leading indent but no trailing spaces', () => {
+  it('rejects short lines with leading indent (max length <= 60)', () => {
     const text = '  Indented line\n  Another indented line\n  Third line'
     expect(isClaudeCodeContent(text).detected).toBe(false)
   })
 
-  it('rejects very short text (terminal width <= 40)', () => {
+  it('rejects deeper indentation (3+ spaces)', () => {
     const text = [
-      ccLine('Hi', 30),
-      ccLine('By', 30),
+      '   ' + 'A'.repeat(77),  // 3-space indent, 80 chars total
+      '   ' + 'B'.repeat(77),
+    ].join('\n')
+    expect(isClaudeCodeContent(text).detected).toBe(false)
+  })
+
+  it('rejects very short text (terminal width <= 60)', () => {
+    const text = [
+      ccLine('Hi', 50),
+      ccLine('By', 50),
     ].join('\n')
     expect(isClaudeCodeContent(text).detected).toBe(false)
   })
