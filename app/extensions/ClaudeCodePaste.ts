@@ -75,7 +75,7 @@ export function cleanClaudeCodeContent(text: string, terminalWidth: number): str
   const result: string[] = []
   let i = 0
   while (i < stripped.length) {
-    let current = stripped[i]
+    let current = stripped[i]!
 
     // Don't join forward from a structural markdown element
     const currentIsStructural = MARKDOWN_STRUCTURAL_RE.test(current)
@@ -83,11 +83,11 @@ export function cleanClaudeCodeContent(text: string, terminalWidth: number): str
     // A line was hard-wrapped if its trimmed length is within 2 of terminalWidth.
     // Check the CURRENT i on each iteration (not a stale captured value).
     while (!currentIsStructural && i + 1 < stripped.length) {
-      if (Math.abs(trimmedLengths[i] - terminalWidth) > 2) break
-      if (stripped[i + 1] === '') break
-      if (MARKDOWN_STRUCTURAL_RE.test(stripped[i + 1])) break
+      if (Math.abs(trimmedLengths[i]! - terminalWidth) > 2) break
+      if (stripped[i + 1]! === '') break
+      if (MARKDOWN_STRUCTURAL_RE.test(stripped[i + 1]!)) break
       i++
-      current += ' ' + stripped[i]
+      current += ' ' + stripped[i]!
     }
 
     result.push(current)
