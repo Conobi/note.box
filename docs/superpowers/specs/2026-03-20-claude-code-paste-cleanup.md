@@ -16,7 +16,7 @@ Silently detect Claude Code output on paste, clean it up (strip padding, rejoin 
 Operates on the raw pasted string. Returns `{ detected: boolean, terminalWidth: number }`.
 
 1. Split into raw lines.
-2. Find the most common total line length (including trailing spaces). This is the candidate terminal width. Must be >40 to avoid false positives on short text.
+2. Find the most common total line length among **non-empty** lines (including trailing spaces). This is the candidate terminal width. Must be >40 to avoid false positives on short text.
 3. Check two signals across non-empty lines:
    - **Trailing spaces**: >50% of non-empty lines end with 3+ trailing spaces.
    - **Leading 2-space indent**: >50% of non-empty lines start with exactly 2 spaces.
@@ -29,8 +29,9 @@ Returns the cleaned string ready for markdown parsing.
 1. Strip trailing spaces from all lines.
 2. Strip the 2-space leading indent from lines that have it.
 3. Re-join hard-wrapped lines:
-   - Compute max content width = `terminalWidth - 4` (2 leading + 2 trailing margin chars).
-   - For each stripped line: if its length is within 2 chars of `maxContentWidth` AND the next line is plain continuation text, join them with a space.
+   - For each line, track its **original** length (before stripping in steps 1-2).
+   - A line was hard-wrapped if its original length is within 2 chars of `terminalWidth` (i.e. the content ran to the edge of the terminal).
+   - If a line was hard-wrapped AND the next line is plain continuation text, join them with a space.
    - A line is **not** plain continuation if it:
      - Is empty
      - Starts with a markdown structural marker: `#`, `-`, `*`, `+`, `>`, `` ``` ``, `|`, or a digit followed by `.`
@@ -40,25 +41,29 @@ Returns the cleaned string ready for markdown parsing.
 
 A TipTap `Extension.create()` that adds a ProseMirror plugin.
 
-### Plugin behavior (`handlePaste`)
+### Plugin behavior (`clipboardTextParser`)
 
-1. Extract plain text from the clipboard event (`event.clipboardData.getData('text/plain')`).
+Uses the `clipboardTextParser` ProseMirror prop (same mechanism as `MarkdownPaste`). In ProseMirror, `clipboardTextParser` fires **before** `handlePaste` — so this extension must use the same prop to intercept the text before `MarkdownPaste` sees it.
+
+1. If `plain` is true (Shift+Paste): return `null` (fall through — respect forced plain-text paste).
 2. Run `isClaudeCodeContent(text)`.
-3. If not detected: return `false` (fall through to MarkdownPaste / default).
+3. If not detected: return `null` (fall through to `MarkdownPaste` / default).
 4. If detected:
    a. Run `cleanClaudeCodeContent(text, terminalWidth)`.
-   b. Parse the cleaned text through the `@tiptap/markdown` storage manager (same approach as `MarkdownPaste`).
-   c. Build a ProseMirror `Slice` from the parsed doc and insert it via `tr.replaceSelection()`.
-   d. Show a toast via Nuxt UI `useToast()`: "Claude Code content detected and cleaned up" with an **Undo** action.
-   e. Return `true` (paste handled).
+   b. Store `rawText` in editor storage for the undo mechanism.
+   c. Set a `detectedFlag` in editor storage so a companion `handlePaste` handler can show the toast after insertion.
+   d. Parse the cleaned text through the `@tiptap/markdown` storage manager (same approach as `MarkdownPaste`).
+   e. Build a ProseMirror `Slice` from the parsed doc and return it.
+
+A companion `handlePaste` handler checks the `detectedFlag` and, if set, shows the toast (since `clipboardTextParser` cannot trigger side effects after insertion). It clears the flag and returns `false` (does not handle the paste itself — the `Slice` from `clipboardTextParser` is already used).
 
 ### Undo mechanism
 
-Before inserting the cleaned content, capture the current editor state. The toast's Undo action calls `editor.commands.undo()` to revert the cleaned insertion, then inserts the raw text as-is (via the default paste path or direct insertion).
+On detection, the raw text is stored in editor storage. The toast's **Undo** action calls `editor.commands.undo()` to revert the cleaned insertion, then re-inserts the raw text through the markdown manager (without cleanup) so it still gets markdown parsing. This gives the user the original formatting in case the cleanup heuristic mangled something.
 
 ### Extension ordering
 
-`ClaudeCodePaste` must be registered **before** `MarkdownPaste` in the `NoteEditor.vue` extensions array so its `handlePaste` fires first. (`handlePaste` runs before `clipboardTextParser`, so it naturally takes priority.)
+`ClaudeCodePaste` must be registered **before** `MarkdownPaste` in the `NoteEditor.vue` extensions array. Since both use `clipboardTextParser`, ProseMirror uses the first plugin's prop that returns a non-null `Slice`. When `ClaudeCodePaste` detects Claude Code content and returns a `Slice`, `MarkdownPaste`'s `clipboardTextParser` is skipped. When not detected, `ClaudeCodePaste` returns `null` and `MarkdownPaste` handles it as usual.
 
 ## Files
 
