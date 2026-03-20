@@ -29,8 +29,8 @@ Returns the cleaned string ready for markdown parsing.
 1. Strip trailing spaces from all lines.
 2. Strip the 2-space leading indent from lines that have it.
 3. Re-join hard-wrapped lines:
-   - For each line, track its **original** length (before stripping in steps 1-2).
-   - A line was hard-wrapped if its original length is within 2 chars of `terminalWidth` (i.e. the content ran to the edge of the terminal).
+   - For each line, compute its **trimmed length** (after stripping trailing spaces only, before stripping the 2-space indent). This represents how much content the line actually contains. Note: we cannot use the full original length because Claude Code pads ALL lines to terminal width — so every line's original length equals `terminalWidth`, which would make every line appear hard-wrapped.
+   - A line was hard-wrapped if its trimmed length is within 2 chars of `terminalWidth` (i.e. the content ran to the edge of the terminal).
    - If a line was hard-wrapped AND the next line is plain continuation text, join them with a space.
    - A line is **not** plain continuation if it:
      - Is empty
