@@ -1,5 +1,11 @@
 # note.box
 
+## 0.5.0
+
+### Minor Changes
+
+- 6a14ee4: Add Claude Code paste cleanup: automatically detects pasted content from Claude Code, removes line numbers and formatting artifacts, and offers an undo toast
+
 ## 0.4.0
 
 ### Minor Changes
