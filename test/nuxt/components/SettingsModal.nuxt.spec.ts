@@ -1,8 +1,13 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import SettingsModal from '~/components/SettingsModal.vue'
 
 describe('SettingsModal', () => {
+  // Nuxt's getAppManifest schedules a timer that fires after teardown,
+  // calling $fetch when it's no longer defined. Fake timers prevent the leak.
+  beforeEach(() => { vi.useFakeTimers() })
+  afterEach(() => { vi.useRealTimers() })
+
   it('renders without errors', async () => {
     const component = await mountSuspended(SettingsModal, {
       props: { open: false },
