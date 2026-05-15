@@ -51,3 +51,11 @@ config
 
 # Git submodules
 .gitmodules
+plans/
+specs/
+.claude/
+.research/
+research/
+docs/superpowers/
+docs/project-context.md
+CLAUDE.md
